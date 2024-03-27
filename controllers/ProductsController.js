@@ -47,8 +47,55 @@ const productController = {
             next()
         }
         
-    }
+    },
 
+    getProductDetail: async (req,res,next) => {
+        try 
+        {
+            let pid = req.params.pid
+            let product = await productModel.findOne({"PID":pid},{
+                _id:0,
+                PID: 1,
+                Product_name: 1,
+                Product_brand: 1,
+                Product_gender: 1,
+                priceScale: 1,
+                Features: 1,
+                Scent: 1,
+                seasonRate: 1,
+                dayNightRate: 1,
+                Pictures: 1,
+                Description: 1
+                
+            })
+
+            let brand_name = await brandModel
+            .findOne({"BID":product["Product_brand"]})
+            .select(["Name"]);
+
+            product.Product_brand = brand_name.Name;
+            
+            return res.status(200).json({
+                PID: product.PID,
+                Product_name: product.Product_name,
+                Product_brand: product.Product_brand ,
+                Product_gender: product.Product_gender,
+                priceScale: product.priceScale,
+                Features: product.Features,
+                Scent: product.Scent,
+                seasonRate: product.seasonRate,
+                dayNightRate: product.dayNightRate,
+                Pictures: product.Pictures,
+                Description: product.Description,
+            })
+        } 
+        catch (error) 
+        {
+            console.log(error);
+            return res.status(400).json({"Message":"Cannot find this product"})
+        }
+       
+    },
 }
 
 
