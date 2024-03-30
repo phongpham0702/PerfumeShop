@@ -1,0 +1,1368 @@
+[{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0f60"
+  },
+  "BID": "1",
+  "Name": "Acqua di Parma",
+  "Products_num": 4,
+  "Products_list": [
+    "5",
+    "194",
+    "251",
+    "295"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0f63"
+  },
+  "BID": "2",
+  "Name": "Afnan",
+  "Products_num": 3,
+  "Products_list": [
+    "17",
+    "153",
+    "235"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0f65"
+  },
+  "BID": "3",
+  "Name": "Al Haramain",
+  "Products_num": 1,
+  "Products_list": [
+    "288"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0f68"
+  },
+  "BID": "4",
+  "Name": "Amouage",
+  "Products_num": 1,
+  "Products_list": [
+    "32"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0f6b"
+  },
+  "BID": "5",
+  "Name": "Armaf",
+  "Products_num": 4,
+  "Products_list": [
+    "210",
+    "249",
+    "293",
+    "345"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0f6d"
+  },
+  "BID": "6",
+  "Name": "Art de Parfum",
+  "Products_num": 1,
+  "Products_list": [
+    "90"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0f70"
+  },
+  "BID": "7",
+  "Name": "Astrophil Stella",
+  "Products_num": 4,
+  "Products_list": [
+    "155",
+    "230",
+    "250",
+    "265"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0f72"
+  },
+  "BID": "8",
+  "Name": "Attar Collection",
+  "Products_num": 1,
+  "Products_list": [
+    "181"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0f74"
+  },
+  "BID": "9",
+  "Name": "Azzaro",
+  "Products_num": 4,
+  "Products_list": [
+    "4",
+    "46",
+    "152",
+    "272"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0f76"
+  },
+  "BID": "10",
+  "Name": "Burberry",
+  "Products_num": 7,
+  "Products_list": [
+    "0",
+    "23",
+    "54",
+    "83",
+    "196",
+    "207",
+    "231"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0f78"
+  },
+  "BID": "11",
+  "Name": "Bvlgari",
+  "Products_num": 2,
+  "Products_list": [
+    "96",
+    "110"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0f7a"
+  },
+  "BID": "12",
+  "Name": "By Kilian",
+  "Products_num": 16,
+  "Products_list": [
+    "1",
+    "2",
+    "38",
+    "39",
+    "66",
+    "76",
+    "88",
+    "103",
+    "140",
+    "141",
+    "156",
+    "163",
+    "186",
+    "189",
+    "239",
+    "371"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0f7c"
+  },
+  "BID": "13",
+  "Name": "Byredo",
+  "Products_num": 1,
+  "Products_list": [
+    "100"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0f7e"
+  },
+  "BID": "14",
+  "Name": "Calvin Klein",
+  "Products_num": 5,
+  "Products_list": [
+    "55",
+    "89",
+    "124",
+    "237",
+    "364"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0f80"
+  },
+  "BID": "15",
+  "Name": "Carner Barcelona",
+  "Products_num": 3,
+  "Products_list": [
+    "42",
+    "52",
+    "177"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0f82"
+  },
+  "BID": "16",
+  "Name": "Carolina Herrera",
+  "Products_num": 3,
+  "Products_list": [
+    "3",
+    "14",
+    "234"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0f84"
+  },
+  "BID": "17",
+  "Name": "Chanel",
+  "Products_num": 15,
+  "Products_list": [
+    "36",
+    "49",
+    "98",
+    "117",
+    "132",
+    "174",
+    "182",
+    "195",
+    "206",
+    "215",
+    "216",
+    "263",
+    "299",
+    "327",
+    "382"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0f86"
+  },
+  "BID": "18",
+  "Name": "Chloé",
+  "Products_num": 2,
+  "Products_list": [
+    "175",
+    "253"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0f88"
+  },
+  "BID": "19",
+  "Name": "Clive Christian",
+  "Products_num": 5,
+  "Products_list": [
+    "11",
+    "13",
+    "27",
+    "34",
+    "68"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0f8a"
+  },
+  "BID": "20",
+  "Name": "Creed",
+  "Products_num": 12,
+  "Products_list": [
+    "199",
+    "221",
+    "226",
+    "267",
+    "311",
+    "318",
+    "351",
+    "394",
+    "402",
+    "415",
+    "416",
+    "426"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0f8c"
+  },
+  "BID": "21",
+  "Name": "D&G",
+  "Products_num": 11,
+  "Products_list": [
+    "40",
+    "57",
+    "63",
+    "79",
+    "105",
+    "133",
+    "197",
+    "205",
+    "236",
+    "320",
+    "343"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0f8e"
+  },
+  "BID": "22",
+  "Name": "Dame Perfumery",
+  "Products_num": 3,
+  "Products_list": [
+    "217",
+    "388",
+    "418"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0f90"
+  },
+  "BID": "23",
+  "Name": "Dasein",
+  "Products_num": 1,
+  "Products_list": [
+    "119"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0f92"
+  },
+  "BID": "24",
+  "Name": "Diesel",
+  "Products_num": 1,
+  "Products_list": [
+    "104"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0f94"
+  },
+  "BID": "25",
+  "Name": "Dior",
+  "Products_num": 19,
+  "Products_list": [
+    "18",
+    "33",
+    "37",
+    "58",
+    "69",
+    "93",
+    "138",
+    "142",
+    "143",
+    "148",
+    "150",
+    "154",
+    "159",
+    "162",
+    "170",
+    "187",
+    "248",
+    "336",
+    "397"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0f96"
+  },
+  "BID": "26",
+  "Name": "Diptyque",
+  "Products_num": 12,
+  "Products_list": [
+    "21",
+    "28",
+    "47",
+    "74",
+    "77",
+    "80",
+    "94",
+    "97",
+    "106",
+    "134",
+    "149",
+    "201"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0f98"
+  },
+  "BID": "27",
+  "Name": "ELDO",
+  "Products_num": 1,
+  "Products_list": [
+    "121"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0f9a"
+  },
+  "BID": "28",
+  "Name": "Elizabeth Arden",
+  "Products_num": 1,
+  "Products_list": [
+    "7"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0f9c"
+  },
+  "BID": "29",
+  "Name": "Escentric Molecules",
+  "Products_num": 1,
+  "Products_list": [
+    "193"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0f9e"
+  },
+  "BID": "30",
+  "Name": "Ex Nihilo",
+  "Products_num": 11,
+  "Products_list": [
+    "26",
+    "30",
+    "62",
+    "65",
+    "70",
+    "92",
+    "107",
+    "157",
+    "188",
+    "241",
+    "289"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0fa0"
+  },
+  "BID": "31",
+  "Name": "Fragments by NV",
+  "Products_num": 1,
+  "Products_list": [
+    "9"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0fa2"
+  },
+  "BID": "32",
+  "Name": "Giorgio Armani",
+  "Products_num": 9,
+  "Products_list": [
+    "120",
+    "158",
+    "229",
+    "247",
+    "305",
+    "334",
+    "363",
+    "375",
+    "381"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0fa4"
+  },
+  "BID": "33",
+  "Name": "Givenchy",
+  "Products_num": 5,
+  "Products_list": [
+    "101",
+    "102",
+    "173",
+    "254",
+    "294"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0fa6"
+  },
+  "BID": "34",
+  "Name": "Gucci",
+  "Products_num": 6,
+  "Products_list": [
+    "35",
+    "48",
+    "59",
+    "131",
+    "198",
+    "222"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0fa8"
+  },
+  "BID": "35",
+  "Name": "Guerlain",
+  "Products_num": 5,
+  "Products_list": [
+    "166",
+    "224",
+    "354",
+    "358",
+    "428"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0faa"
+  },
+  "BID": "36",
+  "Name": "Hermès",
+  "Products_num": 11,
+  "Products_list": [
+    "24",
+    "84",
+    "160",
+    "184",
+    "242",
+    "255",
+    "283",
+    "395",
+    "396",
+    "401",
+    "403"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0fac"
+  },
+  "BID": "37",
+  "Name": "Hugo Boss",
+  "Products_num": 8,
+  "Products_list": [
+    "6",
+    "8",
+    "12",
+    "19",
+    "41",
+    "91",
+    "145",
+    "208"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0fae"
+  },
+  "BID": "38",
+  "Name": "Imaginary Authors",
+  "Products_num": 10,
+  "Products_list": [
+    "118",
+    "144",
+    "212",
+    "240",
+    "252",
+    "273",
+    "297",
+    "326",
+    "359",
+    "379"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0fb0"
+  },
+  "BID": "39",
+  "Name": "Initio Parfums Prives",
+  "Products_num": 1,
+  "Products_list": [
+    "20"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0fb2"
+  },
+  "BID": "40",
+  "Name": "Issey Miyake",
+  "Products_num": 1,
+  "Products_list": [
+    "408"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0fb4"
+  },
+  "BID": "41",
+  "Name": "Jean Paul Gaultier",
+  "Products_num": 9,
+  "Products_list": [
+    "73",
+    "126",
+    "171",
+    "172",
+    "183",
+    "202",
+    "233",
+    "421",
+    "423"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0fb6"
+  },
+  "BID": "42",
+  "Name": "Jo Malone",
+  "Products_num": 5,
+  "Products_list": [
+    "15",
+    "112",
+    "135",
+    "304",
+    "346"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0fb8"
+  },
+  "BID": "43",
+  "Name": "KENZO",
+  "Products_num": 2,
+  "Products_list": [
+    "75",
+    "109"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0fba"
+  },
+  "BID": "44",
+  "Name": "L'Occitane en Provence",
+  "Products_num": 1,
+  "Products_list": [
+    "431"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0fbc"
+  },
+  "BID": "45",
+  "Name": "L'Orchestre Parfum",
+  "Products_num": 7,
+  "Products_list": [
+    "164",
+    "168",
+    "323",
+    "390",
+    "391",
+    "417",
+    "420"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0fbe"
+  },
+  "BID": "46",
+  "Name": "Label",
+  "Products_num": 11,
+  "Products_list": [
+    "116",
+    "169",
+    "238",
+    "261",
+    "310",
+    "331",
+    "333",
+    "355",
+    "380",
+    "410",
+    "419"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0fc0"
+  },
+  "BID": "47",
+  "Name": "Lalique",
+  "Products_num": 3,
+  "Products_list": [
+    "53",
+    "72",
+    "200"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0fc2"
+  },
+  "BID": "48",
+  "Name": "Lancôme",
+  "Products_num": 8,
+  "Products_list": [
+    "10",
+    "29",
+    "43",
+    "51",
+    "86",
+    "204",
+    "211",
+    "296"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0fc4"
+  },
+  "BID": "49",
+  "Name": "Le Labo",
+  "Products_num": 6,
+  "Products_list": [
+    "45",
+    "129",
+    "151",
+    "179",
+    "223",
+    "332"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0fc6"
+  },
+  "BID": "50",
+  "Name": "Maison Francis Kurkdjian",
+  "Products_num": 3,
+  "Products_list": [
+    "123",
+    "125",
+    "185"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0fc8"
+  },
+  "BID": "51",
+  "Name": "Maison Margiela",
+  "Products_num": 11,
+  "Products_list": [
+    "50",
+    "67",
+    "161",
+    "213",
+    "219",
+    "281",
+    "360",
+    "389",
+    "392",
+    "398",
+    "399"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0fca"
+  },
+  "BID": "52",
+  "Name": "Maison Matine",
+  "Products_num": 5,
+  "Products_list": [
+    "264",
+    "292",
+    "314",
+    "347",
+    "409"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0fcc"
+  },
+  "BID": "53",
+  "Name": "Mancera",
+  "Products_num": 20,
+  "Products_list": [
+    "113",
+    "127",
+    "190",
+    "209",
+    "214",
+    "225",
+    "243",
+    "259",
+    "274",
+    "278",
+    "285",
+    "290",
+    "330",
+    "335",
+    "338",
+    "339",
+    "341",
+    "370",
+    "376",
+    "425"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0fce"
+  },
+  "BID": "54",
+  "Name": "Marc Antoine Barrois",
+  "Products_num": 1,
+  "Products_list": [
+    "44"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0fd0"
+  },
+  "BID": "55",
+  "Name": "Marc Jacobs",
+  "Products_num": 3,
+  "Products_list": [
+    "16",
+    "178",
+    "277"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0fd2"
+  },
+  "BID": "56",
+  "Name": "Marie Jeanne",
+  "Products_num": 2,
+  "Products_list": [
+    "218",
+    "350"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0fd4"
+  },
+  "BID": "57",
+  "Name": "Masque Milano",
+  "Products_num": 2,
+  "Products_list": [
+    "60",
+    "137"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0fd6"
+  },
+  "BID": "58",
+  "Name": "MCM",
+  "Products_num": 1,
+  "Products_list": [
+    "424"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0fd8"
+  },
+  "BID": "59",
+  "Name": "Memo Paris",
+  "Products_num": 1,
+  "Products_list": [
+    "400"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0fda"
+  },
+  "BID": "60",
+  "Name": "Montblanc",
+  "Products_num": 5,
+  "Products_list": [
+    "25",
+    "56",
+    "82",
+    "85",
+    "348"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0fdc"
+  },
+  "BID": "61",
+  "Name": "Moschino",
+  "Products_num": 2,
+  "Products_list": [
+    "61",
+    "385"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0fde"
+  },
+  "BID": "62",
+  "Name": "Narciso Rodriguez",
+  "Products_num": 8,
+  "Products_list": [
+    "78",
+    "246",
+    "302",
+    "352",
+    "365",
+    "406",
+    "412",
+    "433"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0fe0"
+  },
+  "BID": "63",
+  "Name": "Nasomatto",
+  "Products_num": 6,
+  "Products_list": [
+    "31",
+    "227",
+    "284",
+    "316",
+    "357",
+    "383"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0fe2"
+  },
+  "BID": "64",
+  "Name": "Nautica",
+  "Products_num": 1,
+  "Products_list": [
+    "139"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0fe4"
+  },
+  "BID": "65",
+  "Name": "Nishane",
+  "Products_num": 2,
+  "Products_list": [
+    "122",
+    "262"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0fe6"
+  },
+  "BID": "66",
+  "Name": "Optico",
+  "Products_num": 1,
+  "Products_list": [
+    "429"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0fe8"
+  },
+  "BID": "67",
+  "Name": "Ormonde Jayne",
+  "Products_num": 6,
+  "Products_list": [
+    "115",
+    "191",
+    "228",
+    "260",
+    "317",
+    "337"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0fea"
+  },
+  "BID": "68",
+  "Name": "Orto Parisi",
+  "Products_num": 8,
+  "Products_list": [
+    "180",
+    "258",
+    "275",
+    "319",
+    "329",
+    "372",
+    "404",
+    "430"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0fec"
+  },
+  "BID": "69",
+  "Name": "Paco Rabanne",
+  "Products_num": 7,
+  "Products_list": [
+    "87",
+    "111",
+    "114",
+    "128",
+    "232",
+    "245",
+    "344"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0fee"
+  },
+  "BID": "70",
+  "Name": "Parfums de Marly",
+  "Products_num": 4,
+  "Products_list": [
+    "22",
+    "108",
+    "165",
+    "287"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0ff0"
+  },
+  "BID": "71",
+  "Name": "Parfums MDCI",
+  "Products_num": 1,
+  "Products_list": [
+    "393"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0ff2"
+  },
+  "BID": "72",
+  "Name": "Prada",
+  "Products_num": 4,
+  "Products_list": [
+    "99",
+    "279",
+    "280",
+    "303"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0ff4"
+  },
+  "BID": "73",
+  "Name": "Profvmvm Roma",
+  "Products_num": 1,
+  "Products_list": [
+    "276"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0ff6"
+  },
+  "BID": "74",
+  "Name": "Rochas",
+  "Products_num": 0,
+  "Products_list": [],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0ff8"
+  },
+  "BID": "75",
+  "Name": "Roja Parfum",
+  "Products_num": 7,
+  "Products_list": [
+    "95",
+    "256",
+    "286",
+    "300",
+    "301",
+    "315",
+    "366"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0ffa"
+  },
+  "BID": "76",
+  "Name": "Salvatore Ferragamo",
+  "Products_num": 1,
+  "Products_list": [
+    "325"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0ffc"
+  },
+  "BID": "77",
+  "Name": "Strangers Parfumerie",
+  "Products_num": 7,
+  "Products_list": [
+    "136",
+    "268",
+    "270",
+    "307",
+    "321",
+    "322",
+    "384"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d0ffe"
+  },
+  "BID": "78",
+  "Name": "Thierry Mugler",
+  "Products_num": 1,
+  "Products_list": [
+    "167"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d1000"
+  },
+  "BID": "79",
+  "Name": "Tom Ford",
+  "Products_num": 20,
+  "Products_list": [
+    "130",
+    "146",
+    "269",
+    "271",
+    "282",
+    "298",
+    "308",
+    "313",
+    "324",
+    "340",
+    "342",
+    "353",
+    "356",
+    "361",
+    "362",
+    "367",
+    "368",
+    "373",
+    "374",
+    "427"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d1002"
+  },
+  "BID": "80",
+  "Name": "Valentino",
+  "Products_num": 4,
+  "Products_list": [
+    "176",
+    "291",
+    "378",
+    "414"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d1004"
+  },
+  "BID": "81",
+  "Name": "Versace",
+  "Products_num": 5,
+  "Products_list": [
+    "64",
+    "71",
+    "147",
+    "192",
+    "312"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d1006"
+  },
+  "BID": "82",
+  "Name": "Viktor & Rolf",
+  "Products_num": 2,
+  "Products_list": [
+    "203",
+    "407"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d1008"
+  },
+  "BID": "83",
+  "Name": "Xerjoff",
+  "Products_num": 6,
+  "Products_list": [
+    "81",
+    "244",
+    "349",
+    "369",
+    "411",
+    "432"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d100a"
+  },
+  "BID": "84",
+  "Name": "Yves Saint Laurent",
+  "Products_num": 8,
+  "Products_list": [
+    "220",
+    "257",
+    "266",
+    "306",
+    "309",
+    "328",
+    "377",
+    "387"
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66013b9177bd56c9d36d100c"
+  },
+  "BID": "85",
+  "Name": "Zoologist",
+  "Products_num": 4,
+  "Products_list": [
+    "386",
+    "405",
+    "413",
+    "422"
+  ],
+  "__v": 1
+}]
