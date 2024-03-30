@@ -1,16 +1,13 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 async function connect() {
   try {
-    await mongoose.connect(
-        process.env.DB_URI,
-      {
-        connectTimeoutMS : 200000,
-      }
-    );
-    console.log("Connect database successfully");
+    await mongoose.connect('mongodb://localhost:27017/PerfumeStore', {
+      connectTimeoutMS: 200000,
+    });
+    console.log('Connect database successfully');
   } catch (error) {
-    console.log("Connect database failure");
+    console.log('Connect database failure');
   }
 }
 
