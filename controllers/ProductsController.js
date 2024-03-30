@@ -6,10 +6,11 @@ const productController = {
 
         try {
             let productPerPage = 20;
-            let currentPage = parseInt(req.query.page) || 1;
+            let currentPage = parseInt(req.params.pid) || 1;
             let products_num = await productModel.countDocuments()
+            let genderFilter = req.query.gender || null
             
-            let products = await productModel.aggregate([
+            let aggregatePipeline = [
                 {$skip : (productPerPage * currentPage) - productPerPage },
                 {$limit : productPerPage},
                 {$lookup : {
@@ -27,7 +28,16 @@ const productController = {
                     priceScale: 1,
                     Pictures: 1
                 }}
-            ])
+            ]
+
+            if((genderFilter !== undefined) && (genderFilter !== null))
+            {
+                aggregatePipeline.unshift({
+                    '$match': {'Product_gender' : genderFilter}
+                })
+            }
+            
+            let products = await productModel.aggregate(aggregatePipeline)
 
             for(let p of products)
             {
@@ -112,5 +122,7 @@ function  get_MIn_Price(priceScale)
     }
     return min_price
 }
+
+
 
 module.exports = productController
