@@ -122,49 +122,80 @@ const productController = {
         }
        
     },
-}
 
-async function withOutFilter(productPerPage,currentPage)
-{   
-    try 
-    {
-        let result = await productModel.aggregate([
-            
-            {$addFields: {
-                display_price:{ $min: "$priceScale.Price" }
-            }},
-            {$skip : (productPerPage * currentPage) - productPerPage },
-            {$limit : productPerPage},
-            {$lookup : {
-                from: 'brands',
-                localField: 'Product_brand',
-                foreignField: 'BID',
-                as: 'brandInfo'
+    getBestSeller: async (req,res,next) => {
+        try {
+            const limit_products = 10;
+            let bestSeller;
+
+            if(req.session.bestSeller === undefined ||
+                req.session.bestSeller === null ||
+                req.session.bestSeller === "" )
+            {
+                
+                let bestSeller_PipeLine = [
+                    {
+                        $addFields:{
+                            "display_price":{"$min":"$priceScale.Price"}
+                        }
+                    },
+                    {
+                        $lookup:{
+                            from: 'brands',
+                            localField: 'Product_brand',
+                            foreignField: 'BID',
+                            as: 'brandInfo'
+                        }
+                    },
+                    {
+                        $project:{
+                            PID: 1,
+                            Product_name: 1,
+                            Brand_Name: {$arrayElemAt: ["$brandInfo.Name", 0]},
+                            Product_gender: 1,
+                            display_price: 1,
+                            Sold: 1,
+                        }
+                    },
+                    {
+                        $sort :{"Sold": -1}
+                    },
+                    {
+                        $group:{
+                            _id: "$Product_gender",
+                            products: {$push: "$$ROOT",},
+                        }
+                    },
+                    {
+                        $project:{
+                            _id: 1,
+                            products: {
+                                $slice: ["$products", limit_products],
+                            },
+                        }
+                    }
+                ]
+
+                bestSeller = await productModel.aggregate(bestSeller_PipeLine)
+                req.session.bestSeller = bestSeller;
+                  
             }
-        },
-            {$project:{
-                _id: 0,
-                PID: 1,
-                Product_name: 1,
-                Product_brand: {$arrayElemAt:["$brandInfo.Name",0]},
-                priceScale: 1,
-                display_price: 1,
-                Pictures: 1,
-            }}
-        ])
+            else
+            {   
+                bestSeller = req.session.bestSeller;
+            }
 
-        return result;
-    } 
-    catch (error) 
-    {
-        console.log(error);
-        return null;
-    }
-    
+            return res.status(200).json({bestSeller})
+        } 
+        catch (error) 
+        {
+            console.log(error);
+            next()    
+        }
+        
+
+    },
 }
-
-
-
 
 
 module.exports = productController
