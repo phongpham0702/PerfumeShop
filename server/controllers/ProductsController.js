@@ -193,9 +193,70 @@ const productController = {
             console.log(error);
             next()    
         }
-        
-
+    
     },
+
+    getNewArrival: async (req,res,next) => {
+        try {
+            const limit_products = 5;
+            let newArrival;
+
+            if(req.session.newArrival === undefined ||
+                req.session.newArrival === null ||
+                req.session.newArrival === "" )
+            {
+                
+                let newArrival_PipeLine = [
+                    {
+                        $sort: {"createdAt": -1}
+                    },
+                    {
+                        $limit: limit_products
+                    },
+                    {
+                        $addFields:{
+                            "display_price":{"$min":"$priceScale.Price"}
+                        }
+                    },
+                    {
+                        $lookup:{
+                            from: 'brands',
+                            localField: 'Product_brand',
+                            foreignField: 'BID',
+                            as: 'brandInfo'
+                        }
+                    },
+                    {
+                        $project:{
+                            PID: 1,
+                            Product_name: 1,
+                            Brand_Name: {$arrayElemAt: ["$brandInfo.Name", 0]},
+                            Product_gender: 1,
+                            display_price: 1,
+                            Pictures:1,
+                            Sold: 1,
+                        }
+                    },
+                    
+                ]
+
+                newArrival = await productModel.aggregate(newArrival_PipeLine)
+                req.session.newArrival = newArrival;
+                  
+            }
+            else
+            {   
+                newArrival = req.session.newArrival;
+            }
+
+            return res.status(200).json({newArrival})
+        } 
+        catch (error) 
+        {
+            console.log(error);
+            next()    
+        }
+    }
 }
 
 

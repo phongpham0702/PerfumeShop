@@ -6,6 +6,9 @@ const productModel = require("../models/product")
 router.route("/bestseller")
 .get(productController.getBestSeller)
 
+router.route("/newarrival")
+.get(productController.getNewArrival)
+
 router.route("/:pid")
 .get(productController.getProductPage)
 
