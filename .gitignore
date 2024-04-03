@@ -131,7 +131,7 @@ dist
 
 testCode.txt
 
-backupDB/*.gzip
+backupDB/*
 
 # Logs
 logs

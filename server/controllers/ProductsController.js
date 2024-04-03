@@ -154,6 +154,7 @@ const productController = {
                             Brand_Name: {$arrayElemAt: ["$brandInfo.Name", 0]},
                             Product_gender: 1,
                             display_price: 1,
+                            Pictures:1,
                             Sold: 1,
                         }
                     },
