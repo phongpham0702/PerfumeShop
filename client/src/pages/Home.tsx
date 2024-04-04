@@ -1,4 +1,5 @@
 import BrandList from "../components/Brands/BrandList";
+import Contact from "../components/Contacts/Contact";
 import Footer from "../components/Footer/Footer";
 import ProductList from "../components/Products/ProductList";
 import Subscribe from "../components/Subscribe/Subscribe";
@@ -13,7 +14,10 @@ const Home = () => {
       <hr />
       <Video />
       <hr />
+      <Contact />
+      <hr />
       <Subscribe />
+
       <Footer />
     </>
   );

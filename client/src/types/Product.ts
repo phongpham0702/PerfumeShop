@@ -10,6 +10,15 @@ export interface Product {
   Product_brand: string;
   display_price: number;
 }
+export interface BestsellerProduct {
+  PID: string;
+  Product_name: string;
+  Sold: number;
+  Pictures: string;
+  Brand_Name: string;
+  display_price: number;
+  Product_gender: string;
+}
 
 export interface ProductDetail {
   PID: string;
