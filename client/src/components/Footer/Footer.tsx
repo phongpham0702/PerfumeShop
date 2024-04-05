@@ -1,6 +1,6 @@
 const Footer = () => {
   return (
-    <section className="container mx-auto bg-[#0d0d0d] text-white">
+    <section className="mx-auto w-full bg-[#0d0d0d] text-white">
       <div className="flex justify-center gap-20 p-20">
         <div className="flex w-[25%] flex-col items-center gap-3 text-lg font-normal tracking-widest">
           <p className="mb-2 text-4xl font-light">Luxe</p>
@@ -23,7 +23,7 @@ const Footer = () => {
           <p>Product</p>
         </div>
       </div>
-      <div className="w-full bg-white p-12 text-lg tracking-wider text-[#6a6868]">
+      <div className="w-full bg-white p-6 text-lg tracking-wider text-[#6a6868]">
         <p className="text-center">luxe 2024 | all right reserved</p>
       </div>
     </section>

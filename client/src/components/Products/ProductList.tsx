@@ -1,10 +1,17 @@
 import { useEffect, useState } from "react";
-import { Product } from "../../types/Product";
+import { BestsellerProduct } from "../../types/Product";
 import ProductItem from "./ProductItem";
 import Slider from "react-slick";
 
 const ProductList = () => {
-  const [products, setProducts] = useState<Product[] | []>([]);
+  const [data, setData] = useState<
+    | {
+        _id: string;
+        products: BestsellerProduct[];
+      }[]
+    | []
+  >([]);
+  const [products, setProducts] = useState<BestsellerProduct[] | []>([]);
   const [gender, setGender] = useState<string>("Male");
   const category: Array<{ [key: string]: string }> = [
     { Man: "Male" },
@@ -20,14 +27,36 @@ const ProductList = () => {
     slidesToScroll: 5,
   };
 
-  async function fetchData(query: string) {
-    await fetch(`http://localhost:8080/products/1?gender=${query}`)
+  async function fetchData() {
+    await fetch(`http://localhost:8080/products/bestseller`)
       .then((res) => res.json())
-      .then((data) => setProducts(data.products));
+      .then((data) => {
+        setData(data.bestSeller);
+        let male: BestsellerProduct[] = [];
+        data.bestSeller.forEach(
+          (element: { _id: string; products: BestsellerProduct[] }) => {
+            if (element._id === "Male") {
+              male = element.products;
+            }
+          },
+        );
+        setProducts(male);
+      });
   }
+
   useEffect(() => {
-    fetchData(gender!);
-  }, [gender]);
+    fetchData();
+  }, []);
+
+  const genderFilter = (gender: string) => {
+    const dataFilter: { _id: string; products: BestsellerProduct[] }[] =
+      data.filter(
+        (item: { _id: string; products: BestsellerProduct[] }) =>
+          item._id === gender,
+      );
+    setProducts(dataFilter[0].products);
+  };
+
   console.log(products);
 
   return (
@@ -46,7 +75,10 @@ const ProductList = () => {
                   gender == item[0][1] ? "text-[#f8b500]" : "opacity-[0.3]"
                 }
                 key={index}
-                onClick={() => setGender(item[0][1])}
+                onClick={() => {
+                  setGender(item[0][1]);
+                  genderFilter(item[0][1]);
+                }}
               >
                 {item[0][0]}
               </p>

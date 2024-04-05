@@ -1,6 +1,8 @@
+import { FaYoutube, FaFacebook, FaTiktok, FaInstagram } from "react-icons/fa";
+
 const Subscribe = () => {
   return (
-    <div className="flex h-[400px] w-full flex-col items-center justify-center">
+    <div className="flex h-[350px] w-full flex-col items-center justify-center">
       <p className="mb-4 text-3xl font-light">BECOME A MEMBER & GET 15% OFF</p>
       <form className="flex gap-4" action="">
         <input
@@ -14,6 +16,21 @@ const Subscribe = () => {
           Subscribe
         </button>
       </form>
+
+      <div className="mt-20 flex cursor-pointer items-center justify-center gap-4 text-3xl">
+        <i>
+          <FaYoutube className="mt-[2px] text-[2.15rem]" />
+        </i>
+        <i>
+          <FaFacebook />
+        </i>
+        <i>
+          <FaTiktok />
+        </i>
+        <i>
+          <FaInstagram />
+        </i>
+      </div>
     </div>
   );
 };
