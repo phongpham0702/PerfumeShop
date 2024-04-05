@@ -10,7 +10,7 @@ const Header = () => {
               className="aria-[current=page]:font-medium aria-[current=page]:text-[#f8b500]"
               to="/"
             >
-              trang chủ
+              Home
             </NavLink>
           </li>
           <li className="cursor-pointer">
@@ -18,7 +18,7 @@ const Header = () => {
               className="aria-[current=page]:font-medium aria-[current=page]:text-[#f8b500]"
               to="/about"
             >
-              giới thiệu
+              About
             </NavLink>
           </li>
           <li className="cursor-pointer">
@@ -26,7 +26,7 @@ const Header = () => {
               className="aria-[current=page]:font-medium aria-[current=page]:text-[#f8b500]"
               to="/brands"
             >
-              thương hiệu
+              Brands
             </NavLink>
           </li>
           <li className="cursor-pointer">
@@ -34,7 +34,7 @@ const Header = () => {
               className="aria-[current=page]:font-medium aria-[current=page]:text-[#f8b500]"
               to="/shop"
             >
-              sản phẩm
+              Shop
             </NavLink>
           </li>
           <li className="cursor-pointer">
@@ -42,7 +42,7 @@ const Header = () => {
               className="aria-[current=page]:font-medium aria-[current=page]:text-[#f8b500]"
               to="/blog"
             >
-              blog
+              Blog
             </NavLink>
           </li>
         </ul>

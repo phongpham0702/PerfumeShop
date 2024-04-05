@@ -1,7 +1,7 @@
-import { BestsellerProduct } from "../../types/Product";
+import { Product } from "../../types/Product";
 
 type propsType = {
-  product: BestsellerProduct;
+  product: Product;
 };
 
 const ProductItem = ({ product }: propsType) => {
@@ -12,7 +12,9 @@ const ProductItem = ({ product }: propsType) => {
      rounded-md border border-[#959191] p-4"
       >
         <img src={product.Pictures} className="h-[200px] w-[200px]" alt="" />
-        <p className="my-2 text-lg text-[#856a20]">{product.Brand_Name}</p>
+        <p className="my-2 w-full overflow-hidden text-ellipsis whitespace-nowrap text-center text-lg text-[#856a20]">
+          {product.Brand_Name}
+        </p>
         <p className="w-full overflow-hidden text-ellipsis whitespace-nowrap text-center">
           {product.Product_name}
         </p>

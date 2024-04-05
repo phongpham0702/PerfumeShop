@@ -1,8 +1,6 @@
 import BrandList from "../components/Brands/BrandList";
 import Contact from "../components/Contacts/Contact";
-import Footer from "../components/Footer/Footer";
-import ProductList from "../components/Products/ProductList";
-import Subscribe from "../components/Subscribe/Subscribe";
+import BestsellerList from "../components/Products/BestsellerList";
 import Video from "../components/Videos/Video";
 
 const Home = () => {
@@ -10,15 +8,12 @@ const Home = () => {
     <>
       <BrandList />
       <hr />
-      <ProductList />
+      <BestsellerList />
       <hr />
       <Video />
       <hr />
       <Contact />
       <hr />
-      <Subscribe />
-
-      <Footer />
     </>
   );
 };
