@@ -256,6 +256,54 @@ const productController = {
             console.log(error);
             next()    
         }
+    },
+
+    searchByName: async (req,res,next) => {
+        try 
+        {   
+            let searchValue = req.params.value
+            let pipeLine = [
+                {
+                    $addFields:{
+                        "display_price": {$min: "$priceScale.Price"}
+                    }
+                },
+                {
+                    $lookup:{
+                        from: 'brands',
+                        localField: 'Product_brand',
+                        foreignField: 'BID',
+                        as: 'brandInfo'
+                    }
+                },
+                {
+                    $project:{
+                        PID: 1,
+                        Product_name: 1,
+                        Brand_Name: {$arrayElemAt: ["$brandInfo.Name", 0]},
+                        display_price: 1,
+                        Pictures:1,
+                    }
+                },
+                {
+                    $match:{
+                        Product_name: {
+                            $regex: searchValue.toString(),
+                            $options: "i",
+                          },
+                        }  
+                }
+            ]
+
+            let productsByName = await productModel.aggregate(pipeLine)
+                
+            return res.status(200).json({result: productsByName}) 
+        } 
+        catch (error) 
+        {
+            console.log(error);
+            next();   
+        }
     }
 }
 

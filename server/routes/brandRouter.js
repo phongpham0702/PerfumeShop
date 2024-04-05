@@ -5,7 +5,6 @@ const brandController =   require("../controllers/BrandsController")
 
 router.route("/").get(brandController.getAllBrands)
 
-// router.route("/:pid")
-// .get(productController.getProductDetail)
+router.route("/:bid").get(brandController.getBrandProducts)
 
 module.exports = router;
