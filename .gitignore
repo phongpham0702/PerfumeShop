@@ -157,3 +157,5 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+/server/models/users.js
