@@ -27,7 +27,6 @@ const productController = {
                     PID: 1,
                     Product_name: 1,
                     Brand_Name: {$arrayElemAt:["$brandInfo.Name",0]},
-                    priceScale: 1,
                     display_price: 1,
                     Pictures: 1,
                 }}
@@ -99,6 +98,7 @@ const productController = {
                     PID: 1,
                     Product_name: 1,
                     Brand_Name: {$arrayElemAt:["$brandInfo.Name",0]},
+                    Product_gender:1,
                     priceScale: 1,
                     display_price: { $min: "$priceScale.Price" },
                     Features:1,
@@ -111,8 +111,12 @@ const productController = {
 
                 
             ])
-         
-            return res.status(200).json({product})
+            let similarProducts = await findSimilarProduct(product[0])
+
+            return res.status(200).json({
+                product_detail: product[0],
+                similar_products: similarProducts
+            })
 
         } 
         catch (error) 
@@ -135,11 +139,6 @@ const productController = {
                 
                 let bestSeller_PipeLine = [
                     {
-                        $addFields:{
-                            "display_price":{"$min":"$priceScale.Price"}
-                        }
-                    },
-                    {
                         $lookup:{
                             from: 'brands',
                             localField: 'Product_brand',
@@ -153,7 +152,7 @@ const productController = {
                             Product_name: 1,
                             Brand_Name: {$arrayElemAt: ["$brandInfo.Name", 0]},
                             Product_gender: 1,
-                            display_price: 1,
+                            display_price: { $min: "$priceScale.Price" },
                             Pictures:1,
                             Sold: 1,
                         }
@@ -214,11 +213,6 @@ const productController = {
                         $limit: limit_products
                     },
                     {
-                        $addFields:{
-                            "display_price":{"$min":"$priceScale.Price"}
-                        }
-                    },
-                    {
                         $lookup:{
                             from: 'brands',
                             localField: 'Product_brand',
@@ -231,10 +225,8 @@ const productController = {
                             PID: 1,
                             Product_name: 1,
                             Brand_Name: {$arrayElemAt: ["$brandInfo.Name", 0]},
-                            Product_gender: 1,
-                            display_price: 1,
+                            display_price: { $min: "$priceScale.Price" },
                             Pictures:1,
-                            Sold: 1,
                         }
                     },
                     
@@ -264,11 +256,6 @@ const productController = {
             let searchValue = req.params.value
             let pipeLine = [
                 {
-                    $addFields:{
-                        "display_price": {$min: "$priceScale.Price"}
-                    }
-                },
-                {
                     $lookup:{
                         from: 'brands',
                         localField: 'Product_brand',
@@ -281,7 +268,7 @@ const productController = {
                         PID: 1,
                         Product_name: 1,
                         Brand_Name: {$arrayElemAt: ["$brandInfo.Name", 0]},
-                        display_price: 1,
+                        display_price: {$min: "$priceScale.Price"},
                         Pictures:1,
                     }
                 },
@@ -307,5 +294,73 @@ const productController = {
     }
 }
 
+async function findSimilarProduct(product)
+{   
+    const num_of_products = 10;
+    let current_product_id = product.PID
+    let gender = [product["Product_gender"]];
+    let main_scent = product.Scent.Main.join("|")
+    let first_scent = product.Scent.First.join("|")
+    let middle_scent = product.Scent.Middle.join("|")
+    let final_scent = product.Scent.Final.join("|")
+    
+    if(gender !== "Unisex")
+    {
+        gender.push("Unisex")
+    }
+
+    let pipeLine = [
+        {
+            "$match":{
+                    "PID":{
+                        $ne: current_product_id
+                    },
+                    "Product_gender":{
+                        $in: gender
+                    },
+                    "Scent.Main":{
+                      $regex: main_scent,
+                      $options: "i",
+                    },
+                    "Scent.First": {
+                      $regex: first_scent,
+                      $options: "i",
+                    },
+                    "Scent.Middle": {
+                      $regex: middle_scent,
+                      $options: "i",
+                    },
+                      "Scent.Final": {
+                      $regex: final_scent,
+                      $options: "i",
+                    },   
+            }
+        },
+        {"$sample":{size : num_of_products}},
+        {
+            $lookup:{
+                from: 'brands',
+                localField: 'Product_brand',
+                foreignField: 'BID',
+                as: 'brandInfo'
+            }
+        },
+        {
+            "$project":
+            {   
+                _id:0,
+                PID: 1,
+                Product_name: 1,
+                Brand_Name: {$arrayElemAt:["$brandInfo.Name",0]},
+                display_price: {$min:"$priceScale.Price"},
+                Pictures: 1,
+            }
+        }
+    ]
+
+    let similarProducts = await productModel.aggregate(pipeLine);
+
+    return similarProducts;
+}
 
 module.exports = productController
