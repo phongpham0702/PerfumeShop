@@ -7,7 +7,7 @@ export interface Product {
     _id: string;
   }[];
   Pictures: string;
-  Product_brand: string;
+  Brand_Name: string;
   display_price: number;
 }
 export interface BestsellerProduct {
