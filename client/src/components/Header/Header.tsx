@@ -2,7 +2,7 @@ import { NavLink } from "react-router-dom";
 
 const Header = () => {
   return (
-    <div className="w-fulls m-auto flex h-[80px] items-center justify-between border-b-[1px] border-black px-[50px] text-lg font-thin ">
+    <div className="w-fulls m-auto flex h-[80px] items-center justify-between border-b-[1px] border-black px-[50px] font-sans text-lg">
       <div className="w-[40%] ">
         <ul className="flex gap-7">
           <li className="cursor-pointer">
@@ -51,7 +51,7 @@ const Header = () => {
         <NavLink to="/">
           <img
             className="mx-auto w-[120px]"
-            src="./images/luxe-logo.svg"
+            src="http://localhost:5173/images/luxe-logo.svg"
             alt="logo"
           />
         </NavLink>

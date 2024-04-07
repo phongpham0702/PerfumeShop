@@ -12,8 +12,8 @@ const Video = () => {
       ></iframe>
 
       <div className="mx-auto my-20 flex max-w-[1280px] flex-col font-light">
-        <p className="mb-10 text-center text-4xl font-normal">
-          Why Choose Luke Store
+        <p className="font-heading mb-10 text-center text-4xl font-normal tracking-wide">
+          Why Choose Luxe Store
         </p>
         <div className="flex flex-nowrap gap-10 px-16">
           <div className="flex w-[33.33%] flex-col items-center justify-center">

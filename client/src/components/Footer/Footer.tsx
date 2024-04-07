@@ -3,20 +3,20 @@ const Footer = () => {
     <section className="mx-auto w-full bg-[#0d0d0d] text-white">
       <div className="flex justify-center gap-20 p-20">
         <div className="flex w-[25%] flex-col items-center gap-3 text-lg font-normal tracking-widest">
-          <p className="mb-2 text-4xl font-light">Luxe</p>
+          <p className=" font-heading mb-2  text-4xl">Luxe</p>
           <p>Members</p>
           <p>Accounts</p>
           <p>Recruitment</p>
         </div>
         <div className="flex w-[25%] flex-col items-center gap-3 text-lg font-normal tracking-widest">
-          <p className="mb-2 text-4xl font-light">Policy</p>
+          <p className=" font-heading mb-2  text-4xl">Policy</p>
           <p>Shipping</p>
           <p>F&Q</p>
           <p>Terms & Conditions</p>
           <p>Policy</p>
         </div>
         <div className="flex w-[25%] flex-col items-center gap-3 text-lg font-normal tracking-widest">
-          <p className="mb-2 text-4xl font-light">Information</p>
+          <p className=" font-heading mb-2  text-4xl">Information</p>
           <p>About</p>
           <p>Blog</p>
           <p>Contact</p>

@@ -60,7 +60,9 @@ const BestsellerList = () => {
   return (
     <div className="mb-12 mt-20 w-full">
       <div className="mx-auto flex w-[80%] flex-col items-center">
-        <h1 className="text-4xl">BEST SELLERS PRODUCTS</h1>
+        <h1 className="font-heading text-4xl tracking-wider">
+          Best Seller Products
+        </h1>
         <p className="m-2 text-xl opacity-40">
           The stylish and organized cosmetic products
         </p>

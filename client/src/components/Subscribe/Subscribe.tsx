@@ -2,8 +2,10 @@ import { FaYoutube, FaFacebook, FaTiktok, FaInstagram } from "react-icons/fa";
 
 const Subscribe = () => {
   return (
-    <div className="flex h-[350px] w-full flex-col items-center justify-center">
-      <p className="mb-4 text-3xl font-light">BECOME A MEMBER & GET 15% OFF</p>
+    <div className="flex h-[350px] w-full flex-col items-center justify-center font-sans">
+      <p className="font-heading mb-4 text-3xl tracking-wide">
+        BECOME A MEMBER TO GET 15% OFF
+      </p>
       <form className="flex gap-4" action="">
         <input
           className="w-[300px] border-b border-[#333] outline-none"

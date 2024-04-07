@@ -4,9 +4,14 @@ export default {
 
   theme: {
     fontFamily: {
-      sans: ["Josefin Sans"],
+      sans: ["Raleway, sans"],
+      heading: ["Playfair Display, serif"],
     },
-    extend: {},
+    extend: {
+      content: {
+        checked: 'url("http://localhost:5173/images/icons8-done.svg")',
+      },
+    },
   },
   plugins: [],
 };

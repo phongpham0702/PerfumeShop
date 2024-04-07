@@ -2,7 +2,7 @@ import { FaLocationDot, FaMobileScreen, FaRegEnvelope } from "react-icons/fa6";
 const Contact = () => {
   return (
     <div className="mx-auto my-20 flex max-w-[1280px] flex-col items-center gap-4 text-xl font-light">
-      <p className="mb-4 text-4xl font-normal">Luke Store</p>
+      <p className="font-heading mb-4 text-4xl tracking-wide">Luxe Store</p>
       <div className="flex gap-4">
         <i>
           <FaLocationDot />

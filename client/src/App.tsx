@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Brands from "./pages/Brands";
@@ -11,6 +11,7 @@ import NotFound from "./pages/NotFound";
 
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import ProductList from "./components/Products/ProductList";
 
 function App() {
   return (
@@ -20,7 +21,10 @@ function App() {
           <Route index element={<Home />} />
           <Route path="about" element={<About />} />
           <Route path="brands" element={<Brands />} />
-          <Route path="shop" element={<Shop />} />
+          <Route path="shop" element={<Shop />}>
+            <Route index element={<Navigate replace to="1" />} />
+            <Route path=":page" element={<ProductList />} />
+          </Route>
           <Route path="blog" element={<Blog />} />
           <Route path="account" element={<UserAccount />} />
           <Route path="cart" element={<Cart />} />
