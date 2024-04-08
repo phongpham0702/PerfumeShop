@@ -30,6 +30,8 @@ const ProductList = () => {
     fetchData(`${page ? page : 1}?${gender ? "gender=" + gender : ""}`);
   }, [page, gender]);
 
+  console.log(products);
+
   return (
     <div className="w-[80%]">
       <div className="grid  grid-cols-5">

@@ -8,10 +8,10 @@ import AppLayOut from "./ui/AppLayOut";
 import UserAccount from "./pages/UserAccount";
 import Cart from "./pages/Cart";
 import NotFound from "./pages/NotFound";
+import ProductList from "./components/Products/ProductList";
 
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import ProductList from "./components/Products/ProductList";
 
 function App() {
   return (

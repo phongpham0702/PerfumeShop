@@ -44,7 +44,7 @@ const Shop = () => {
 
   return (
     <div className="mx-auto max-w-[1440px]">
-      <h1 className="font-heading mb-6 mt-16 text-center text-4xl">
+      <h1 className="mb-6 mt-16 text-center font-heading text-4xl">
         Luxe Shop
       </h1>
       <div className="flex bg-[#d7d7d720] p-4 font-light">
