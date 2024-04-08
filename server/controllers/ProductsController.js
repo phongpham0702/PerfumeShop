@@ -277,30 +277,51 @@ const productController = {
 function generateQueryString(queryObj)
 {   
     let filterQuery = []
-    
-    if((queryObj.filter_gender) && (typeof(queryObj.filter_gender) === "string"))
+    const season = ["Spring","Summer","Autumn","Winter"]
+    const season_Acceptable_Rate = 0.65;
+    if((queryObj.gender) && (typeof(queryObj.gender) === "string"))
     {
         filterQuery.push({
-            '$match': {'Product_gender' : queryObj.filter_gender}
+            '$match': {'Product_gender' : queryObj.gender}
         })
     }
 
-    if((queryObj.filter_gender) && (typeof(queryObj.filter_gender) === "object"))
+    if((queryObj.gender) && (typeof(queryObj.gender) === "object"))
     {
         filterQuery.unshift({
-            '$match': {'Product_gender' :{'$in':[...queryObj.filter_gender]} }
+            '$match': {'Product_gender' :{'$in':[...queryObj.gender]} }
         })
     }
 
-    if(queryObj.season)
-    {
-        console.log(queryObj.season);
-    }
+    // if(queryObj.season)
+    // {   
+    //     const accept_Rate = 0.65;
+    //     const season = ["Spring","Summer","Autumn","Winter"]
+    //     let season_filter = []
+    //     if(typeof(queryObj.season) === "string")
+    //     {   
+    //         let i = parseInt(queryObj.season) - 1
+    //         let seasonName = season[i]
+    //         let query_prop = 'seasonRate.'+seasonName;
+    //         season_filter.push({
+    //             `${query_prop}` : { '$gte': accept_Rate } 
+    //         })
+    //     }
+    //     // .map((v) => {
+    //     //     let i = parseInt(v)
+    //     //     if(i !== NaN)
+    //     //     {
+    //     //        return season[i-1]; 
+    //     //     }
+    //     // });
+    //     console.log(season_filter);
 
-    if(queryObj.filter_priceOrder)
+    // }
+
+    if(queryObj.priceOrder)
     {   
         filterQuery.push({      
-             "$sort": {'display_price' : parseInt(queryObj.filter_priceOrder)}    
+             "$sort": {'display_price' : parseInt(queryObj.priceOrder)}    
         })
     }
 
