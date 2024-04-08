@@ -9,15 +9,13 @@ router.route("/bestseller")
 router.route("/newarrival")
 .get(productController.getNewArrival)
 
-router.route("/:pid")
-.get(productController.getProductPage)
-
 router.route("/detail/:pid")
 .get(productController.getProductDetail)
 
 router.route("/search/:value")
 .get(productController.searchByName)
 
-
+router.route("/:pid")
+.get(productController.getProductPage)
 
 module.exports = router;

@@ -5,16 +5,19 @@ const logger = require('morgan');
 const cors = require('cors');
 const session = require("express-session")
 
-let dotEnv = require('dotenv').config();
+const dotEnv = require('dotenv').config();
 const database = require('./connectDB');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const productRouter = require('./routes/productRouter');
 const brandRouter = require('./routes/brandRouter');
+const signUpRouter = require("./routes/signUpRouter")
+
+
+const app = express();
 
 database.connect();
-const app = express();
 
 app.use(
   cors({
@@ -24,7 +27,7 @@ app.use(
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -45,6 +48,10 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/products', productRouter);
 app.use('/brands', brandRouter);
+app.use('/sign-up', signUpRouter)
+app.use('/favicon.ico', (req,res,next) => {
+  return res.status(200).end();
+})
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
