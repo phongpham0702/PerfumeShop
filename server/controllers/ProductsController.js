@@ -288,35 +288,46 @@ function generateQueryString(queryObj)
 
     if((queryObj.gender) && (typeof(queryObj.gender) === "object"))
     {
-        filterQuery.unshift({
+        filterQuery.push({
             '$match': {'Product_gender' :{'$in':[...queryObj.gender]} }
         })
     }
 
-    // if(queryObj.season)
-    // {   
-    //     const accept_Rate = 0.65;
-    //     const season = ["Spring","Summer","Autumn","Winter"]
-    //     let season_filter = []
-    //     if(typeof(queryObj.season) === "string")
-    //     {   
-    //         let i = parseInt(queryObj.season) - 1
-    //         let seasonName = season[i]
-    //         let query_prop = 'seasonRate.'+seasonName;
-    //         season_filter.push({
-    //             `${query_prop}` : { '$gte': accept_Rate } 
-    //         })
-    //     }
-    //     // .map((v) => {
-    //     //     let i = parseInt(v)
-    //     //     if(i !== NaN)
-    //     //     {
-    //     //        return season[i-1]; 
-    //     //     }
-    //     // });
-    //     console.log(season_filter);
+    if(queryObj.season)
+    {   
+        const accept_Rate = 0.65;
+        const seasonName = ["Spring","Summer","Autumn","Winter"]
+        let season_filter = []
+        if(typeof(queryObj.season) === "string")
+        {   
+            let i = parseInt(queryObj.season) - 1
+            let query_prop = 'seasonRate.'+seasonName[i];
+            season_filter.push(generateSeasonQuery(query_prop))
+        }
+        else
+        {
+            for(let s of queryObj.season)
+            {
+                let i = parseInt(s) - 1
+                let query_prop = 'seasonRate.'+seasonName[i];
+                season_filter.push(generateSeasonQuery(query_prop))
+            }
+        }
 
-    // }
+        //Closure func
+        function generateSeasonQuery(query_prop){
+            let seasonFilterQuery = {}
+            seasonFilterQuery[query_prop] = {'$gte': accept_Rate}
+            return seasonFilterQuery;
+        }
+
+        filterQuery.push({
+            '$match': {
+                '$or' :season_filter 
+            }
+        })
+
+    }
 
     if(queryObj.priceOrder)
     {   
