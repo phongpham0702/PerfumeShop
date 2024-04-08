@@ -278,17 +278,17 @@ function generateQueryString(queryObj)
 {   
     let filterQuery = []
     
-    if((queryObj.gender) && (typeof(queryObj.gender) === "string"))
+    if((queryObj.filter_gender) && (typeof(queryObj.filter_gender) === "string"))
     {
         filterQuery.push({
-            '$match': {'Product_gender' : queryObj.gender}
+            '$match': {'Product_gender' : queryObj.filter_gender}
         })
     }
 
-    if((queryObj.gender) && (typeof(queryObj.gender) === "object"))
+    if((queryObj.filter_gender) && (typeof(queryObj.filter_gender) === "object"))
     {
         filterQuery.unshift({
-            '$match': {'Product_gender' :{'$in':[...queryObj.gender]} }
+            '$match': {'Product_gender' :{'$in':[...queryObj.filter_gender]} }
         })
     }
 
@@ -297,10 +297,10 @@ function generateQueryString(queryObj)
         console.log(queryObj.season);
     }
 
-    if(queryObj.priceOrder)
+    if(queryObj.filter_priceOrder)
     {   
         filterQuery.push({      
-             "$sort": {'display_price' : parseInt(queryObj.priceOrder)}    
+             "$sort": {'display_price' : parseInt(queryObj.filter_priceOrder)}    
         })
     }
 
