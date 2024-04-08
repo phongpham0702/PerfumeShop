@@ -9,8 +9,8 @@ const ProductList = () => {
   const [products, setProducts] = useState<Product[] | []>([]);
   const [totalPage, setTotalPage] = useState(0);
   const [searchParams] = useSearchParams();
-  const gender = searchParams.get("filter_gender");
-  const season = searchParams.get("filter_season");
+  const gender = searchParams.get("gender");
+  const season = searchParams.get("season");
 
   const fetchData = async (query: number | string) => {
     fetch(`http://localhost:8080/products/${query}`)
@@ -29,8 +29,8 @@ const ProductList = () => {
   };
   useEffect(() => {
     fetchData(
-      `${page ? page : 1}?${gender ? "filter_gender=" + gender : ""}&${
-        season ? "filter_season=" + season : ""
+      `${page ? page : 1}?${gender ? "gender=" + gender : ""}&${
+        season ? "season=" + season : ""
       }`,
     );
   }, [page, gender, season]);

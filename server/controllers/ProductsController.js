@@ -296,20 +296,17 @@ function generateQueryString(queryObj)
     if(queryObj.season)
     {   
         const accept_Rate = 0.65;
-        const seasonName = ["Spring","Summer","Autumn","Winter"]
         let season_filter = []
         if(typeof(queryObj.season) === "string")
         {   
-            let i = parseInt(queryObj.season) - 1
-            let query_prop = 'seasonRate.'+seasonName[i];
+            let query_prop = 'seasonRate.'+queryObj.season;
             season_filter.push(generateSeasonQuery(query_prop))
         }
         else
         {
             for(let s of queryObj.season)
             {
-                let i = parseInt(s) - 1
-                let query_prop = 'seasonRate.'+seasonName[i];
+                let query_prop = 'seasonRate.'+s;
                 season_filter.push(generateSeasonQuery(query_prop))
             }
         }

@@ -3,7 +3,7 @@ import { FilterCategory } from "../types/Category";
 export const categories: FilterCategory[] = [
   {
     id: "gender",
-    name: "filter_gender",
+    name: "gender",
     items: [
       { name: "Male", isChecked: false },
       { name: "Female", isChecked: false },
@@ -13,7 +13,7 @@ export const categories: FilterCategory[] = [
   },
   {
     id: "season",
-    name: "filter_season",
+    name: "season",
     items: [
       { name: "Spring", isChecked: false },
       { name: "Summer", isChecked: false },
