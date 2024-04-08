@@ -21,9 +21,9 @@ function App() {
           <Route index element={<Home />} />
           <Route path="about" element={<About />} />
           <Route path="brands" element={<Brands />} />
-          <Route path="shop" element={<Shop />}>
-            <Route index element={<Navigate replace to="1" />} />
-            <Route path=":page" element={<ProductList />} />
+          <Route path="shop" element={<Navigate to="1" replace />} />
+          <Route element={<Shop />}>
+            <Route path="/shop/:page" element={<ProductList />} />
           </Route>
           <Route path="blog" element={<Blog />} />
           <Route path="account" element={<UserAccount />} />
