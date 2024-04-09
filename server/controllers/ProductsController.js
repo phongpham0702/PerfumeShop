@@ -29,15 +29,8 @@ const productController = {
                 },
 
                 { 
-                    $project:{
-                        _id: 0,
-                        PID: 1,
-                        Product_name: 1,
+                    $addFields:{
                         Brand_Name: {$arrayElemAt:["$brandInfo.Name",0]},
-                        display_price: 1,
-                        Pictures: 1,
-                        Product_gender:1,
-                        seasonRate:1
                     }
                 }
             ]
@@ -374,6 +367,13 @@ function generateQueryString(queryObj)
     {   
         filterQuery.push({      
              "$sort": {'display_price' : parseInt(queryObj.priceOrder)}    
+        })
+    }
+
+    if(queryObj.nameOrder)
+    {   
+        filterQuery.push({      
+             "$sort": {'Product_name' : parseInt(queryObj.nameOrder)}    
         })
     }
 
