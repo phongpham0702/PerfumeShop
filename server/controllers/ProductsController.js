@@ -277,9 +277,9 @@ function generateQueryString(queryObj)
 {   
     let filterQuery = []
 
-    if(queryObj.brandName)
+    if(queryObj.brand)
     {
-        let brandName = queryObj.brandName.replaceAll("-"," ")
+        let brandName = queryObj.brand.replaceAll("-"," ")
         filterQuery.push({
             '$match': {'Brand_Name' : brandName}
         })
