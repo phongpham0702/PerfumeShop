@@ -27,6 +27,12 @@ const productController = {
                         as: 'brandInfo'
                     }
                 },
+
+                { 
+                    $addFields:{
+                        Brand_Name: {$arrayElemAt:["$brandInfo.Name",0]},
+                    }
+                }
             ]
             
             pipeline = pipeline.concat(queryFilter)
@@ -37,7 +43,7 @@ const productController = {
                         _id: 0,
                         PID: 1,
                         Product_name: 1,
-                        Brand_Name: {$arrayElemAt:["$brandInfo.Name",0]},
+                        Brand_Name: 1,
                         display_price: 1,
                         Pictures: 1,
                         Product_gender:1
@@ -361,6 +367,13 @@ function generateQueryString(queryObj)
     {   
         filterQuery.push({      
              "$sort": {'display_price' : parseInt(queryObj.priceOrder)}    
+        })
+    }
+
+    if(queryObj.nameOrder)
+    {   
+        filterQuery.push({      
+             "$sort": {'Product_name' : parseInt(queryObj.nameOrder)}    
         })
     }
 
