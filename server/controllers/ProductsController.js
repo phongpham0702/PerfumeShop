@@ -31,7 +31,6 @@ const productController = {
             ]
             
             pipeline = queryFilter.concat(pipeline)
-
             pipeline.unshift(
                 {$addFields: {
                 display_price:{ $min: "$priceScale.Price" }
@@ -277,8 +276,6 @@ const productController = {
 function generateQueryString(queryObj)
 {   
     let filterQuery = []
-    const season = ["Spring","Summer","Autumn","Winter"]
-    const season_Acceptable_Rate = 0.65;
     if((queryObj.gender) && (typeof(queryObj.gender) === "string"))
     {
         filterQuery.push({
@@ -290,6 +287,40 @@ function generateQueryString(queryObj)
     {
         filterQuery.push({
             '$match': {'Product_gender' :{'$in':[...queryObj.gender]} }
+        })
+    }
+
+    if(queryObj.minprice && queryObj.maxprice)
+    {
+        filterQuery.push({
+            '$match': {
+                'display_price':{
+                    '$gte': parseInt(queryObj.minprice),
+                    '$lte': parseInt(queryObj.maxprice)
+                }
+            }
+        })
+    }
+
+    if(queryObj.minprice && !queryObj.maxprice)
+    {
+        filterQuery.push({
+            '$match': {
+                'display_price':{
+                    '$lte': parseInt(queryObj.minprice)
+                }
+            }
+        })
+    }
+
+    if(!queryObj.minprice && queryObj.maxprice)
+    {
+        filterQuery.push({
+            '$match': {
+                'display_price':{
+                    '$gte': parseInt(queryObj.maxprice)
+                }
+            }
         })
     }
 
