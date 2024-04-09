@@ -11,31 +11,40 @@ const productController = {
             let currentPage = parseInt(req.params.page) || 1; 
             let queryFilter = generateQueryString(queryObj);
             let pipeline = [
-
-                {$lookup : {
-                    from: 'brands',
-                    localField: 'Product_brand',
-                    foreignField: 'BID',
-                    as: 'brandInfo'
-                }
-            },
-                {$project:{
-                    _id: 0,
-                    PID: 1,
-                    Product_name: 1,
-                    Brand_Name: {$arrayElemAt:["$brandInfo.Name",0]},
-                    display_price: 1,
-                    Pictures: 1,
-                    Product_gender:1
-                }}
+                
+                {
+                    $addFields:
+                    {
+                        display_price:{ $min: "$priceScale.Price" }
+                    }   
+                },
+                
+                {
+                    $lookup : {
+                        from: 'brands',
+                        localField: 'Product_brand',
+                        foreignField: 'BID',
+                        as: 'brandInfo'
+                    }
+                },
             ]
             
             pipeline = pipeline.concat(queryFilter)
-            pipeline.unshift(
-                {$addFields: {
-                display_price:{ $min: "$priceScale.Price" }
+
+            pipeline.push(
+                {
+                    $project:{
+                        _id: 0,
+                        PID: 1,
+                        Product_name: 1,
+                        Brand_Name: {$arrayElemAt:["$brandInfo.Name",0]},
+                        display_price: 1,
+                        Pictures: 1,
+                        Product_gender:1
+                    }
                 }
-            })
+            
+            )
             
             let products = await productModel.aggregate(pipeline);
             let products_num = products.length;

@@ -9,11 +9,13 @@ const signUpController =
         {   
             console.log(req.body);
             let gmail = req.body.Gmail
-            let dob = new Date(req.body.Dob)
+            let dob = new Date(req.body.DoB)
             let  fullname = req.body.fullname
             let PhoneNumber = req.body.Phonenumber
             let password = req.body.Password
-            
+            // console.log(new Date(Date.now()).getTime());
+            // console.log(dob.getTime());
+            // console.log(dob.toLocaleDateString());
             let checkResult = await validationResult(req)
             console.log(checkResult.errors);
             // await userModel.create({

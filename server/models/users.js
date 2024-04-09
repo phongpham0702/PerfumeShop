@@ -19,8 +19,6 @@ const userSchema = mongoose.Schema({
     
     PhoneNumber:{
         type:String,
-        minLength: 10,
-        maxLength: 11,
         unique: true,
     },
     Cart:{
