@@ -363,18 +363,32 @@ function generateQueryString(queryObj)
 
     }
 
-    if(queryObj.priceOrder)
-    {   
-        filterQuery.push({      
-             "$sort": {'display_price' : parseInt(queryObj.priceOrder)}    
-        })
-    }
 
-    if(queryObj.nameOrder)
-    {   
-        filterQuery.push({      
-             "$sort": {'Product_name' : parseInt(queryObj.nameOrder)}    
-        })
+    if(queryObj.sort)
+    {
+        console.log(queryObj.sort);
+        switch (queryObj.sort) {
+            case 'price':
+                filterQuery.push({      
+                    "$sort": {'display_price' : 1}    
+               })
+                break;
+            case 'price_desc':
+                filterQuery.push({      
+                    "$sort": {'display_price' : -1}    
+               })
+                break;
+            case 'az':
+                filterQuery.push({      
+                    "$sort": {'Product_name' : 1}    
+               })
+                break;
+            case 'za':
+                filterQuery.push({      
+                    "$sort": {'Product_name' : -1}    
+               })
+                break;
+        }
     }
 
     return filterQuery;

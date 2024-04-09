@@ -7,6 +7,11 @@ const signUpController =
 
         try 
         {   
+            let checkResult = await validationResult(req);
+            if(checkResult.errors.length >= 1)
+            {
+                console.log("co loi");
+            }
             console.log(req.body);
             let gmail = req.body.Gmail
             let dob = new Date(req.body.DoB)
@@ -16,8 +21,8 @@ const signUpController =
             // console.log(new Date(Date.now()).getTime());
             // console.log(dob.getTime());
             // console.log(dob.toLocaleDateString());
-            let checkResult = await validationResult(req)
-            console.log(checkResult.errors);
+            
+            console.log(checkResult);
             // await userModel.create({
             //     Email: gmail,
             //     Password: password,

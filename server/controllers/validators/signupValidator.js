@@ -91,8 +91,21 @@ const signUpValidator = [
     .notEmpty().withMessage(
         'Please fill in your password'
     )
-    .isLength({min: 12})
-    .withMessage('Password must contain at least 12 characters.')
+    .isLength({min: 8})
+    .withMessage('Password must contain at least 12 characters.'),
+
+    body('rePassword')
+    .notEmpty().withMessage('Please confirm your password')
+    .custom((value, { req }) => {
+        if(value === undefined)
+        {
+            throw new Error('Please confirm your password');
+        }
+        if (value !== req.body.Password) {
+            throw new Error('Confirm passwords does not match');
+        }
+        return true;
+    })
 
     //#end check passwordd
 ]
