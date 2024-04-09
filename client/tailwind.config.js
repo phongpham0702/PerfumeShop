@@ -11,6 +11,19 @@ export default {
       content: {
         checked: 'url("http://localhost:5173/images/icons8-done.svg")',
       },
+      keyframes: {
+        goUp: {
+          "0%": { transform: "translateY(50px)" },
+          "100%": { transform: "translateY(0)" },
+        },
+        goDown: {
+          "0%": { transform: "translateY(-50px)" },
+          "100%": { transform: "translateY(0)" },
+        },
+      },
+      animation: {
+        wiggle: "wiggle 1s ease-in-out",
+      },
     },
   },
   plugins: [],

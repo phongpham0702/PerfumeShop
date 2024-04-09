@@ -78,7 +78,13 @@ const FilterBar = ({ categories, onFilterChange }: FilterSideBarProps) => {
                     />
                     <span className="absolute left-0 top-0 h-[23px] w-[23px] rounded-sm bg-[#eee] outline outline-[0.9px] after:absolute after:left-[4px] after:top-[4px] after:hidden after:content-checked peer-checked:bg-[#0b0d0f] after:peer-checked:block "></span>
                   </div>
-                  <p className="w-[80%] text-left capitalize">{item.name}</p>
+                  <p className="w-[80%] text-left capitalize">
+                    {category.id === "price"
+                      ? item.name === "500-999999"
+                        ? "> $ 500"
+                        : "$ " + item.name
+                      : item.name}
+                  </p>
                 </label>
               ))}
           </div>
