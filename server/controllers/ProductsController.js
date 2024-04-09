@@ -290,40 +290,22 @@ function generateQueryString(queryObj)
         })
     }
 
-    if(queryObj.minprice && queryObj.maxprice)
+    if(queryObj.price)
     {
+        let priceRange = queryObj.price.split("-")
+        let minPrice = priceRange[0]
+        let maxPrice = priceRange[1]
+
         filterQuery.push({
             '$match': {
                 'display_price':{
-                    '$gte': parseInt(queryObj.minprice),
-                    '$lte': parseInt(queryObj.maxprice)
+                    '$gte': parseInt(minPrice),
+                    '$lte': parseInt(maxPrice)
                 }
             }
         })
     }
-
-    if(queryObj.minprice && !queryObj.maxprice)
-    {
-        filterQuery.push({
-            '$match': {
-                'display_price':{
-                    '$lte': parseInt(queryObj.minprice)
-                }
-            }
-        })
-    }
-
-    if(!queryObj.minprice && queryObj.maxprice)
-    {
-        filterQuery.push({
-            '$match': {
-                'display_price':{
-                    '$gte': parseInt(queryObj.maxprice)
-                }
-            }
-        })
-    }
-
+    
     if(queryObj.season)
     {   
         const accept_Rate = 0.65;
