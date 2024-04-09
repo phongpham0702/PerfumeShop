@@ -15,7 +15,7 @@ router.route("/detail/:pid")
 router.route("/search/:value")
 .get(productController.searchByName)
 
-router.route("/:pid")
+router.route("/:page")
 .get(productController.getProductPage)
 
 module.exports = router;

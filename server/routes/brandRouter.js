@@ -5,6 +5,4 @@ const brandController = require('../controllers/BrandsController');
 
 router.route('/').get(brandController.getAllBrands);
 
-router.route('/:bid').get(brandController.getBrandProducts);
-
 module.exports = router;
