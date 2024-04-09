@@ -1,5 +1,5 @@
 const productModel = require("../models/product")
-const brandModel = require("../models/brands")
+const brandModel = require("../models/brands");
 const productController = {
 
     getProductPage: async (req,res,next) => {
@@ -8,7 +8,7 @@ const productController = {
 
             let queryObj = req.query
             let productPerPage = 20;
-            let currentPage = parseInt(req.params.pid) || 1; 
+            let currentPage = parseInt(req.params.page) || 1; 
             let queryFilter = generateQueryString(queryObj);
             let pipeline = [
 
@@ -30,13 +30,13 @@ const productController = {
                 }}
             ]
             
-            pipeline = queryFilter.concat(pipeline)
+            pipeline = pipeline.concat(queryFilter)
             pipeline.unshift(
                 {$addFields: {
                 display_price:{ $min: "$priceScale.Price" }
                 }
             })
-
+            
             let products = await productModel.aggregate(pipeline);
             let products_num = products.length;
 
@@ -276,6 +276,15 @@ const productController = {
 function generateQueryString(queryObj)
 {   
     let filterQuery = []
+
+    if(queryObj.brand)
+    {
+        let brandName = queryObj.brand.replaceAll("-"," ")
+        filterQuery.push({
+            '$match': {'Brand_Name' : brandName}
+        })
+    }
+
     if((queryObj.gender) && (typeof(queryObj.gender) === "string"))
     {
         filterQuery.push({
