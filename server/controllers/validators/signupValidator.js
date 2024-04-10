@@ -1,4 +1,4 @@
-const {check,body} = require("express-validator");
+const {body} = require("express-validator");
 const userModel = require("../../models/users");
 const onlyNumbersRegex = /^[0-9]+$/;
 const emailFormatRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -6,7 +6,7 @@ const emailFormatRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const signUpValidator = [
 
     //#start check Email
-    body('Gmail')
+    body('Email')
     .notEmpty().withMessage(
         'Please fill in your Email.'
     )
@@ -81,8 +81,27 @@ const signUpValidator = [
     .notEmpty().withMessage(
         'Please fill in your phonenumber'
     )
-    .isMobilePhone().withMessage("Your phone number is not valid."),
+    .isMobilePhone().withMessage("Your phone number is not valid.")
+    .custom( async(value) => {
 
+        try 
+        {
+            let existingPhoneNumber = await userModel.findOne({PhoneNumber: value});
+            if(existingPhoneNumber)
+            {
+                return Promise.reject('This phone number has already been taken.');
+            }
+
+            return true;
+        } 
+        catch (error) 
+        {   
+            
+            throw new Error('Something went wrong while checking phone number availability.');
+            
+        }
+
+    }),
     //#end check phone number
 
     //#start check password

@@ -13,8 +13,8 @@ const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const productRouter = require('./routes/productRouter');
 const brandRouter = require('./routes/brandRouter');
-const signUpRouter = require("./routes/signUpRouter")
-
+const signUpRouter = require('./routes/signUpRouter');
+const signInRouter = require('./routes/authRouter')
 
 const app = express();
 
@@ -49,7 +49,8 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/products', productRouter);
 app.use('/brands', brandRouter);
-app.use('/sign-up', signUpRouter)
+app.use('/sign-up', signUpRouter);
+app.use('/sign-in', signInRouter);
 app.use('/favicon.ico', (req,res,next) => {
   return res.status(200).end();
 })
