@@ -2,8 +2,8 @@ import { FilterCategory } from "../types/Category";
 
 export const categories: FilterCategory[] = [
   {
-    id: "genders",
-    name: "genders",
+    id: "gender",
+    name: "gender",
     items: [
       { name: "Male", isChecked: false },
       { name: "Female", isChecked: false },
@@ -12,8 +12,8 @@ export const categories: FilterCategory[] = [
     showMore: false,
   },
   {
-    id: "seasons",
-    name: "seasons",
+    id: "season",
+    name: "season",
     items: [
       { name: "Spring", isChecked: false },
       { name: "Summer", isChecked: false },
@@ -23,18 +23,20 @@ export const categories: FilterCategory[] = [
     showMore: false,
   },
   {
-    id: "prices",
-    name: "prices",
+    id: "price",
+    name: "price",
     items: [
-      { name: "1.500.000 - 3.000.000", isChecked: false },
-      { name: "3.000.000 - 5.000.000", isChecked: false },
-      { name: "> 5.000.000", isChecked: false },
+      { name: "20-50", isChecked: false },
+      { name: "50-100", isChecked: false },
+      { name: "100-250", isChecked: false },
+      { name: "250-500", isChecked: false },
+      { name: "500-999999", isChecked: false },
     ],
     showMore: false,
   },
   {
-    id: "brands",
-    name: "brands",
+    id: "brand",
+    name: "brand",
     items: [
       { name: "Astrophil Stella", isChecked: false },
       { name: "Attar Collection", isChecked: false },

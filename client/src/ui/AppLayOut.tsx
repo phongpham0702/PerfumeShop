@@ -7,7 +7,7 @@ const AppLayOut = () => {
   return (
     <>
       <Header />
-      <main className="font-sans">
+      <main className="relative font-sans">
         <Outlet />
       </main>
       <Subscribe />

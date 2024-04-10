@@ -51,7 +51,7 @@ const FilterBar = ({ categories, onFilterChange }: FilterSideBarProps) => {
     <div className="w-[15%]">
       {categoryState.map((category) => (
         <div key={category.id}>
-          <h3 className="mb-3 font-semibold capitalize">{category.name}</h3>
+          <h3 className="mb-3 font-semibold capitalize">{category.id}</h3>
           <div
             className={
               category.items.length > 5
@@ -65,7 +65,7 @@ const FilterBar = ({ categories, onFilterChange }: FilterSideBarProps) => {
               .map((item) => (
                 <label
                   key={item.name}
-                  className="mb-2 flex cursor-pointer justify-between  px-4"
+                  className="mb-2 flex cursor-pointer justify-between px-4"
                 >
                   <div className="relative block cursor-pointer">
                     <input
@@ -76,9 +76,15 @@ const FilterBar = ({ categories, onFilterChange }: FilterSideBarProps) => {
                       className="peer absolute h-0 w-0 cursor-pointer opacity-0"
                       type="radio"
                     />
-                    <span className="after:content-checked absolute left-0 top-0 h-[23px] w-[23px] rounded-sm bg-[#eee] outline outline-[0.9px] after:absolute after:left-[4px] after:top-[4px] after:hidden peer-checked:bg-[#0b0d0f] after:peer-checked:block "></span>
+                    <span className="absolute left-0 top-0 h-[23px] w-[23px] rounded-sm bg-[#eee] outline outline-[0.9px] after:absolute after:left-[4px] after:top-[4px] after:hidden after:content-checked peer-checked:bg-[#0b0d0f] after:peer-checked:block "></span>
                   </div>
-                  <p className="w-[80%] text-left capitalize">{item.name}</p>
+                  <p className="w-[80%] text-left capitalize">
+                    {category.id === "price"
+                      ? item.name === "500-999999"
+                        ? "> $ 500"
+                        : "$ " + item.name
+                      : item.name}
+                  </p>
                 </label>
               ))}
           </div>

@@ -4,26 +4,15 @@ import {
   useNavigate,
   useSearchParams,
 } from "react-router-dom";
-import FilterBar from "../components/FilterBar/FilterBar";
-// import { useState } from "react";
+import FilterBar from "../components/Filter/FilterBar";
 import { categories } from "../dummy_data/categoryData";
-import { useEffect } from "react";
-
-// type Selected = {
-//   name: string;
-//   items: string;
-// };
-// const initState = [
-//   { name: "genders", items: "" },
-//   { name: "seasons", items: "" },
-//   { name: "prices", items: "" },
-//   { name: "brands", items: "" },
-// ];
+import { useEffect, useState } from "react";
+import FilterInfo from "../components/Filter/FilterInfo";
 
 const Shop = () => {
-  // const [selectedFilters, setSelectedFilters] = useState<Selected[]>(initState);
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const [productNum, setProductNum] = useState<number | 0>(0);
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newSearchParams = new URLSearchParams(searchParams);
@@ -34,6 +23,11 @@ const Shop = () => {
     }
     setSearchParams(newSearchParams);
   };
+
+  const handleChange = (productNum: number) => {
+    setProductNum(productNum);
+  };
+
   useEffect(() => {
     const filteredParams = new URLSearchParams();
     for (const [key, value] of searchParams.entries()) {
@@ -44,7 +38,7 @@ const Shop = () => {
 
   return (
     <div className="mx-auto max-w-[1440px]">
-      <h1 className="font-heading mb-6 mt-16 text-center text-4xl">
+      <h1 className="mb-6 mt-16 text-center font-heading text-4xl">
         Luxe Shop
       </h1>
       <div className="flex bg-[#d7d7d720] p-4 font-light">
@@ -57,12 +51,13 @@ const Shop = () => {
           Shop
         </NavLink>
       </div>
+      <FilterInfo productNum={productNum} />
       <div className="flex justify-between">
         <FilterBar
           onFilterChange={handleCheckboxChange}
           categories={categories}
         />
-        <Outlet />
+        <Outlet context={{ handleProductNumChange: handleChange }} />
       </div>
     </div>
   );

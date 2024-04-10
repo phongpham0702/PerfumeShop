@@ -8,10 +8,11 @@ import AppLayOut from "./ui/AppLayOut";
 import UserAccount from "./pages/UserAccount";
 import Cart from "./pages/Cart";
 import NotFound from "./pages/NotFound";
+import ProductList from "./components/Products/ProductList";
 
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import ProductList from "./components/Products/ProductList";
+import ProductDetail from "./components/Products/ProductDetail";
 
 function App() {
   return (
@@ -21,10 +22,11 @@ function App() {
           <Route index element={<Home />} />
           <Route path="about" element={<About />} />
           <Route path="brands" element={<Brands />} />
-          <Route path="shop" element={<Shop />}>
-            <Route index element={<Navigate replace to="1" />} />
-            <Route path=":page" element={<ProductList />} />
+          <Route path="shop" element={<Navigate to="1" replace />} />
+          <Route element={<Shop />}>
+            <Route path="/shop/:page" element={<ProductList />} />
           </Route>
+          <Route path="product/detail/:pid" element={<ProductDetail />} />
           <Route path="blog" element={<Blog />} />
           <Route path="account" element={<UserAccount />} />
           <Route path="cart" element={<Cart />} />
