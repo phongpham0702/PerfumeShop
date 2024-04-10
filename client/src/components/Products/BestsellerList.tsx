@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Product } from "../../types/Product";
 import ProductItem from "./ProductItem";
 import Slider from "react-slick";
+import { FaAngleRight, FaAngleLeft } from "react-icons/fa";
 
 const BestsellerList = () => {
   const [data, setData] = useState<
@@ -13,18 +14,44 @@ const BestsellerList = () => {
   >([]);
   const [products, setProducts] = useState<Product[] | []>([]);
   const [gender, setGender] = useState<string>("Male");
+  const slider = React.useRef<Slider>(null);
+
   const category: Array<{ [key: string]: string }> = [
     { Man: "Male" },
     { Women: "Female" },
     { Unisex: "Unisex" },
   ];
 
+  function SampleNextArrow() {
+    return (
+      <div
+        className="absolute right-[25px] top-[30%] z-10 flex h-[35px] w-[35px] cursor-pointer items-center justify-center rounded-full bg-[#333] text-2xl text-[#fff]"
+        onClick={() => slider?.current?.slickNext()}
+      >
+        <FaAngleRight />
+      </div>
+    );
+  }
+
+  function SamplePrevArrow() {
+    return (
+      <div
+        className="absolute left-0 top-[30%] z-10 flex h-[35px] w-[35px] cursor-pointer items-center justify-center rounded-full bg-[#333] text-2xl text-[#fff]"
+        onClick={() => slider?.current?.slickPrev()}
+      >
+        <FaAngleLeft />
+      </div>
+    );
+  }
+
   const settings = {
     dots: true,
     infinite: true,
     speed: 500,
     slidesToShow: 5,
-    slidesToScroll: 5,
+    slidesToScroll: 1,
+    nextArrow: <SampleNextArrow />,
+    prevArrow: <SamplePrevArrow />,
   };
 
   async function fetchData() {
@@ -54,8 +81,6 @@ const BestsellerList = () => {
     );
     setProducts(dataFilter[0].products);
   };
-
-  // console.log(products);
 
   return (
     <div className="mb-12 mt-20 w-full">
@@ -87,7 +112,8 @@ const BestsellerList = () => {
         </div>
       </div>
       <Slider
-        className="h-[420px] overflow-x-hidden overflow-y-hidden"
+        ref={slider}
+        className="mx-auto h-[435px] w-[90%] overflow-y-hidden px-[15px]"
         {...settings}
       >
         {products.map((product) => (

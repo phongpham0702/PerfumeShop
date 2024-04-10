@@ -11,7 +11,7 @@ const Overlay = ({ isShow, children, bg }: propsType) => {
     <div
       className={
         isShow
-          ? `absolute left-0 top-0 flex h-[100%]  w-[100%]  justify-center rounded-md ${bg}`
+          ? `absolute left-0 top-0 flex h-[100%] w-[100%]  animate-[fadeIn_0.4s_ease-in-out]  justify-center rounded-md ${bg}`
           : "hidden"
       }
     >
