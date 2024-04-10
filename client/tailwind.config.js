@@ -20,6 +20,10 @@ export default {
           "0%": { transform: "translateY(-50px)" },
           "100%": { transform: "translateY(0)" },
         },
+        fadeIn: {
+          from: { opacity: 0 },
+          to: { opacity: 1 },
+        },
       },
       animation: {
         wiggle: "wiggle 1s ease-in-out",

@@ -60,7 +60,7 @@ const ProductList = () => {
   return (
     <>
       <div className="relative w-[80%]">
-        <div className="grid grid-cols-5">
+        <div className="grid grid-cols-4">
           {products.map((product) => (
             <div key={product.PID}>
               <ProductItem product={product} />
