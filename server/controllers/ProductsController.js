@@ -366,7 +366,6 @@ function generateQueryString(queryObj)
 
     if(queryObj.sort)
     {
-        console.log(queryObj.sort);
         switch (queryObj.sort) {
             case 'price':
                 filterQuery.push({      

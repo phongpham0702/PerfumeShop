@@ -15,6 +15,10 @@ const userSchema = mongoose.Schema({
     },
     DoB:{
         type: Date,
+        get:(v) => {
+            
+            return v.toLocaleDateString()
+        }
     },
     
     PhoneNumber:{
@@ -50,7 +54,6 @@ const userSchema = mongoose.Schema({
     IsAdmin:{
         type:Boolean,
         default:false,
-        select: false
     }
 
 })
