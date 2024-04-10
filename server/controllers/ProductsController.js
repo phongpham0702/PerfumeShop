@@ -418,18 +418,24 @@ async function findSimilarProduct(product)
     }
 
     let pipeLine = [
+
         {
             "$match":{
-                    "PID":{
-                        $ne: current_product_id
-                    },
-                    "Product_gender":{
-                        $in: gender
-                    },
-                    "Scent.Main":{
-                      $regex: main_scent,
-                      $options: "i",
-                    },
+                "PID":{
+                    $ne: current_product_id
+                },
+                "Product_gender":{
+                    $in: gender
+                },
+                "Scent.Main":{
+                  $regex: main_scent,
+                  $options: "i",
+                },
+            }
+        },
+
+        {
+            "$match":{
                     "Scent.First": {
                       $regex: first_scent,
                       $options: "i",
