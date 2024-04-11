@@ -62,27 +62,19 @@ const authController =
         }
         
     } ,   
-
-    testToken: async(req,res,next) => {
-        console.log(req.body.token);
-        let t = req.body.token
-        let result = await jwt.verify(t,process.env.TOKEN_SECRET)
-        console.log(result);
-        return res.status(200).json({"message": 'Success'}) 
-
-    }
 }
 
 function generateJWTToken(userInfo)
 {
 
     let accessToken = jwt.sign({
+        UID: userInfo._id,
         Email: userInfo.Email,
         Password: userInfo.Password,
         admin: userInfo.IsAdmin
     },
         process.env.TOKEN_SECRET,
-        {'expiresIn':'2h'}
+        {'expiresIn': lifeTime}
     )
 
     return accessToken;

@@ -10,7 +10,7 @@ const dotEnv = require('dotenv').config();
 const database = require('./connectDB');
 
 const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
+const usersRouter = require('./routes/userRouter');
 const productRouter = require('./routes/productRouter');
 const brandRouter = require('./routes/brandRouter');
 const signUpRouter = require('./routes/signUpRouter');
@@ -47,7 +47,8 @@ if (app.get('env') === 'production') {
 }
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/user', usersRouter); // users have account
+app.use('/guest', usersRouter); // no account users
 app.use('/products', productRouter);
 app.use('/brands', brandRouter);
 app.use('/sign-up', signUpRouter);
