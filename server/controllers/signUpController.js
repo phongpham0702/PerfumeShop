@@ -43,7 +43,7 @@ const signUpController =
         } 
         catch (error) 
         {
-            console.log(error);
+            console.error(error);
             return res.status(400).json({"message": 'Something wrong during sign up your account 😢'})   
         }
         

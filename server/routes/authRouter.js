@@ -6,6 +6,4 @@ const authValidator = require('../controllers/validators/loginValidator')
 
 router.route('/').post(authValidator ,authController.local_auth);
 
-router.route('/test').post(authController.testToken)
-
 module.exports = router;

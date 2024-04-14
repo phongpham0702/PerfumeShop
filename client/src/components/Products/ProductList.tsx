@@ -61,37 +61,45 @@ const ProductList = () => {
 
   return (
     <>
-      <div className="relative w-[80%]">
-        <div className="grid grid-cols-4">
-          {products.map((product) => (
-            <div key={product.PID}>
-              <ProductItem product={product} />
+      {products.length !== 0 ? (
+        <>
+          <div className="relative w-[80%]">
+            <div className="grid grid-cols-4">
+              {products.map((product) => (
+                <div key={product.PID}>
+                  <ProductItem product={product} />
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-        <Pagination currentPage={page ? page : 1} totalPages={totalPage} />
-      </div>
-      <Overlay
-        bg="bg-[#f6f3f360]"
-        isShow={isLoading}
-        children={
-          <div>
-            <ScaleLoader
-              color="#f8b500"
-              height={80}
-              margin={4}
-              radius={0}
-              speedMultiplier={1}
-              width={10}
-              cssOverride={{
-                top: "20%",
-                transform: "translateX(100%)",
-                position: "absolute",
-              }}
-            />
+            <Pagination currentPage={page ? page : 1} totalPages={totalPage} />
           </div>
-        }
-      ></Overlay>
+          <Overlay
+            bg="bg-[#f6f3f360]"
+            isShow={isLoading}
+            children={
+              <div>
+                <ScaleLoader
+                  color="#f8b500"
+                  height={80}
+                  margin={4}
+                  radius={0}
+                  speedMultiplier={1}
+                  width={10}
+                  cssOverride={{
+                    top: "20%",
+                    transform: "translateX(100%)",
+                    position: "absolute",
+                  }}
+                />
+              </div>
+            }
+          ></Overlay>
+        </>
+      ) : (
+        <p className="absolute top-[30%] translate-x-[120%] p-4 text-xl font-medium outline outline-[#ddaf6a]">
+          No products were found matching your selection.
+        </p>
+      )}
     </>
   );
 };

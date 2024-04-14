@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Product } from "../../types/Product";
+import { Product, SimilarProduct } from "../../types/Product";
 // import { useState } from "react";
 // import Overlay from "../../ui/Overlay";
 // import { FaRegHeart } from "react-icons/fa";
@@ -7,7 +7,7 @@ import { Product } from "../../types/Product";
 // import { AiFillHeart } from "react-icons/ai";
 
 type propsType = {
-  product: Product;
+  product: Product | SimilarProduct;
 };
 
 const ProductItem = ({ product }: propsType) => {

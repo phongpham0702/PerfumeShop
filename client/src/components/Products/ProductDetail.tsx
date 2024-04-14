@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 import { ProductDetail as PDetail, SimilarProduct } from "../../types/Product";
 import { useParams } from "react-router-dom";
 import Tabs from "../../ui/Tabs/Tabs";
+import { BsGenderFemale, BsGenderMale } from "react-icons/bs";
+import ProductItem from "./ProductItem";
 
 const ProductDetail = () => {
   const [product, setProduct] = useState<PDetail>();
   const [priceByCapacity, setPriceByCapacity] = useState<number | null>(null);
   const [quantity, setQuantity] = useState<number>(1);
-  const [similarProduct, setSimilarProduct] = useState<SimilarProduct>();
+  const [similarProduct, setSimilarProduct] = useState<SimilarProduct[]>();
   const [activeTab, setActiveTab] = useState<string>("tab1");
   const { pid } = useParams();
 
@@ -115,7 +117,7 @@ const ProductDetail = () => {
               ></p>
             </div>
             <p className="mb-4 font-semibold">Summer</p>
-            <div className="col-span-4 h-[10px] h-[10px] w-full bg-[#d4dde8]">
+            <div className="col-span-4 h-[10px] w-full bg-[#d4dde8]">
               <p
                 style={{
                   width: `${
@@ -197,6 +199,7 @@ const ProductDetail = () => {
   ];
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     const fetchData = async () => {
       const res = await fetch(`http://localhost:8080/products/detail/${pid}`);
       const data = await res.json();
@@ -215,73 +218,102 @@ const ProductDetail = () => {
   };
 
   return (
-    <div className="mx-auto my-10 grid w-[90%] grid-cols-2">
-      <div className="mx-auto w-[100%]">
-        <div className="mx-auto w-[90%] ">
-          <img
-            className="mx-auto h-[400px] w-[400px]"
-            src={product?.Pictures}
-            alt="product picture"
-          />
-          <p className="mb-4 mt-12 text-xl font-semibold">Description</p>
-          <p className="text-balance text-justify text-lg tracking-wide">
-            {product?.Description}
-          </p>
-        </div>
-      </div>
-
-      <div className="flex flex-col text-[#666]">
-        <p className="mb-4">{product?.Brand_Name}</p>
-        <p className="mb-4 text-3xl text-[#000]">{product?.Product_name}</p>
-        <p className="mb-4">{product?.Product_gender}</p>
-        <p className="mb-4 text-2xl text-[#000]">
-          $ {priceByCapacity ? priceByCapacity : product?.display_price}
-        </p>
-        <div className="flex gap-4">
-          <p className="mb-2 w-[200px]">Capacity</p>
-          <p>Quantity</p>
-        </div>
-        <div className="flex gap-4">
-          <select
-            onChange={handleCapacityChange}
-            className="mb-10 w-[200px] p-2 outline outline-1"
-          >
-            {product?.priceScale.map((item) => (
-              <option value={item.Capacity} key={item._id}>
-                {item.Capacity}
-              </option>
-            ))}
-          </select>
-          <div className=" flex h-[36px] w-[120px] items-center justify-evenly gap-3  text-xl outline outline-1">
-            <button
-              disabled={quantity <= 1}
-              onClick={() => setQuantity((prev) => prev - 1)}
-              className="cursor-pointer p-3"
-            >
-              -
-            </button>
-            <span className="font-medium">{quantity}</span>
-            <button
-              disabled={quantity >= 10}
-              onClick={() => setQuantity((prev) => prev + 1)}
-              className="cursor-pointer p-3"
-            >
-              +
-            </button>
+    <>
+      <div className="mx-auto my-10 grid w-[90%] grid-cols-2">
+        <div className="mx-auto w-[100%]">
+          <div className="mx-auto w-[90%] ">
+            <img
+              className="mx-auto h-[400px] w-[400px]"
+              src={product?.Pictures}
+              alt="product picture"
+            />
+            <p className="mb-4 mt-4 text-xl font-semibold">Description</p>
+            <p className="text-balance text-justify text-lg tracking-wide">
+              {product?.Description}
+            </p>
           </div>
         </div>
-        <div className="flex gap-4">
-          <button className="w-[40%] bg-[#333] px-16 py-4 text-lg font-medium uppercase text-[#fff]">
-            Add to cart
-          </button>
-          <button className="w-[40%] bg-[#9a1919] px-16 py-4 text-lg font-medium uppercase text-[#fff]">
-            Buy now
-          </button>
-        </div>
 
-        <Tabs navs={navs} contents={contents} />
+        <div className="flex flex-col text-[#666]">
+          <p className="mb-4">{product?.Brand_Name}</p>
+          <p className="mb-4 text-3xl text-[#000]">{product?.Product_name}</p>
+          <p className="mb-4">
+            {product?.Product_gender === "Male" ? (
+              <span className="flex gap-2">
+                <BsGenderMale />
+                {product?.Product_gender}
+              </span>
+            ) : product?.Product_gender === "Female" ? (
+              <span className="flex gap-2">
+                <BsGenderFemale />
+                {product?.Product_gender}
+              </span>
+            ) : (
+              <span className="flex gap-2">
+                <BsGenderMale />
+                <BsGenderFemale />
+                {product?.Product_gender}
+              </span>
+            )}
+          </p>
+          <p className="mb-4 text-2xl text-[#000]">
+            $ {priceByCapacity ? priceByCapacity : product?.display_price}
+          </p>
+          <div className="flex gap-4">
+            <p className="mb-2 w-[200px]">Capacity</p>
+            <p>Quantity</p>
+          </div>
+          <div className="flex gap-4">
+            <select
+              onChange={handleCapacityChange}
+              className="mb-10 w-[200px] p-2 outline outline-1"
+            >
+              {product?.priceScale.map((item) => (
+                <option value={item.Capacity} key={item._id}>
+                  {item.Capacity}
+                </option>
+              ))}
+            </select>
+            <div className=" flex h-[36px] w-[120px] items-center justify-evenly gap-3  text-xl outline outline-1">
+              <button
+                disabled={quantity <= 1}
+                onClick={() => setQuantity((prev) => prev - 1)}
+                className="cursor-pointer p-3"
+              >
+                -
+              </button>
+              <span className="font-medium">{quantity}</span>
+              <button
+                disabled={quantity >= 10}
+                onClick={() => setQuantity((prev) => prev + 1)}
+                className="cursor-pointer p-3"
+              >
+                +
+              </button>
+            </div>
+          </div>
+          <div className="flex gap-4">
+            <button className="w-[40%] bg-[#333] px-16 py-4 text-lg font-medium uppercase text-[#fff]">
+              Add to cart
+            </button>
+            <button className="w-[40%] bg-[#9a1919] px-16 py-4 text-lg font-medium uppercase text-[#fff]">
+              Buy now
+            </button>
+          </div>
+
+          <Tabs navs={navs} contents={contents} />
+        </div>
       </div>
-    </div>
+      <hr />
+      <div className="mt-14">
+        <h1 className="mb-10 text-center font-heading text-4xl font-normal">
+          Related Products
+        </h1>
+        <div className="mx-auto grid w-[90%] grid-cols-5 justify-items-center">
+          {similarProduct?.map((product) => <ProductItem product={product} />)}
+        </div>
+      </div>
+    </>
   );
 };
 

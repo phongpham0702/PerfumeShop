@@ -45,7 +45,9 @@ const productSchema = mongoose.Schema({
         min: 0
     },
     
-    Pictures: String,
+    Pictures: {
+        type:String,
+    },
     Description: String,
     lastUpdated:{
         type:Date,

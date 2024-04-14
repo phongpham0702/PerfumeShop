@@ -2,6 +2,8 @@ const userModel = require("../models/users")
 const {validationResult, check} = require('express-validator')
 const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken")
+const lifeTime = 7 * 24 * 60 * 60 * 1000;
+const tokenCookieName = '__ut';
 
 const authController = 
 {
@@ -31,7 +33,7 @@ const authController =
 
                 let userInfo = await userModel.findOne({"Email": Email})
                 
-                if((userInfo === null || userInfo === undefined))
+                if(!userInfo )
                 {
                     return res.status(400).json({"message": fail_message})
                 }
@@ -42,41 +44,41 @@ const authController =
                 {
                     return res.status(400).json({"message": fail_message})
                 }
-               console.log(userInfo); 
-                let accessToken = jwt.sign({
-                    Email: userInfo.Email,
-                    Password: userInfo.Password,
-                    admin: userInfo.IsAdmin
-                },
-                    process.env.TOKEN_SECRET,
-                    {'expiresIn':'2h'}
-                )
-                console.log(accessToken);
 
-                let decode = jwt.decode(accessToken,process.env.TOKEN_SECRET)
-                console.log(decode);
-                console.log(new Date(decode.iat));
-                console.log(new Date(decode.exp));
-            }
+                let accessToken = generateJWTToken(userInfo)
 
-            return res.status(200).json({"message": 'Success'})   
+                res.cookie(tokenCookieName, accessToken,{
+                    maxAge: lifeTime,
+                    signed: true,
+                    httpOnly: true
+                })
+                return res.status(200).json({"message": 'Sign In Success 🤗'})
+            }           
         } 
         catch (error) 
         {
-            console.log(error);
-            return res.status(400).json({"message": 'Something wrong during sign up your account 😢'})   
+            console.error(error);
+            return res.status(400).json({"message": 'Something wrong during sign in 😢'})   
         }
         
     } ,   
-
-    testToken: async(req,res,next) => {
-        console.log(req.body.token);
-        let t = req.body.token
-        let result = await jwt.verify(t,process.env.TOKEN_SECRET)
-        console.log(result);
-        return res.status(200).json({"message": 'Success'}) 
-
-    }
 }
+
+function generateJWTToken(userInfo)
+{
+
+    let accessToken = jwt.sign({
+        UID: userInfo._id,
+        Email: userInfo.Email,
+        Password: userInfo.Password,
+        admin: userInfo.IsAdmin
+    },
+        process.env.TOKEN_SECRET,
+        {'expiresIn': lifeTime}
+    )
+
+    return accessToken;
+}
+
 
 module.exports = authController

@@ -7,10 +7,11 @@ const session = require('express-session');
 
 
 const dotEnv = require('dotenv').config();
-const database = require('./connectDB');
+const database = require('./dbs/init.db');
+const init_redis = require('./dbs/init.redis')
 
 const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
+const usersRouter = require('./routes/userRouter');
 const productRouter = require('./routes/productRouter');
 const brandRouter = require('./routes/brandRouter');
 const signUpRouter = require('./routes/signUpRouter');
@@ -18,7 +19,9 @@ const signInRouter = require('./routes/authRouter')
 
 const app = express();
 
-database.connect();
+database.connect_db();
+
+init_redis.connect_redis();
 
 app.use(
   cors({
@@ -29,7 +32,7 @@ app.use(
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
+app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(
@@ -47,7 +50,8 @@ if (app.get('env') === 'production') {
 }
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/user', usersRouter); // users have account
+app.use('/guest', usersRouter); // no account users
 app.use('/products', productRouter);
 app.use('/brands', brandRouter);
 app.use('/sign-up', signUpRouter);
