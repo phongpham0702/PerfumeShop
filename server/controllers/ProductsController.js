@@ -1,5 +1,61 @@
 const productModel = require("../models/product")
 const brandModel = require("../models/brands");
+const product_basic = [
+
+    {
+        '$lookup':{
+            'from': 'brands',
+            'localField': 'Product_brand',
+            'foreignField': 'BID',
+            'as': 'brandInfo'
+        }
+    },
+    {
+        '$project':
+        {   
+            '_id':0,
+            'PID': 1,
+            'Product_name': 1,
+            'Brand_Name': {$arrayElemAt:["$brandInfo.Name",0]},
+            'Product_gender':1,
+            'display_price': {$min:"$priceScale.Price"},
+            'Pictures': 1,
+        }
+    },
+
+]
+const product_detail = [
+
+    {
+        '$lookup': {
+            'from': 'brands',
+            'localField':'Product_brand',
+            'foreignField': 'BID',
+            'as': 'brandInfo'
+        }
+    },
+
+    {
+        '$project': {
+            '_id': 0,
+            'PID': 1,
+            'Product_name': 1,
+            'Brand_Name': {$arrayElemAt:["$brandInfo.Name",0]},
+            'Product_gender':1,
+            'priceScale': 1,
+            'display_price': { $min: "$priceScale.Price" },
+            'Features':1,
+            'Scent':1,
+            'seasonRate':1,
+            'dayNightRate':1,
+            'Pictures': 1,
+            'Description':1,
+        }
+    }
+
+]
+
+
 const productController = {
 
     getProductPage: async (req,res,next) => {
@@ -67,7 +123,7 @@ const productController = {
         } 
         catch (error) {
 
-            console.log(error);
+            console.error(error);
             next()
         }
         
@@ -79,33 +135,14 @@ const productController = {
             let pid = req.params.pid
 
             let product = await productModel.aggregate([
-                {$match : {'PID': pid}},
-                {$lookup: {
-                    from: 'brands',
-                    localField:'Product_brand',
-                    foreignField: 'BID',
-                    as: 'brandInfo'
-                }},
-                {$project: {
-                    _id: 0,
-                    PID: 1,
-                    Product_name: 1,
-                    Brand_Name: {$arrayElemAt:["$brandInfo.Name",0]},
-                    Product_gender:1,
-                    priceScale: 1,
-                    display_price: { $min: "$priceScale.Price" },
-                    Features:1,
-                    Scent:1,
-                    seasonRate:1,
-                    dayNightRate:1,
-                    Pictures: 1,
-                    Description:1,
-                }}
-
+                {
+                    $match : {'PID': pid}
+                },
                 
+                ...product_detail
             ])
             let similarProducts = await findSimilarProduct(product[0])
-
+            
             return res.status(200).json({
                 product_detail: product[0],
                 similar_products: similarProducts
@@ -114,7 +151,7 @@ const productController = {
         } 
         catch (error) 
         {
-            console.log(error);
+            console.error(error);
             return res.status(400).json({"Message":"Cannot find this product"})
         }
        
@@ -131,25 +168,9 @@ const productController = {
             {
                 
                 let bestSeller_PipeLine = [
-                    {
-                        $lookup:{
-                            from: 'brands',
-                            localField: 'Product_brand',
-                            foreignField: 'BID',
-                            as: 'brandInfo'
-                        }
-                    },
-                    {
-                        $project:{
-                            PID: 1,
-                            Product_name: 1,
-                            Brand_Name: {$arrayElemAt: ["$brandInfo.Name", 0]},
-                            Product_gender: 1,
-                            display_price: { $min: "$priceScale.Price" },
-                            Pictures:1,
-                            Sold: 1,
-                        }
-                    },
+                    
+                    ...product_basic,
+
                     {
                         $sort :{"Sold": -1}
                     },
@@ -182,7 +203,7 @@ const productController = {
         } 
         catch (error) 
         {
-            console.log(error);
+            console.error(error);
             next()    
         }
     
@@ -205,24 +226,8 @@ const productController = {
                     {
                         $limit: limit_products
                     },
-                    {
-                        $lookup:{
-                            from: 'brands',
-                            localField: 'Product_brand',
-                            foreignField: 'BID',
-                            as: 'brandInfo'
-                        }
-                    },
-                    {
-                        $project:{
-                            PID: 1,
-                            Product_name: 1,
-                            Brand_Name: {$arrayElemAt: ["$brandInfo.Name", 0]},
-                            display_price: { $min: "$priceScale.Price" },
-                            Pictures:1,
-                        }
-                    },
-                    
+                   
+                    ...product_basic,
                 ]
 
                 newArrival = await productModel.aggregate(newArrival_PipeLine)
@@ -238,7 +243,7 @@ const productController = {
         } 
         catch (error) 
         {
-            console.log(error);
+            console.error(error);
             next()    
         }
     },
@@ -249,23 +254,8 @@ const productController = {
             let searchValue = req.params.value.replace(/[+\-_]/g," ")
             //Convert +, -, _ -> space
             let pipeLine = [
-                {
-                    $lookup:{
-                        from: 'brands',
-                        localField: 'Product_brand',
-                        foreignField: 'BID',
-                        as: 'brandInfo'
-                    }
-                },
-                {
-                    $project:{
-                        PID: 1,
-                        Product_name: 1,
-                        Brand_Name: {$arrayElemAt: ["$brandInfo.Name", 0]},
-                        display_price: {$min: "$priceScale.Price"},
-                        Pictures:1,
-                    }
-                },
+                
+                ...product_basic,
                 {
                     $match:{
                         Product_name: {
@@ -282,7 +272,7 @@ const productController = {
         } 
         catch (error) 
         {
-            console.log(error);
+            console.error(error);
             next();   
         }
     }
@@ -412,7 +402,7 @@ async function findSimilarProduct(product)
     let middle_scent = product.Scent.Middle.join("|")
     let final_scent = product.Scent.Final.join("|")
     
-    if(gender !== "Unisex")
+    if(gender[0] !== "Unisex")
     {
         gender.push("Unisex")
     }
@@ -434,42 +424,25 @@ async function findSimilarProduct(product)
             }
         },
 
-        {
-            "$match":{
-                    "Scent.First": {
-                      $regex: first_scent,
-                      $options: "i",
-                    },
-                    "Scent.Middle": {
-                      $regex: middle_scent,
-                      $options: "i",
-                    },
-                      "Scent.Final": {
-                      $regex: final_scent,
-                      $options: "i",
-                    },   
-            }
-        },
+        // {
+        //     "$match":{
+        //             "Scent.First": {
+        //               $regex: first_scent,
+        //               $options: "i",
+        //             },
+        //             "Scent.Middle": {
+        //               $regex: middle_scent,
+        //               $options: "i",
+        //             },
+        //               "Scent.Final": {
+        //               $regex: final_scent,
+        //               $options: "i",
+        //             },   
+        //     }
+        // },
         {"$sample":{size : num_of_products}},
-        {
-            $lookup:{
-                from: 'brands',
-                localField: 'Product_brand',
-                foreignField: 'BID',
-                as: 'brandInfo'
-            }
-        },
-        {
-            "$project":
-            {   
-                _id:0,
-                PID: 1,
-                Product_name: 1,
-                Brand_Name: {$arrayElemAt:["$brandInfo.Name",0]},
-                display_price: {$min:"$priceScale.Price"},
-                Pictures: 1,
-            }
-        }
+        
+        ...product_basic,
     ]
 
     let similarProducts = await productModel.aggregate(pipeLine);

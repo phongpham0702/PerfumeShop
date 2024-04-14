@@ -7,7 +7,8 @@ const session = require('express-session');
 
 
 const dotEnv = require('dotenv').config();
-const database = require('./connectDB');
+const database = require('./dbs/init.db');
+const init_redis = require('./dbs/init.redis')
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/userRouter');
@@ -18,7 +19,9 @@ const signInRouter = require('./routes/authRouter')
 
 const app = express();
 
-database.connect();
+database.connect_db();
+
+init_redis.connect_redis();
 
 app.use(
   cors({

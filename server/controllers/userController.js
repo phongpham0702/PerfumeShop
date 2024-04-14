@@ -53,7 +53,7 @@ const userController = {
             return res.status(200).json({'WishListInfo':wishList_productInfo})
         } 
         catch (error) {
-            console.log(error);
+            console.error(error);
             next();
         }
 
@@ -94,7 +94,7 @@ const userController = {
             }
         } 
         catch (error) {
-            console.log(error);
+            console.error(error);
             next();
         }
     }
