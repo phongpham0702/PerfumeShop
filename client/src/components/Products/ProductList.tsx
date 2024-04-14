@@ -41,20 +41,22 @@ const ProductList = () => {
         },
       );
   };
-  useEffect(() => {}, []);
+
   useEffect(() => {
     handleProductNumChange(pNum);
     setIsLoading(true);
     fetchData(
-      `${page ? page : 1}?${gender ? "gender=" + gender : ""}&${
-        season ? "season=" + season : ""
-      }&${price ? "price=" + price : ""}&${brand ? "brand=" + brand : ""}&${
-        sort ? "sort=" + sort : ""
+      `${page ? page : 1}?${gender ? "gender=" + gender : ""}${
+        season ? "&season=" + season : ""
+      }${price ? "&price=" + price : ""}${brand ? "&brand=" + brand : ""}${
+        sort ? "&sort=" + sort : ""
       }`,
     );
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       setIsLoading(false);
     }, 1000);
+
+    return () => clearTimeout(timer);
   }, [page, gender, season, handleProductNumChange, pNum, price, brand, sort]);
 
   return (
