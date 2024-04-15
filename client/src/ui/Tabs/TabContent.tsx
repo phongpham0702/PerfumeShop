@@ -1,5 +1,3 @@
-import React from "react";
-
 type propsType = {
   id: string;
   activeTab: string;
@@ -7,7 +5,7 @@ type propsType = {
 };
 
 const TabContent = ({ children, id, activeTab }: propsType) => {
-  return id === activeTab ? <>{children}</> : null;
+  return id === activeTab ? <div>{children}</div> : <></>;
 };
 
 export default TabContent;

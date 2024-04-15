@@ -17,6 +17,7 @@ const ProductList = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [pNum, setPNum] = useState<number | 0>(0);
   const [searchParams] = useSearchParams();
+
   const gender = searchParams.get("gender");
   const season = searchParams.get("season");
   const price = searchParams.get("price");
@@ -42,9 +43,16 @@ const ProductList = () => {
       );
   };
 
+  // const query = `?${gender ? "gender=" + gender : ""}${
+  //   season ? "&season=" + season : ""
+  // }${price ? "&price=" + price : ""}${brand ? "&brand=" + brand : ""}${
+  //   sort ? "&sort=" + sort : ""
+  // }`;
+
   useEffect(() => {
     handleProductNumChange(pNum);
     setIsLoading(true);
+
     fetchData(
       `${page ? page : 1}?${gender ? "gender=" + gender : ""}${
         season ? "&season=" + season : ""
@@ -57,7 +65,7 @@ const ProductList = () => {
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [page, gender, season, handleProductNumChange, pNum, price, brand, sort]);
+  }, [gender, page, brand, price, season, sort, handleProductNumChange, pNum]);
 
   return (
     <>

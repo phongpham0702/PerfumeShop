@@ -6,7 +6,7 @@ import {
 } from "react-router-dom";
 import FilterBar from "../components/Filter/FilterBar";
 import { categories } from "../dummy_data/categoryData";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import FilterInfo from "../components/Filter/FilterInfo";
 
 const Shop = () => {
@@ -22,19 +22,12 @@ const Shop = () => {
       newSearchParams.delete(event.target.name);
     }
     setSearchParams(newSearchParams);
+    navigate(`/shop/1?${newSearchParams.toString()}`);
   };
 
   const handleChange = (productNum: number) => {
     setProductNum(productNum);
   };
-
-  useEffect(() => {
-    const filteredParams = new URLSearchParams();
-    for (const [key, value] of searchParams.entries()) {
-      if (value) filteredParams.set(key, value);
-    }
-    navigate(`?${filteredParams.toString()}`);
-  }, [searchParams, navigate]);
 
   return (
     <div className="mx-auto max-w-[1440px]">

@@ -1,11 +1,17 @@
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
-import { NavLink } from "react-router-dom";
+import { NavLink, useSearchParams } from "react-router-dom";
 type propsType = {
   currentPage: number | string;
   totalPages: number;
 };
 
 const Pagination = ({ currentPage, totalPages }: propsType) => {
+  const [searchParams] = useSearchParams();
+  const filteredParams = new URLSearchParams();
+  for (const [key, value] of searchParams.entries()) {
+    if (value) filteredParams.set(key, value);
+  }
+
   const pageNumbers: (number | string)[] = [];
   const MAX_VISIBLE_PAGES = 5;
 
@@ -46,7 +52,7 @@ const Pagination = ({ currentPage, totalPages }: propsType) => {
       <ul className="flex gap-6">
         {+currentPage > 1 && (
           <NavLink
-            to={"/shop/" + (+currentPage - 1)}
+            to={"/shop/" + (+currentPage - 1) + "?" + filteredParams.toString()}
             className="cursor-pointer pt-[4px]"
           >
             <FaAngleLeft />
@@ -64,7 +70,7 @@ const Pagination = ({ currentPage, totalPages }: propsType) => {
             ) : (
               <NavLink
                 className="aria-[current=page]:rounded-md aria-[current=page]:border-2 aria-[current=page]:border-[#f8b500] aria-[current=page]:px-4 aria-[current=page]:py-3 aria-[current=page]:font-medium"
-                to={"/shop/" + pageNumber}
+                to={"/shop/" + pageNumber + "?" + filteredParams.toString()}
               >
                 {pageNumber}
               </NavLink>
@@ -74,7 +80,7 @@ const Pagination = ({ currentPage, totalPages }: propsType) => {
 
         {+currentPage < totalPages && (
           <NavLink
-            to={"/shop/" + (+currentPage + 1)}
+            to={"/shop/" + (+currentPage + 1) + "?" + filteredParams.toString()}
             className="cursor-pointer pt-[4px]"
           >
             <FaAngleRight />

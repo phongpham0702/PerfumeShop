@@ -25,28 +25,28 @@ const ProductDetail = () => {
       children: (
         <div className="grid grid-cols-4">
           <p className="font-semibold">Main</p>
-          <p className="col-span-3 mb-4 tracking-wider">
+          <div className="col-span-3 mb-4 tracking-wider">
             {product?.Scent.Main.join(", ")}
             <hr className="h-[1.5px] bg-[#333]" />
-          </p>
+          </div>
 
           <p className="font-semibold">First</p>
-          <p className="col-span-3 mb-4 tracking-wider">
+          <div className="col-span-3 mb-4 tracking-wider">
             {product?.Scent.First.join(", ")}
             <hr className="h-[1.5px] bg-[#333]" />
-          </p>
+          </div>
 
           <p className="font-semibold">Middle</p>
-          <p className="col-span-3 mb-4 tracking-wider">
+          <div className="col-span-3 mb-4 tracking-wider">
             {product?.Scent.Middle.join(", ")}
             <hr className="h-[1.5px] bg-[#333]" />
-          </p>
+          </div>
 
           <p className="font-semibold">Final</p>
-          <p className="col-span-3 mb-4 tracking-wider">
+          <div className="col-span-3 mb-4 tracking-wider">
             {product?.Scent.Final.join(", ")}
             <hr className="h-[1.5px] bg-[#333]" />
-          </p>
+          </div>
         </div>
       ),
     },
@@ -216,6 +216,13 @@ const ProductDetail = () => {
       if (item.Capacity === event.target.value) setPriceByCapacity(item.Price);
     });
   };
+  const priceScaleReverse = [];
+  if (product?.priceScale.length) {
+    for (let i = product?.priceScale.length; i >= 0; i--) {
+      priceScaleReverse.push(product?.priceScale[i]);
+    }
+  }
+  priceScaleReverse.shift();
 
   return (
     <>
@@ -268,9 +275,9 @@ const ProductDetail = () => {
               onChange={handleCapacityChange}
               className="mb-10 w-[200px] p-2 outline outline-1"
             >
-              {product?.priceScale.map((item) => (
-                <option value={item.Capacity} key={item._id}>
-                  {item.Capacity}
+              {priceScaleReverse?.map((item) => (
+                <option value={item?.Capacity} key={item?._id}>
+                  {item?.Capacity}
                 </option>
               ))}
             </select>
@@ -304,13 +311,19 @@ const ProductDetail = () => {
           <Tabs navs={navs} contents={contents} />
         </div>
       </div>
+
       <hr />
+
       <div className="mt-14">
         <h1 className="mb-10 text-center font-heading text-4xl font-normal">
           Related Products
         </h1>
         <div className="mx-auto grid w-[90%] grid-cols-5 justify-items-center">
-          {similarProduct?.map((product) => <ProductItem product={product} />)}
+          {similarProduct?.map((product) => (
+            <div key={product.PID}>
+              <ProductItem product={product} />
+            </div>
+          ))}
         </div>
       </div>
     </>
