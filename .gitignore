@@ -159,3 +159,4 @@ dist-ssr
 *.sw?
 
 testform.html
+product_images/*
