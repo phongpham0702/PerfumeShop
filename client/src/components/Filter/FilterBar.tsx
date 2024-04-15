@@ -13,9 +13,12 @@ const FilterBar = ({ categories, onFilterChange }: FilterSideBarProps) => {
   const [categoryState, setCategoryState] = useState(
     categories.map((category) => ({ ...category, showMore: false })),
   );
+  const [searchVal, setSearchVal] = useState<string>("");
   interface SelectedFilters {
     [paramName: string]: string[];
   }
+
+  console.log("render");
 
   useEffect(() => {
     const selectedFilters: SelectedFilters = {};
@@ -38,7 +41,27 @@ const FilterBar = ({ categories, onFilterChange }: FilterSideBarProps) => {
       }),
     );
   }, [searchParams]);
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newSearchVal = event.target.value.toLowerCase();
+    setSearchVal(newSearchVal);
 
+    const updatedCategories = categories.map((category) => {
+      if (category.id === "brand") {
+        return {
+          ...category,
+          // Show all items if searchVal is empty
+          items: newSearchVal
+            ? category.items.filter((item) =>
+                item.name.toLowerCase().includes(newSearchVal),
+              )
+            : category.items.map((item) => ({ ...item, isChecked: false })), // Reset isChecked for all brands on clear
+        };
+      }
+      return category; // Keep other categories unchanged
+    });
+
+    setCategoryState(updatedCategories);
+  };
   // const handleToggleShowMore = (cateId: string): void => {
   //   setCategoryState((prevState) =>
   //     prevState.map((state) =>
@@ -50,8 +73,19 @@ const FilterBar = ({ categories, onFilterChange }: FilterSideBarProps) => {
   return (
     <div className="w-[15%]">
       {categoryState.map((category) => (
-        <div key={category.id}>
+        <div className="mb-4" key={category.id}>
           <h3 className="mb-3 font-semibold capitalize">{category.id}</h3>
+          {category.id === "brand" ? (
+            <input
+              value={searchVal}
+              onChange={handleInputChange}
+              className="mb-2 w-full p-2 outline outline-1"
+              type="text"
+              name="brand"
+              placeholder="Quick search"
+            />
+          ) : null}
+
           <div
             className={
               category.items.length > 5

@@ -13,17 +13,24 @@ export interface Product {
 export interface BestsellerProduct {
   PID: string;
   Product_name: string;
-  Sold: number;
+  Sold?: number;
   Pictures: string;
   Brand_Name: string;
   display_price: number;
-  Product_gender: string;
+  Product_gender?: string;
+}
+export interface SimilarProduct {
+  PID: string;
+  Product_name: string;
+  Pictures: string;
+  Brand_Name: string;
+  display_price: number;
 }
 
 export interface ProductDetail {
   PID: string;
   Product_name: string;
-  Product_brand: string;
+  Brand_Name: string;
   Product_gender: string;
   priceScale: {
     Capacity: string;
@@ -53,4 +60,6 @@ export interface ProductDetail {
   };
   Pictures: string;
   Description: string;
+  display_price: number;
+  similar_products: SimilarProduct[];
 }

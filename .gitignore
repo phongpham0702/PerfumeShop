@@ -157,6 +157,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+q1.js
 
 testform.html
 product_images/*

@@ -47,7 +47,7 @@ const BestsellerList = () => {
   const settings = {
     dots: true,
     infinite: true,
-    speed: 500,
+    speed: 200,
     slidesToShow: 5,
     slidesToScroll: 1,
     nextArrow: <SampleNextArrow />,
@@ -72,6 +72,7 @@ const BestsellerList = () => {
   }
 
   useEffect(() => {
+    window.scrollTo(0, 0)
     fetchData();
   }, []);
 

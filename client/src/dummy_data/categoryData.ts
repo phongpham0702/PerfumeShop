@@ -2,39 +2,6 @@ import { FilterCategory } from "../types/Category";
 
 export const categories: FilterCategory[] = [
   {
-    id: "gender",
-    name: "gender",
-    items: [
-      { name: "Male", isChecked: false },
-      { name: "Female", isChecked: false },
-      { name: "Unisex", isChecked: false },
-    ],
-    showMore: false,
-  },
-  {
-    id: "season",
-    name: "season",
-    items: [
-      { name: "Spring", isChecked: false },
-      { name: "Summer", isChecked: false },
-      { name: "Autumn", isChecked: false },
-      { name: "Winter", isChecked: false },
-    ],
-    showMore: false,
-  },
-  {
-    id: "price",
-    name: "price",
-    items: [
-      { name: "20-50", isChecked: false },
-      { name: "50-100", isChecked: false },
-      { name: "100-250", isChecked: false },
-      { name: "250-500", isChecked: false },
-      { name: "500-999999", isChecked: false },
-    ],
-    showMore: false,
-  },
-  {
     id: "brand",
     name: "brand",
     items: [
@@ -125,5 +92,38 @@ export const categories: FilterCategory[] = [
       { name: "Viktor & Rolf", isChecked: false },
     ],
     showMore: true,
+  },
+  {
+    id: "gender",
+    name: "gender",
+    items: [
+      { name: "Male", isChecked: false },
+      { name: "Female", isChecked: false },
+      { name: "Unisex", isChecked: false },
+    ],
+    showMore: false,
+  },
+  {
+    id: "season",
+    name: "season",
+    items: [
+      { name: "Spring", isChecked: false },
+      { name: "Summer", isChecked: false },
+      { name: "Autumn", isChecked: false },
+      { name: "Winter", isChecked: false },
+    ],
+    showMore: false,
+  },
+  {
+    id: "price",
+    name: "price",
+    items: [
+      { name: "20-50", isChecked: false },
+      { name: "50-100", isChecked: false },
+      { name: "100-250", isChecked: false },
+      { name: "250-500", isChecked: false },
+      { name: "500-999999", isChecked: false },
+    ],
+    showMore: false,
   },
 ];

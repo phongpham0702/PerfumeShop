@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaAngleDown } from "react-icons/fa6";
 import { useSearchParams } from "react-router-dom";
 
@@ -13,10 +13,12 @@ type propsType = {
 };
 
 const Dropdown = ({ items, headTitle }: propsType) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const [, setSearchParams] = useSearchParams();
+  const ref = useRef<HTMLDivElement>(null);
 
   const handleChange = (id: string, selectedVal: string) => {
+    setIsOpen(false);
     setSearchParams((prev) => {
       const updatedParams = new URLSearchParams(prev);
 
@@ -24,20 +26,40 @@ const Dropdown = ({ items, headTitle }: propsType) => {
       return updatedParams;
     });
   };
-  const handleToggle = () => {
-    setTimeout(() => {
-      if (!isOpen) {
-        setIsOpen(true);
-      } else {
-        window.addEventListener("click", () => setIsOpen(false));
+  //   const handleClickOutside = (event) => {
+  //     if (ref.current && !ref.current.contains(event.target)) {
+  //         setIsComponentVisible(false);
+  //     }
+  // };
+
+  useEffect(() => {
+    // document.addEventListener('click', handleClickOutside, true);
+    // return () => {
+    //     document.removeEventListener('click', handleClickOutside, true);
+    // };
+    const handleClickOutSide = (event: MouseEvent) => {
+      if (
+        ref.current &&
+        !ref.current.contains(event.target as HTMLDivElement)
+      ) {
+        setIsOpen(false);
       }
-    }, 0);
-  };
+    };
+    document.addEventListener("click", handleClickOutSide);
+    return () => {
+      document.removeEventListener("click", handleClickOutSide);
+    };
+  }, [isOpen, ref]);
 
   return (
     <div className="relative ">
       <div
-        onClick={() => handleToggle()}
+        ref={ref}
+        onClick={() => {
+          console.log("hello");
+
+          setIsOpen((prev) => !prev);
+        }}
         className="flex h-[50px] w-[200px] cursor-pointer items-center justify-between rounded-sm border border-[#333] px-4 py-2 text-lg font-semibold"
       >
         <div>
@@ -49,17 +71,17 @@ const Dropdown = ({ items, headTitle }: propsType) => {
         </i>
       </div>
       {isOpen ? (
-        <ul className="absolute z-10 w-[200px] rounded-md  bg-[#fff] shadow">
+        <div className="absolute z-10 w-[200px] rounded-md  bg-[#fff] shadow">
           {items.map((item) => (
-            <li
+            <option
               onClick={() => handleChange(item.location, item.value)}
               className="cursor-pointer p-2 hover:bg-[#f8b500] hover:text-[#fff]"
               key={item.title}
             >
               {item.title}
-            </li>
+            </option>
           ))}
-        </ul>
+        </div>
       ) : (
         <></>
       )}
