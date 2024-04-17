@@ -13,9 +13,14 @@
   <title>Perfume Store</title>
 </head>
 
-<body>
+<body class="preload">
   <div id="root"></div>
   <script type="module" src="/src/main.tsx"></script>
+  <script>
+    setTimeout(function () {
+      document.body.className = "";
+    }, 2000);
+  </script>
 </body>
 
 </html>

@@ -13,20 +13,33 @@ export default {
       },
       keyframes: {
         goUp: {
-          "0%": { transform: "translateY(50px)" },
-          "100%": { transform: "translateY(0)" },
+          "0%": { transform: "translateY(42px)" },
+          "100%": { transform: "translateY(-42px)" },
         },
         goDown: {
-          "0%": { transform: "translateY(-50px)" },
-          "100%": { transform: "translateY(0)" },
+          "0%": { transform: "translateY(-42px)" },
+          "100%": { transform: "translateY(42px)" },
         },
-        fadeIn: {
-          from: { opacity: 0 },
-          to: { opacity: 1 },
+
+        rightIn: {
+          "0%": { transform: "translateX(50px)" },
+          "100%": { transform: "translateX(-50px)" },
+        },
+
+        rightOut: {
+          "0%": { transform: "translateX(-50px)" },
+          "100%": { transform: "translateX(50px)" },
         },
       },
       animation: {
-        wiggle: "wiggle 1s ease-in-out",
+        goUp: "goUp .45s ease-out both",
+        goDown: "goDown .45s ease-out .25s both",
+        rightInF: "rightIn .35s ease-out .1s both",
+        rightInM: "rightIn .35s ease-out .13s both",
+        rightInL: "rightIn .35s ease-out .17s both",
+        rightOutF: "rightOut .35s ease-out .1s both",
+        rightOutM: "rightOut .35s ease-out .13s both",
+        rightOutL: "rightOut .35s ease-out .17s both",
       },
     },
   },

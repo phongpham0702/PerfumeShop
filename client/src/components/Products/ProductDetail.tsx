@@ -201,7 +201,9 @@ const ProductDetail = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
     const fetchData = async () => {
-      const res = await fetch(`http://localhost:8080/products/detail/${pid}`);
+      const res = await fetch(
+        `${import.meta.env.VITE_SERVER_URL}/products/detail/${pid}`,
+      );
       const data = await res.json();
       setProduct(data.product_detail);
       setSimilarProduct(data.similar_products);

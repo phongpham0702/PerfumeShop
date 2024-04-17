@@ -26,7 +26,7 @@ const ProductList = () => {
   const { handleProductNumChange }: propsType = useOutletContext();
 
   const fetchData = async (query: number | string) => {
-    fetch(`http://localhost:8080/products/${query}`)
+    fetch(`${import.meta.env.VITE_SERVER_URL}/products/${query}`)
       .then((res) => res.json())
       .then(
         (data: {
