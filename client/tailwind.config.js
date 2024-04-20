@@ -30,6 +30,26 @@ export default {
           "0%": { transform: "translateX(-50px)" },
           "100%": { transform: "translateX(50px)" },
         },
+        fadeIn: {
+          "0%": {
+            transform: "translateX(5px)",
+            opacity: 0,
+          },
+          "100%": {
+            transform: "translateX(-5px)",
+            opacity: 1,
+          },
+        },
+        fadeOut: {
+          "0%": {
+            transform: "translateX(-5px)",
+            opacity: 1,
+          },
+          "100%": {
+            transform: "translateX(5px)",
+            opacity: 0,
+          },
+        },
       },
       animation: {
         goUp: "goUp .45s ease-out both",
@@ -40,6 +60,8 @@ export default {
         rightOutF: "rightOut .35s ease-out .1s both",
         rightOutM: "rightOut .35s ease-out .13s both",
         rightOutL: "rightOut .35s ease-out .17s both",
+        fadeIn: "fadeIn 0.35s ease-out both",
+        fadeOut: "fadeOut 0.35s ease-out both",
       },
     },
   },
