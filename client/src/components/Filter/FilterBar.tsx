@@ -18,8 +18,6 @@ const FilterBar = ({ categories, onFilterChange }: FilterSideBarProps) => {
     [paramName: string]: string[];
   }
 
-  console.log("render");
-
   useEffect(() => {
     const selectedFilters: SelectedFilters = {};
     for (const [paramName, paramValues] of searchParams.entries()) {
@@ -49,7 +47,6 @@ const FilterBar = ({ categories, onFilterChange }: FilterSideBarProps) => {
       if (category.id === "brand") {
         return {
           ...category,
-          // Show all items if searchVal is empty
           items: newSearchVal
             ? category.items.filter((item) =>
                 item.name.toLowerCase().includes(newSearchVal),
@@ -57,7 +54,7 @@ const FilterBar = ({ categories, onFilterChange }: FilterSideBarProps) => {
             : category.items.map((item) => ({ ...item, isChecked: false })), // Reset isChecked for all brands on clear
         };
       }
-      return category; // Keep other categories unchanged
+      return category;
     });
 
     setCategoryState(updatedCategories);

@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Product } from "../../types/Product";
 import ProductItem from "./ProductItem";
-import Slider from "react-slick";
-import { FaAngleRight, FaAngleLeft } from "react-icons/fa";
+import Carousel from "../../ui/Carousel";
 
 const BestsellerList = () => {
   const [data, setData] = useState<
@@ -14,7 +13,6 @@ const BestsellerList = () => {
   >([]);
   const [products, setProducts] = useState<Product[] | []>([]);
   const [gender, setGender] = useState<string>("Male");
-  const slider = React.useRef<Slider>(null);
 
   const category: Array<{ [key: string]: string }> = [
     { Man: "Male" },
@@ -22,40 +20,8 @@ const BestsellerList = () => {
     { Unisex: "Unisex" },
   ];
 
-  function SampleNextArrow() {
-    return (
-      <div
-        className="absolute right-[25px] top-[30%] z-10 flex h-[35px] w-[35px] cursor-pointer items-center justify-center rounded-full bg-[#333] text-2xl text-[#fff]"
-        onClick={() => slider?.current?.slickNext()}
-      >
-        <FaAngleRight />
-      </div>
-    );
-  }
-
-  function SamplePrevArrow() {
-    return (
-      <div
-        className="absolute left-0 top-[30%] z-10 flex h-[35px] w-[35px] cursor-pointer items-center justify-center rounded-full bg-[#333] text-2xl text-[#fff]"
-        onClick={() => slider?.current?.slickPrev()}
-      >
-        <FaAngleLeft />
-      </div>
-    );
-  }
-
-  const settings = {
-    dots: true,
-    infinite: true,
-    speed: 200,
-    slidesToShow: 5,
-    slidesToScroll: 1,
-    nextArrow: <SampleNextArrow />,
-    prevArrow: <SamplePrevArrow />,
-  };
-
   async function fetchData() {
-    await fetch(`http://localhost:8080/products/bestseller`)
+    await fetch(`${import.meta.env.VITE_SERVER_URL}/products/bestseller`)
       .then((res) => res.json())
       .then((data) => {
         setData(data.bestSeller);
@@ -72,7 +38,7 @@ const BestsellerList = () => {
   }
 
   useEffect(() => {
-    window.scrollTo(0, 0)
+    window.scrollTo(0, 0);
     fetchData();
   }, []);
 
@@ -84,7 +50,7 @@ const BestsellerList = () => {
   };
 
   return (
-    <div className="mb-12 mt-20 w-full">
+    <div className="mb-12 mt-20 h-[800px] w-full">
       <div className="mx-auto flex w-[80%] flex-col items-center">
         <h1 className="font-heading text-4xl tracking-wider">
           Best Seller Products
@@ -112,17 +78,13 @@ const BestsellerList = () => {
           })}
         </div>
       </div>
-      <Slider
-        ref={slider}
-        className="mx-auto h-[435px] w-[90%] overflow-y-hidden px-[15px]"
-        {...settings}
-      >
-        {products.map((product) => (
-          <div key={product.PID} className="h-[380px]">
+      <Carousel
+        children={products.map((product) => (
+          <div key={product.PID} className="h-[440px]">
             <ProductItem product={product} />
           </div>
         ))}
-      </Slider>
+      />
     </div>
   );
 };
