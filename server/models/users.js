@@ -1,20 +1,27 @@
-const mongoose = require("mongoose")
+const { truncate } = require("fs/promises");
+const {model,Schema,Types} = require("mongoose")
 
-const userSchema = mongoose.Schema({
+const userSchema = new Schema({
     Email:{
-            type:String,
-            required:true,
-            unique: true,
+        type: String,
+        required:true,
+        unique: true,
+        trim: true,
+        maxLength: 200
     },
     Password:{
         type:String,
-        required: [true, "Missing password"],
+        required: true,
     },
     FullName:{
         type: String,
+        required:true,
+        trim: true,
+        maxLength: 200
     },
     DoB:{
         type: Date,
+        require: true,
         get:(v) => {
             
             return v.toLocaleDateString()
@@ -24,6 +31,7 @@ const userSchema = mongoose.Schema({
     PhoneNumber:{
         type:String,
         unique: true,
+        require:truncate
     },
     Cart:{
         type:[String],
@@ -51,7 +59,12 @@ const userSchema = mongoose.Schema({
         default: new Date(Date.now()),
     },
 
-    IsAdmin:{
+    isVerify:{
+        type:Boolean,
+        default:false,
+    },
+
+    isAdmin:{
         type:Boolean,
         default:false,
     }
@@ -64,4 +77,4 @@ userSchema.pre('save', function(next) {
     next();
 });
 
-module.exports = mongoose.model("Users", userSchema);
+module.exports = model("Users", userSchema);

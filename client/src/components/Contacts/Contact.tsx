@@ -1,24 +1,26 @@
-import { FaLocationDot, FaMobileScreen, FaRegEnvelope } from "react-icons/fa6";
+import { FaMobileScreen, FaRegEnvelope } from "react-icons/fa6";
+import { HiOutlineLocationMarker } from "react-icons/hi";
 const Contact = () => {
   return (
     <div className="mx-auto my-20 flex max-w-[1280px] flex-col items-center gap-4 text-xl font-light">
-      <p className="font-heading mb-4 text-4xl tracking-wide">Luxe Store</p>
-      <div className="flex gap-4">
-        <i>
-          <FaLocationDot />
-        </i>
-        19 Đ. Nguyễn Hữu Thọ, Tân Hưng, Quận 7, Thành phố Hồ Chí Minh, Vietnam
+      <p className="mb-4 font-heading text-3xl tracking-wide sm:text-4xl">
+        Luxe Store
+      </p>
+      <div className="flex items-center gap-4">
+        <span className="text-2xl">
+          <HiOutlineLocationMarker />
+        </span>
+        19 Đ. Nguyễn Hữu Thọ, Tân Hưng, <br className="block sm:hidden" /> Quận
+        7, Thành phố Hồ Chí Minh
       </div>
-      <div className="flex gap-4">
-        <i>
+      <div className="flex items-center gap-4">
+        <span className="text-xl">
           <FaMobileScreen />
-        </i>
+        </span>
         <p>0352568244 | 0909233651</p>
       </div>
-      <div className="flex gap-4">
-        <i>
-          <FaRegEnvelope />
-        </i>
+      <div className="flex items-center gap-4">
+        <FaRegEnvelope />
         <p>luke09@gmail.com</p>
       </div>
       <p>Open time: Everyday from 9.00 - 21.00</p>

@@ -3,7 +3,6 @@ import { FaAngleDown } from "react-icons/fa6";
 import { useSearchParams } from "react-router-dom";
 
 type propsType = {
-  headTitle: string;
   items: {
     location: string;
     title: string;
@@ -12,38 +11,28 @@ type propsType = {
   }[];
 };
 
-const Dropdown = ({ items, headTitle }: propsType) => {
+const Dropdown = ({ items }: propsType) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [title, setTitle] = useState<string>("");
   const [, setSearchParams] = useSearchParams();
   const ref = useRef<HTMLDivElement>(null);
 
-  const handleChange = (id: string, selectedVal: string) => {
+  const handleChange = (id: string, selectedVal: string, title: string) => {
     setIsOpen(false);
+    setTitle(title);
     setSearchParams((prev) => {
       const updatedParams = new URLSearchParams(prev);
 
-      updatedParams.append(id, selectedVal.toString());
+      updatedParams.delete(id);
+      updatedParams.set(id, selectedVal.toString());
       return updatedParams;
     });
   };
-  //   const handleClickOutside = (event) => {
-  //     if (ref.current && !ref.current.contains(event.target)) {
-  //         setIsComponentVisible(false);
-  //     }
-  // };
 
   useEffect(() => {
-    // document.addEventListener('click', handleClickOutside, true);
-    // return () => {
-    //     document.removeEventListener('click', handleClickOutside, true);
-    // };
     const handleClickOutSide = (event: MouseEvent) => {
-      if (
-        ref.current &&
-        !ref.current.contains(event.target as HTMLDivElement)
-      ) {
+      if (ref.current && !ref.current.contains(event.target as HTMLDivElement))
         setIsOpen(false);
-      }
     };
     document.addEventListener("click", handleClickOutSide);
     return () => {
@@ -52,40 +41,38 @@ const Dropdown = ({ items, headTitle }: propsType) => {
   }, [isOpen, ref]);
 
   return (
-    <div className="relative ">
+    <>
       <div
         ref={ref}
         onClick={() => {
-          console.log("hello");
-
           setIsOpen((prev) => !prev);
         }}
-        className="flex h-[50px] w-[200px] cursor-pointer items-center justify-between rounded-sm border border-[#333] px-4 py-2 text-lg font-semibold"
+        className="flex h-[60px] w-full cursor-pointer items-center justify-between rounded-sm border border-[#333] p-2 text-lg font-semibold sm:w-[200px] sm:px-4"
       >
         <div>
-          <p className="text-sm">Sort by</p>
-          <p className="font-light">{headTitle}</p>
+          <p className=" text-sm sm:block">Sort by</p>
+          <p className="font-light">{title}</p>
         </div>
-        <i className="text-[1rem]">
+        <span className="text-[1rem]">
           <FaAngleDown />
-        </i>
+        </span>
       </div>
       {isOpen ? (
-        <div className="absolute z-10 w-[200px] rounded-md  bg-[#fff] shadow">
-          {items.map((item) => (
+        <div className="absolute z-20 w-full rounded-md  bg-[#fff] shadow">
+          {items.map(({ location, value, title }) => (
             <option
-              onClick={() => handleChange(item.location, item.value)}
+              onClick={() => handleChange(location, value, title)}
               className="cursor-pointer p-2 hover:bg-[#f8b500] hover:text-[#fff]"
-              key={item.title}
+              key={title}
             >
-              {item.title}
+              {title}
             </option>
           ))}
         </div>
       ) : (
         <></>
       )}
-    </div>
+    </>
   );
 };
 

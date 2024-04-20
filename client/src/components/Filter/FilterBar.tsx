@@ -39,6 +39,7 @@ const FilterBar = ({ categories, onFilterChange }: FilterSideBarProps) => {
       }),
     );
   }, [searchParams]);
+
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newSearchVal = event.target.value.toLowerCase();
     setSearchVal(newSearchVal);
@@ -68,7 +69,7 @@ const FilterBar = ({ categories, onFilterChange }: FilterSideBarProps) => {
   // };
 
   return (
-    <div className="w-[15%]">
+    <div className="ml-2 hidden w-[15%] xl:block 2xl:ml-0">
       {categoryState.map((category) => (
         <div className="mb-4" key={category.id}>
           <h3 className="mb-3 font-semibold capitalize">{category.id}</h3>

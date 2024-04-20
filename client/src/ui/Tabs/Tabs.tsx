@@ -21,30 +21,32 @@ type propsType = {
 
 const Tabs = ({ navs, contents }: propsType) => {
   return (
-    <div className="mt-10">
-      <ul className="flex justify-between gap-4 text-xl text-[#656565]">
-        {navs.map((nav) => (
+    <>
+      <ul className="flex justify-start text-xl text-[#656565]">
+        {navs.map(({ id, title, activeTab, setActiveTab }) => (
           <TabNavItem
-            key={nav.id}
-            id={nav.id}
-            title={nav.title}
-            activeTab={nav.activeTab}
-            setActiveTab={nav.setActiveTab}
+            key={id}
+            id={id}
+            title={title}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
           />
         ))}
       </ul>
+
       <hr className="mb-4" />
+
       <div>
-        {contents.map((content) => (
+        {contents.map(({ id, activeTab, children }) => (
           <TabContent
-            key={content.id}
-            id={content.id}
-            activeTab={content.activeTab}
-            children={content.children}
+            key={id}
+            id={id}
+            activeTab={activeTab}
+            children={children}
           />
         ))}
       </div>
-    </div>
+    </>
   );
 };
 

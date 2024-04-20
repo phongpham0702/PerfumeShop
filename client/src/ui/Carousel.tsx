@@ -13,6 +13,45 @@ const Carousel = ({ children }: propsType) => {
     speed: 200,
     slidesToShow: 5,
     slidesToScroll: 1,
+    initialSlide: 0,
+    responsive: [
+      {
+        breakpoint: 1280,
+        settings: {
+          slidesToShow: 4,
+          slidesToScroll: 2,
+          infinite: true,
+          dots: true,
+          initialSlide: 0,
+        },
+      },
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 2,
+          infinite: true,
+          dots: true,
+          initialSlide: 0,
+        },
+      },
+      {
+        breakpoint: 768,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 2,
+          initialSlide: 0,
+        },
+      },
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+          initialSlide: 0,
+        },
+      },
+    ],
     nextArrow: <SampleNextArrow />,
     prevArrow: <SamplePrevArrow />,
   };
@@ -20,7 +59,7 @@ const Carousel = ({ children }: propsType) => {
   function SampleNextArrow() {
     return (
       <div
-        className="absolute right-[25px] top-[35%] z-10 flex h-[35px] w-[35px] cursor-pointer items-center justify-center rounded-full bg-[#333] text-2xl text-[#fff]"
+        className="absolute right-[0px] top-[20%] z-10 flex h-[35px] w-[35px] cursor-pointer items-center justify-center rounded-full bg-[#333] text-2xl text-[#fff] sm:top-[35%]"
         onClick={() => slider?.current?.slickNext()}
       >
         <FaAngleRight />
@@ -31,7 +70,7 @@ const Carousel = ({ children }: propsType) => {
   function SamplePrevArrow() {
     return (
       <div
-        className="absolute left-0 top-[35%] z-10 flex h-[35px] w-[35px] cursor-pointer items-center justify-center rounded-full bg-[#333] text-2xl text-[#fff]"
+        className="absolute left-0 top-[20%] z-10 flex h-[35px] w-[35px] cursor-pointer items-center justify-center rounded-full bg-[#333] text-2xl text-[#fff] sm:top-[35%]"
         onClick={() => slider?.current?.slickPrev()}
       >
         <FaAngleLeft />
@@ -41,7 +80,7 @@ const Carousel = ({ children }: propsType) => {
   return (
     <Slider
       ref={slider}
-      className="mx-auto h-[490px] w-[90%] overflow-y-hidden px-[15px]"
+      className="mx-auto h-[400px] w-[100%] overflow-y-hidden px-[15px] sm:h-[500px]"
       {...settings}
     >
       {children}

@@ -4,8 +4,10 @@ export default {
 
   theme: {
     fontFamily: {
-      sans: ["Raleway, sans"],
-      heading: ["Playfair Display, serif"],
+      sans: ["Roboto, sans-serif"],
+      heading: ["Roboto, sans-serif"],
+      inter: ["Inter, sans-serif"],
+      space: ["Space Grotesk, sans-serif"],
     },
     extend: {
       content: {
@@ -44,10 +46,12 @@ export default {
           "0%": {
             transform: "translateX(-5px)",
             opacity: 1,
+            "z-index": 20,
           },
           "100%": {
             transform: "translateX(5px)",
             opacity: 0,
+            "z-index": -10,
           },
         },
       },

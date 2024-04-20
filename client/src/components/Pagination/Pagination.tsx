@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
 import { NavLink, useSearchParams } from "react-router-dom";
 type propsType = {
@@ -13,7 +14,23 @@ const Pagination = ({ currentPage, totalPages }: propsType) => {
   }
 
   const pageNumbers: (number | string)[] = [];
-  const MAX_VISIBLE_PAGES = 5;
+
+  const [windowWidth, setWindowWidth] = useState(0);
+
+  const resizeWindow = () => {
+    setWindowWidth(window.innerWidth);
+  };
+
+  useEffect(() => {
+    resizeWindow();
+    window.addEventListener("resize", resizeWindow);
+    return () => window.removeEventListener("resize", resizeWindow);
+  }, []);
+  let MAX_VISIBLE_PAGES = 1;
+
+  if (windowWidth <= 350) MAX_VISIBLE_PAGES = 1;
+  if (windowWidth > 350 && windowWidth < 425) MAX_VISIBLE_PAGES = 3;
+  if (windowWidth > 425) MAX_VISIBLE_PAGES = 5;
 
   const leftEllipsisNeeded: boolean =
     +currentPage > Math.ceil(MAX_VISIBLE_PAGES / 2);

@@ -1,17 +1,19 @@
-import { useState } from "react";
+// import { useState } from "react";
 import {
   AiOutlineSearch,
   AiOutlineUser,
   AiOutlineShoppingCart,
+  AiOutlineHeart,
+  AiOutlineMenuFold,
 } from "react-icons/ai";
 import { NavLink } from "react-router-dom";
 
 const Header = () => {
-  const [isSearch, setIsSearch] = useState<boolean>(false);
+  // const [isSearch, setIsSearch] = useState<boolean>(false);
 
   return (
-    <div className="w-fulls m-auto flex h-[80px] items-center justify-between border-b-[1px] border-black px-[50px] font-sans text-lg">
-      <div className="w-[40%] ">
+    <div className="w-fulls font-space m-auto flex h-[80px] items-center justify-between border-b-[1px] border-black px-5 text-lg sm:px-[50px]">
+      <div className="hidden w-[40%] lg:block">
         <ul className="flex gap-7">
           <li className="cursor-pointer">
             <NavLink
@@ -55,24 +57,26 @@ const Header = () => {
           </li>
         </ul>
       </div>
-      <div className=" w-[20%] cursor-pointer">
+
+      <div className="w-[50%] cursor-pointer lg:w-[20%]">
         <NavLink to="/">
           <img
-            className="mx-auto w-[120px]"
+            className="w-[120px] lg:mx-auto"
             src="http://localhost:5173/images/luxe-logo.svg"
             alt="logo"
           />
         </NavLink>
       </div>
-      <div className="w-[40%] ">
+
+      <div className="w-[50%] lg:w-[40%]">
         <ul className="flex justify-end gap-8">
           <li
-            onClick={() => setIsSearch((prev) => !prev)}
-            className="cursor-pointer text-2xl"
+            // onClick={() => setIsSearch((prev) => !prev)}
+            className="hidden cursor-pointer text-2xl sm:block"
           >
             <AiOutlineSearch />
           </li>
-          <li className="cursor-pointer text-2xl">
+          <li className="hidden cursor-pointer text-2xl sm:block">
             <NavLink
               className="aria-[current=page]:font-medium aria-[current=page]:text-[#f8b500]"
               to="/account"
@@ -80,13 +84,24 @@ const Header = () => {
               <AiOutlineUser />
             </NavLink>
           </li>
-          <li className="cursor-pointer text-2xl">
+          <li className="hidden cursor-pointer text-2xl sm:block">
+            <NavLink
+              className="aria-[current=page]:font-medium aria-[current=page]:text-[#f8b500]"
+              to="/wishlist"
+            >
+              <AiOutlineHeart />
+            </NavLink>
+          </li>
+          <li className="hidden cursor-pointer text-2xl sm:block">
             <NavLink
               className="aria-[current=page]:font-medium aria-[current=page]:text-[#f8b500]"
               to="/cart"
             >
               <AiOutlineShoppingCart />
             </NavLink>
+          </li>
+          <li className="block cursor-pointer text-3xl sm:text-2xl lg:hidden">
+            <AiOutlineMenuFold />
           </li>
         </ul>
       </div>

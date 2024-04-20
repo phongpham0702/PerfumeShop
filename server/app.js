@@ -11,17 +11,17 @@ const database = require('./dbs/init.db');
 const init_redis = require('./dbs/init.redis')
 
 const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/userRouter');
-const productRouter = require('./routes/productRouter');
-const brandRouter = require('./routes/brandRouter');
-const signUpRouter = require('./routes/signUpRouter');
-const signInRouter = require('./routes/authRouter')
+const usersRouter = require('./routes/user.router');
+const productRouter = require('./routes/product.router');
+const brandRouter = require('./routes/brand.router');
+const signUpRouter = require('./routes/signup.router');
+const signInRouter = require('./routes/auth.router')
 
 const app = express();
 
 database.connect_db();
 
-init_redis.connect_redis();
+//init_redis.connect_redis();
 
 app.use(
   cors({
@@ -62,14 +62,21 @@ app.use('/favicon.ico', (req,res,next) => {
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-  next(createError(404));
+  let error = new Error('Not Found')
+  error.status = 404
+  next(error)
 });
 
 // error handler
 app.use(function (err, req, res, next) {
-  return res
-    .status(err.status || 500)
-    .json({ error: 'Something went wrong !' });
+
+  let statusCode = err.status || 500
+  console.log(err);
+  return res.status(statusCode).json({ 
+    status: 'Error',
+    code: statusCode,
+    message: err.status == 500 ? 'Something went wrong :(' : (err.message || 'Internal Server Error')
+  });
 });
 
 module.exports = app;

@@ -41,17 +41,18 @@ const ProductItem = ({ product }: propsType) => {
   }, []);
 
   return (
-    <div className="mt-8 flex h-[410px] w-[240px] flex-col">
+    <div className="flex flex-col px-3 sm:mt-8">
       <div
         ref={pContentRef}
-        className="product-item group relative z-10 h-[812px] w-[240px] overflow-hidden bg-[#f6f6f6] px-4 py-12"
+        className="product-item group relative z-10 overflow-hidden bg-[#f6f6f6]"
       >
-        <Link to={"/product/detail/" + product.PID}>
-          <img
-            src={product.Pictures}
-            className="mx-auto h-[200px] w-[200px] transform transition-transform duration-500 group-hover:scale-110"
-            alt=""
-          />
+        <Link className="h-full w-full" to={"/product/detail/" + product.PID}>
+          <div className="py-12 sm:py-14">
+            <img
+              src={product.Pictures}
+              className="mx-auto h-[140px] w-[140px] transform transition-transform duration-500 group-hover:scale-110 sm:h-[200px] sm:w-[200px]"
+            />
+          </div>
         </Link>
 
         <div className="absolute right-[-40px] top-[16px] flex flex-col gap-2 transition-all duration-500">
@@ -69,7 +70,7 @@ const ProductItem = ({ product }: propsType) => {
 
             <div
               ref={wishListRef}
-              className={`absolute right-[90px] top-[8px] flex w-[118px] items-center justify-center opacity-0 peer-hover:transition-all ${
+              className={`absolute right-[90px] top-[8px] z-[-10] flex w-[118px] items-center justify-center opacity-0 peer-hover:z-10 peer-hover:transition-all ${
                 isWishListHover
                   ? "animate-fadeIn peer-hover:animate-fadeIn"
                   : "animate-fadeOut"
@@ -85,7 +86,7 @@ const ProductItem = ({ product }: propsType) => {
           <div>
             <div
               ref={eyeIconRef}
-              className={`peer cursor-pointer bg-[#fff] p-3 font-bold shadow-lg hover:bg-[#f50963] hover:text-[#fff]  hover:transition-all hover:duration-500 ${
+              className={`peer cursor-pointer bg-[#fff]  p-3 font-bold shadow-lg hover:bg-[#f50963] hover:text-[#fff]  hover:transition-all hover:duration-500 ${
                 isHovered
                   ? "animate-rightInM group-hover:animate-rightInM"
                   : "animate-rightOutM"
@@ -95,7 +96,7 @@ const ProductItem = ({ product }: propsType) => {
             </div>
             <div
               ref={quickViewRef}
-              className={`absolute right-[90px] top-[56px] flex w-[90px] items-center justify-center opacity-0 peer-hover:transition-all ${
+              className={`absolute right-[90px] top-[56px] z-[-10] flex w-[90px] items-center justify-center opacity-0 peer-hover:z-10 peer-hover:transition-all ${
                 isQuickViewHover
                   ? "animate-fadeIn peer-hover:animate-fadeIn"
                   : "animate-fadeOut"
@@ -121,7 +122,7 @@ const ProductItem = ({ product }: propsType) => {
             </div>
             <div
               ref={pDetailRef}
-              className={`absolute right-[90px] top-[104px] flex w-[118px] items-center justify-center opacity-0 peer-hover:transition-all ${
+              className={`absolute right-[90px] top-[104px] z-[-10] flex w-[118px] items-center justify-center opacity-0 peer-hover:z-10 peer-hover:transition-all ${
                 isPDetailHover
                   ? "animate-fadeIn peer-hover:animate-fadeIn"
                   : "animate-fadeOut"
@@ -137,7 +138,7 @@ const ProductItem = ({ product }: propsType) => {
 
         <button
           ref={addToCartBtnRef}
-          className={`absolute left-0 top-[299px] flex w-full items-center justify-center gap-2 bg-[#000] p-2 font-semibold text-[#fff] transition-all duration-500 hover:bg-[#f50963] ${
+          className={`absolute left-0 top-[237px] flex w-full items-center justify-center gap-2 bg-[#000] p-2 font-semibold text-[#fff] transition-all duration-500 hover:bg-[#f50963] sm:top-[312px] ${
             isHovered
               ? "animate-goUp group-hover:animate-goUp"
               : "animate-goDown"
@@ -148,14 +149,14 @@ const ProductItem = ({ product }: propsType) => {
         </button>
       </div>
 
-      <div className="relative z-10 flex h-[406px] w-[240px] flex-col items-center">
+      <div className="relative z-10 flex flex-col items-center">
         <p className="my-2 w-full overflow-hidden text-ellipsis whitespace-nowrap text-center text-lg text-[#856a20]">
           {product.Brand_Name}
         </p>
         <p className="w-full overflow-hidden text-ellipsis whitespace-nowrap text-center">
           {product.Product_name}
         </p>
-        <p className="absolute bottom-[14px]">${product.display_price}</p>
+        <p className="mt-3">${product.display_price}</p>
       </div>
     </div>
   );

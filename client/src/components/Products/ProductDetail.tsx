@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ProductDetail as PDetail, SimilarProduct } from "../../types/Product";
 import { useParams } from "react-router-dom";
 import Tabs from "../../ui/Tabs/Tabs";
@@ -6,6 +6,7 @@ import { BsGenderFemale, BsGenderMale } from "react-icons/bs";
 import ProductItem from "./ProductItem";
 
 const ProductDetail = () => {
+  const [isShowMore, setIsShowMore] = useState<boolean>(false);
   const [product, setProduct] = useState<PDetail>();
   const [priceByCapacity, setPriceByCapacity] = useState<number | null>(null);
   const [quantity, setQuantity] = useState<number>(1);
@@ -13,10 +14,12 @@ const ProductDetail = () => {
   const [activeTab, setActiveTab] = useState<string>("tab1");
   const { pid } = useParams();
 
+  const descriptionRef = useRef<HTMLParagraphElement>(null);
+
   const navs = [
     { id: "tab1", title: "Scent", activeTab, setActiveTab },
     { id: "tab2", title: "Feature", activeTab, setActiveTab },
-    { id: "tab3", title: "Recommendation", activeTab, setActiveTab },
+    { id: "tab3", title: "Recommend", activeTab, setActiveTab },
   ];
   const contents = [
     {
@@ -199,14 +202,18 @@ const ProductDetail = () => {
   ];
 
   useEffect(() => {
+    if (descriptionRef.current) {
+      setIsShowMore(descriptionRef.current?.clientHeight > 800);
+    }
+
     window.scrollTo(0, 0);
     const fetchData = async () => {
       const res = await fetch(
         `${import.meta.env.VITE_SERVER_URL}/products/detail/${pid}`,
       );
       const data = await res.json();
-      setProduct(data.product_detail);
-      setSimilarProduct(data.similar_products);
+      setProduct(data.metadata.product_detail);
+      setSimilarProduct(data.metadata.similar_products);
     };
     fetchData();
   }, [pid]);
@@ -215,9 +222,10 @@ const ProductDetail = () => {
     event: React.ChangeEvent<HTMLSelectElement>,
   ) => {
     product?.priceScale.forEach((item) => {
-      if (item.Capacity === event.target.value) setPriceByCapacity(item.Price);
+      item.Capacity === event.target.value && setPriceByCapacity(item.Price);
     });
   };
+
   const priceScaleReverse = [];
   if (product?.priceScale.length) {
     for (let i = product?.priceScale.length; i >= 0; i--) {
@@ -225,92 +233,131 @@ const ProductDetail = () => {
     }
   }
   priceScaleReverse.shift();
+  let displayGender: JSX.Element = <></>;
+  displayGender =
+    product?.Product_gender === "Male" ? (
+      <span className="flex gap-2">
+        <BsGenderMale />
+        {product?.Product_gender}
+      </span>
+    ) : product?.Product_gender === "Female" ? (
+      <span className="flex gap-2">
+        <BsGenderFemale />
+        {product?.Product_gender}
+      </span>
+    ) : (
+      <span className="flex gap-2">
+        <BsGenderMale />
+        <BsGenderFemale />
+        {product?.Product_gender}
+      </span>
+    );
 
   return (
     <>
-      <div className="mx-auto my-10 grid w-[90%] grid-cols-2">
-        <div className="mx-auto w-[100%]">
-          <div className="mx-auto w-[90%] ">
+      <div className="mx-auto my-10 w-[90%]">
+        <div className="mx-auto flex w-full flex-col sm:flex-row">
+          <div className="mx-auto w-[100%] sm:w-[50%]">
             <img
               className="mx-auto h-[400px] w-[400px]"
               src={product?.Pictures}
               alt="product picture"
             />
-            <p className="mb-4 mt-4 text-xl font-semibold">Description</p>
-            <p className="text-balance text-justify text-lg tracking-wide">
-              {product?.Description}
-            </p>
           </div>
-        </div>
 
-        <div className="flex flex-col text-[#666]">
-          <p className="mb-4">{product?.Brand_Name}</p>
-          <p className="mb-4 text-3xl text-[#000]">{product?.Product_name}</p>
-          <p className="mb-4">
-            {product?.Product_gender === "Male" ? (
-              <span className="flex gap-2">
-                <BsGenderMale />
-                {product?.Product_gender}
-              </span>
-            ) : product?.Product_gender === "Female" ? (
-              <span className="flex gap-2">
-                <BsGenderFemale />
-                {product?.Product_gender}
-              </span>
-            ) : (
-              <span className="flex gap-2">
-                <BsGenderMale />
-                <BsGenderFemale />
-                {product?.Product_gender}
-              </span>
-            )}
-          </p>
-          <p className="mb-4 text-2xl text-[#000]">
-            $ {priceByCapacity ? priceByCapacity : product?.display_price}
-          </p>
-          <div className="flex gap-4">
-            <p className="mb-2 w-[200px]">Capacity</p>
-            <p>Quantity</p>
-          </div>
-          <div className="flex gap-4">
-            <select
-              onChange={handleCapacityChange}
-              className="mb-10 w-[200px] p-2 outline outline-1"
-            >
-              {priceScaleReverse?.map((item) => (
-                <option value={item?.Capacity} key={item?._id}>
-                  {item?.Capacity}
-                </option>
-              ))}
-            </select>
-            <div className=" flex h-[36px] w-[120px] items-center justify-evenly gap-3  text-xl outline outline-1">
-              <button
-                disabled={quantity <= 1}
-                onClick={() => setQuantity((prev) => prev - 1)}
-                className="cursor-pointer p-3"
+          <div className="w-full sm:w-[50%]">
+            <p className="mb-4">{product?.Brand_Name}</p>
+            <p className="mb-4 text-3xl text-[#000]">{product?.Product_name}</p>
+            <p className="mb-4">{displayGender}</p>
+            <p className="mb-4 text-2xl text-[#000]">
+              $ {priceByCapacity ? priceByCapacity : product?.display_price}
+            </p>
+            <div className="flex gap-4">
+              <p className="mb-2 w-[200px]">Capacity</p>
+              <p>Quantity</p>
+            </div>
+            <div className="flex gap-4">
+              <select
+                onChange={handleCapacityChange}
+                className="mb-10 w-[200px] p-2 outline outline-1"
               >
-                -
+                {priceScaleReverse?.map((item) => (
+                  <option value={item?.Capacity} key={item?._id}>
+                    {item?.Capacity}
+                  </option>
+                ))}
+              </select>
+              <div className=" flex h-[36px] w-[120px] items-center justify-evenly gap-3  text-xl outline outline-1">
+                <button
+                  disabled={quantity <= 1}
+                  onClick={() => setQuantity((prev) => prev - 1)}
+                  className="cursor-pointer p-3"
+                >
+                  -
+                </button>
+                <span className="font-medium">{quantity}</span>
+                <button
+                  disabled={quantity >= 10}
+                  onClick={() => setQuantity((prev) => prev + 1)}
+                  className="cursor-pointer p-3"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+            <div className="flex gap-4">
+              <button className="w-[50%] bg-[#333] px-6 py-3 text-lg font-medium uppercase text-[#fff] sm:px-16">
+                Add to cart
               </button>
-              <span className="font-medium">{quantity}</span>
-              <button
-                disabled={quantity >= 10}
-                onClick={() => setQuantity((prev) => prev + 1)}
-                className="cursor-pointer p-3"
-              >
-                +
+              <button className="w-[50%] bg-[#9a1919] px-6 py-3 text-lg font-medium uppercase text-[#fff] sm:px-16">
+                Buy now
               </button>
             </div>
           </div>
-          <div className="flex gap-4">
-            <button className="w-[40%] bg-[#333] px-16 py-4 text-lg font-medium uppercase text-[#fff]">
-              Add to cart
-            </button>
-            <button className="w-[40%] bg-[#9a1919] px-16 py-4 text-lg font-medium uppercase text-[#fff]">
-              Buy now
-            </button>
-          </div>
+        </div>
 
-          <Tabs navs={navs} contents={contents} />
+        <div className="relative mt-10 flex flex-col justify-between text-[#666] sm:flex-row">
+          <div className="w-full sm:w-[45%]">
+            <div
+              className={`h-[400px] overflow-hidden ${
+                isShowMore ? "h-full" : ""
+              }`}
+            >
+              <p className="mb-4 text-xl font-bold">Description</p>
+              <p
+                ref={descriptionRef}
+                className="text-balance text-justify text-lg tracking-wider"
+              >
+                {product?.Description.slice(
+                  0,
+                  isShowMore ? product.Description.length : 800,
+                )}
+              </p>
+            </div>
+            {!isShowMore &&
+              product?.Description.length &&
+              product?.Description.length > 800 && (
+                <p
+                  onClick={() => setIsShowMore(true)}
+                  className={`block cursor-pointer bg-[#ffffff29] text-center font-semibold text-[#93932a]`}
+                >
+                  Show more
+                </p>
+              )}
+            {isShowMore &&
+              product?.Description.length &&
+              product?.Description.length > 800 && (
+                <p
+                  onClick={() => setIsShowMore(false)}
+                  className={`block cursor-pointer bg-[#ffffff29] text-center font-semibold text-[#93932a]`}
+                >
+                  Show less
+                </p>
+              )}
+          </div>
+          <div className="mt-10 w-full sm:mt-0 sm:w-[50%]">
+            <Tabs navs={navs} contents={contents} />
+          </div>
         </div>
       </div>
 
@@ -320,9 +367,9 @@ const ProductDetail = () => {
         <h1 className="mb-10 text-center font-heading text-4xl font-normal">
           Related Products
         </h1>
-        <div className="mx-auto grid w-[90%] grid-cols-5 justify-items-center">
+        <div className="mx-auto grid w-full grid-cols-2 sm:w-[90%] md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
           {similarProduct?.map((product) => (
-            <div key={product.PID}>
+            <div className="mb-8 sm:mb-4" key={product.PID}>
               <ProductItem product={product} />
             </div>
           ))}

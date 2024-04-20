@@ -30,26 +30,25 @@ const ProductList = () => {
       .then((res) => res.json())
       .then(
         (data: {
-          products_num: number;
-          productPerPage: number;
-          currentPage: number;
-          Page_nums: number;
-          products: Product[];
+          metadata: {
+            pageinfo: {
+              product_num: number;
+              productPerPage: number;
+              currentPage: number;
+              Page_nums: number;
+            };
+            products: Product[];
+          };
         }) => {
-          setPNum(data.products_num);
-          setProducts(data.products);
-          setTotalPage(data.Page_nums);
+          setPNum(data.metadata.pageinfo.product_num);
+          setProducts(data.metadata.products);
+          setTotalPage(data.metadata.pageinfo.Page_nums);
         },
       );
   };
 
-  // const query = `?${gender ? "gender=" + gender : ""}${
-  //   season ? "&season=" + season : ""
-  // }${price ? "&price=" + price : ""}${brand ? "&brand=" + brand : ""}${
-  //   sort ? "&sort=" + sort : ""
-  // }`;
-
   useEffect(() => {
+    window.scrollTo(0, 0);
     handleProductNumChange(pNum);
     setIsLoading(true);
 
@@ -60,6 +59,7 @@ const ProductList = () => {
         sort ? "&sort=" + sort : ""
       }`,
     );
+
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 1000);
@@ -69,45 +69,42 @@ const ProductList = () => {
 
   return (
     <>
-      {products.length !== 0 ? (
-        <>
-          <div className="relative w-[80%]">
-            <div className="grid grid-cols-4">
-              {products.map((product) => (
-                <div key={product.PID}>
-                  <ProductItem product={product} />
-                </div>
-              ))}
+      <div className="relative w-full xl:w-[80%]">
+        <div className="grid grid-cols-2 gap-y-6 sm:grid-cols-2 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">
+          {products.map((product) => (
+            <div key={product.PID}>
+              <ProductItem product={product} />
             </div>
-            <Pagination currentPage={page ? page : 1} totalPages={totalPage} />
+          ))}
+        </div>
+        <Pagination currentPage={page ? page : 1} totalPages={totalPage} />
+        {products.length === 0 && (
+          <p className="absolute left-[50%] top-[10%] translate-x-[-50%] p-4 text-xl font-medium outline outline-[#ddaf6a]">
+            No products were found matching your selection.
+          </p>
+        )}
+      </div>
+      <Overlay
+        bg="bg-[#f6f3f360]"
+        isShow={isLoading}
+        children={
+          <div>
+            <ScaleLoader
+              color="#f8b500"
+              height={80}
+              margin={4}
+              radius={0}
+              speedMultiplier={1}
+              width={10}
+              cssOverride={{
+                top: "20%",
+                transform: "translateX(100%)",
+                position: "absolute",
+              }}
+            />
           </div>
-          <Overlay
-            bg="bg-[#f6f3f360]"
-            isShow={isLoading}
-            children={
-              <div>
-                <ScaleLoader
-                  color="#f8b500"
-                  height={80}
-                  margin={4}
-                  radius={0}
-                  speedMultiplier={1}
-                  width={10}
-                  cssOverride={{
-                    top: "20%",
-                    transform: "translateX(100%)",
-                    position: "absolute",
-                  }}
-                />
-              </div>
-            }
-          ></Overlay>
-        </>
-      ) : (
-        <p className="absolute top-[30%] translate-x-[120%] p-4 text-xl font-medium outline outline-[#ddaf6a]">
-          No products were found matching your selection.
-        </p>
-      )}
+        }
+      ></Overlay>
     </>
   );
 };

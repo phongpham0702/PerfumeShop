@@ -47,3 +47,11 @@ body.preload * {
     padding 0s,
     margin 0s !important;
 }
+
+.show-more {
+  -webkit-mask-image: linear-gradient(#ffffff, #ffffff, rgba(255, 255, 255, 0));
+}
+
+.show-less {
+  -webkit-mask-image: unset;
+}
