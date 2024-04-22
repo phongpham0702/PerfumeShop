@@ -1,4 +1,5 @@
 const userModel = require("../models/users")
+const {ServerError} = require('../helpers/error.response')
 const bcrypt = require('bcrypt');
 class SignUpService{
 
@@ -21,13 +22,10 @@ class SignUpService{
         }
         else
         {
-            return {"message": 'Something wrong during sign up your account 😢'}
+            throw new ServerError('Something wrong during sign up your account 😢',503)
         }
 
     }
-    
-
-    
 
 }
 

@@ -50,6 +50,7 @@ class CREATED extends SuccessResponse{
 
 
 module.exports = {
+    SuccessResponse,
     CREATED,
     OK
 }

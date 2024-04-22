@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const productController =   require("../controllers/products.controller")
-const {errorHandler} = require("../middlewares/error_handler")
+const {errorHandler} = require("../helpers/error_handler")
 
 router.route("/bestseller")
 .get(errorHandler(productController.getBestSeller))

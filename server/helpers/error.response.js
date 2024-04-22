@@ -49,6 +49,36 @@ class SignUpInValid extends ErrorResponse{
 
 }
 
+class AuthFailureError extends ErrorResponse{
+
+    constructor(message = HTTP_STATUS_CODE.StatusCodes.UNAUTHORIZED,
+        status = HTTP_STATUS_CODE.StatusCodes.UNAUTHORIZED) 
+    {
+        super(message,status)   
+        this.message = message 
+    }
+
+}
+
+class NotFoundError extends ErrorResponse{
+
+    constructor(message = HTTP_STATUS_CODE.StatusCodes.NOT_FOUND,
+        status = HTTP_STATUS_CODE.StatusCodes.NOT_FOUND) 
+    {
+        super(message,status)   
+        this.message = message 
+    }
+
+}
+
+class NotAcceptError extends ErrorResponse{
+    constructor(message = HTTP_STATUS_CODE.ReasonMessage.NOT_ACCEPTABLE,
+        status = HTTP_STATUS_CODE.StatusCodes.NOT_ACCEPTABLE) 
+    {
+        super(message,status)
+        
+    }
+}
 
 
 
@@ -56,5 +86,7 @@ module.exports = {
     ForbiddenError,
     BadRequestError,
     ServerError,
-    SignUpInValid
+    SignUpInValid,
+    AuthFailureError,
+    NotFoundError
 }

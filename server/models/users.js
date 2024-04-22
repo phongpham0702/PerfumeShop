@@ -1,4 +1,3 @@
-const { truncate } = require("fs/promises");
 const {model,Schema,Types} = require("mongoose")
 
 const userSchema = new Schema({
@@ -31,7 +30,7 @@ const userSchema = new Schema({
     PhoneNumber:{
         type:String,
         unique: true,
-        require:truncate
+        require:true
     },
     Cart:{
         type:[String],
