@@ -1,3 +1,5 @@
+const {Types} = require('mongoose')
+const seasonAcceptRate = 0.65;
 class PipeLineGenerator {
     constructor() {
         if (!PipeLineGenerator.instance) {
@@ -9,23 +11,14 @@ class PipeLineGenerator {
     generate_productBasic = () =>{
         return [
                 {
-                    '$lookup':{
-                        'from': 'brands',
-                        'localField': 'Product_brand',
-                        'foreignField': 'BID',
-                        'as': 'brandInfo'
-                    }
-                },
-                {
                     '$project':
                     {   
-                        '_id':0,
-                        'PID': 1,
-                        'Product_name': 1,
-                        'Product_gender':1,
-                        'Brand_Name': {$arrayElemAt:["$brandInfo.Name",0]},
-                        'display_price': {$min:"$priceScale.Price"},
-                        'Pictures': 1,
+                        '_id':1,
+                        'productName': 1,
+                        'productGender':1,
+                        'productBrand': 1,
+                        'displayPrice': {$min:"$priceScale.price"},
+                        'productThumbnail': 1,
                     }
                 },
         ]
@@ -33,31 +26,20 @@ class PipeLineGenerator {
 
     generate_productDetail = ()=> {
         return [
-
-            {
-                '$lookup': {
-                    'from': 'brands',
-                    'localField':'Product_brand',
-                    'foreignField': 'BID',
-                    'as': 'brandInfo'
-                }
-            },
-        
+   
             {
                 '$project': {
-                    '_id': 0,
-                    'PID': 1,
-                    'Product_name': 1,
-                    'Brand_Name': {$arrayElemAt:["$brandInfo.Name",0]},
-                    'Product_gender':1,
+                    '_id': 1,
+                    'productName': 1,
+                    'productBrand': 1,
+                    'productGender':1,
                     'priceScale': 1,
-                    'display_price': { $min: "$priceScale.Price" },
-                    'Features':1,
-                    'Scent':1,
+                    'productFeatures':1,
+                    'productScent':1,
                     'seasonRate':1,
                     'dayNightRate':1,
-                    'Pictures': 1,
-                    'Description':1,
+                    'productThumbnail': 1,
+                    'productDescription':1,
                 }
             }
         
@@ -82,24 +64,9 @@ class PipeLineGenerator {
             {
                 $addFields:
                 {
-                    display_price:{ $min: "$priceScale.Price" }
+                    displayPrice:{ $min: "$priceScale.price" }
                 }   
             },
-            
-            {
-                $lookup : {
-                    from: 'brands',
-                    localField: 'Product_brand',
-                    foreignField: 'BID',
-                    as: 'brandInfo'
-                }
-            },
-
-            { 
-                $addFields:{
-                    Brand_Name: {$arrayElemAt:["$brandInfo.Name",0]},
-                }
-            }
         ].concat(generateFilter(Filter))
         
         let pagePipeline = filterPipeLine.concat([
@@ -108,13 +75,12 @@ class PipeLineGenerator {
             {$limit : productPerPage},
             {
                 $project:{
-                    _id: 0,
-                    'PID': 1,
-                    'Product_name': 1,
-                    'Product_gender':1,
-                    'Brand_Name': 1,
-                    'display_price': 1,
-                    'Pictures': 1,
+                    '_id': 1,
+                    'productName': 1,
+                    'productGender':1,
+                    'productBrand': 1,
+                    'displayPrice': 1,
+                    'productThumbnail': 1,
                 }
             }
         ])
@@ -124,30 +90,39 @@ class PipeLineGenerator {
     }
 
     generate_bestSeller = (limit)=> {
-        let bestSeller_PipeLine = this.generate_productBasic().concat(
-    [
+        let bestSeller_PipeLine =[
                                 
-                {
-                    $sort :{"Sold": -1}
-                },
-                {
-                    $group:{
-                        _id: "$Product_gender",
-                        products: {$push: "$$ROOT",},
-                    }
-                },
-                {
-                    $project:{
-                        _id: 0,
-                        gender : "$_id",
-                        products: {
-                            $slice: ["$products", limit],
-                        },
-                    }
+            {
+                $sort :{"sold": -1}
+            },
+            {
+                '$project':
+                {   
+                    '_id':1,
+                    'productName': 1,
+                    'productGender':1,
+                    'productBrand': 1,
+                    'displayPrice': {$min:"$priceScale.price"},
+                    'productThumbnail': 1,
                 }
-            ]
+            },
+            {
+                $group:{
+                    _id: "$productGender",
+                    products: {$push: "$$ROOT",},
+                }
+            },
+            {
+                $project:{
+                    _id: 0,
+                    gender : "$_id",
+                    products: {
+                        $slice: ["$products", limit],
+                    },
+                }
+            }
+        ]
 
-        )   
         return bestSeller_PipeLine
          
     }
@@ -171,7 +146,7 @@ class PipeLineGenerator {
             [
                 {
                     $addFields:{
-                        'FullName': { $concat: ["$Brand_Name"," ","$Product_name"] }
+                        'FullName': { $concat: ["$productBrand"," ","$productName"] }
                     }
                 },
                 {
@@ -194,25 +169,16 @@ class PipeLineGenerator {
         let pipeline = [
             {
                 '$match':{
-                    PID:{$in: id_list}
+                    _id:{$in: id_list}
                 }
             },             
             {
-                '$lookup' : {
-                    from: 'brands',
-                    localField: 'Product_brand',
-                    foreignField: 'BID',
-                    as: 'brandInfo'
-                }
-            },
-            {
                 '$project':{
-                    _id: 0,
-                    PID: 1,
-                    Product_name: 1,
-                    Brand_Name: {$arrayElemAt:["$brandInfo.Name",0]},
-                    display_price: {$min: "$priceScale.Price"},
-                    Pictures: 1,
+                    _id: 1,
+                    productName: 1,
+                    productBrand: 1,
+                    displayPrice: {$min: "$priceScale.price"},
+                    productThumbnail: 1,
                 }
             }
         ]
@@ -229,21 +195,21 @@ function generateFilter(filterObj)
     {
         let brandName = filterObj.brand.replaceAll("-"," ")
         filterQuery.push({
-            '$match': {'Brand_Name' : brandName}
+            '$match': {'productBrand' : brandName}
         })
     }
 
     if((filterObj.gender) && (typeof(filterObj.gender) === "string"))
     {
         filterQuery.push({
-            '$match': {'Product_gender' : filterObj.gender}
+            '$match': {'productGender' : filterObj.gender}
         })
     }
 
     if((filterObj.gender) && (typeof(filterObj.gender) === "object"))
     {
         filterQuery.push({
-            '$match': {'Product_gender' :{'$in':[...filterObj.gender]} }
+            '$match': {'productGender' :{'$in':[...filterObj.gender]} }
         })
     }
 
@@ -255,7 +221,7 @@ function generateFilter(filterObj)
 
         filterQuery.push({
             '$match': {
-                'display_price':{
+                'displayPrice':{
                     '$gte': parseInt(minPrice),
                     '$lte': parseInt(maxPrice)
                 }
@@ -265,7 +231,6 @@ function generateFilter(filterObj)
     
     if(filterObj.season)
     {   
-        const accept_Rate = 0.65;
         let season_filter = []
         if(typeof(filterObj.season) === "string")
         {   
@@ -284,7 +249,7 @@ function generateFilter(filterObj)
         //Closure func
         function generateSeasonQuery(query_prop){
             let seasonFilterQuery = {}
-            seasonFilterQuery[query_prop] = {'$gte': accept_Rate}
+            seasonFilterQuery[query_prop] = {'$gte': seasonAcceptRate}
             return seasonFilterQuery;
         }
 
@@ -302,22 +267,22 @@ function generateFilter(filterObj)
         switch (filterObj.sort) {
             case 'price':
                 filterQuery.push({      
-                    "$sort": {'display_price' : 1}    
+                    "$sort": {'displayPrice' : 1}    
                })
                 break;
             case 'price_desc':
                 filterQuery.push({      
-                    "$sort": {'display_price' : -1}    
+                    "$sort": {'displayPrice' : -1}    
                })
                 break;
             case 'az':
                 filterQuery.push({      
-                    "$sort": {'Product_name' : 1}    
+                    "$sort": {'productName' : 1}    
                })
                 break;
             case 'za':
                 filterQuery.push({      
-                    "$sort": {'Product_name' : -1}    
+                    "$sort": {'productName' : -1}    
                })
                 break;
         }

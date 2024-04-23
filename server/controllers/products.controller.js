@@ -1,5 +1,5 @@
 const responseHelper = require("../helpers/success.response")
-
+const {Types} = require('mongoose')
 const ProductService = require("../services/products.service")
 
 
@@ -14,9 +14,9 @@ class ProductController
     }
 
     getProductDetail = async(req,res,next) => {
-
+        
         new responseHelper.OK({
-            metadata: await ProductService.productDetail(req.params.pid)
+            metadata: await ProductService.productDetail(new Types.ObjectId(req.params.pid))
         }).send(res)
 
     }

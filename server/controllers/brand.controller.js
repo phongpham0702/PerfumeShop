@@ -1,16 +1,16 @@
-const responseHelper = require("../helpers/success.response");
-const BrandService = require("../services/brand.service");
+// const responseHelper = require("../helpers/success.response");
+// const BrandService = require("../services/brand.service");
 
-class BrandController{
+// class BrandController{
 
-    getBrands = async(req,res,next) => {
-      new responseHelper.OK({
-        metadata: await BrandService.getAllBrands()
-      }).send(res)
-    }
+//     getBrands = async(req,res,next) => {
+//       new responseHelper.OK({
+//         metadata: await BrandService.getAllBrands()
+//       }).send(res)
+//     }
 
-}
+// }
 
 
 
-module.exports = new BrandController();
+// module.exports = new BrandController();
