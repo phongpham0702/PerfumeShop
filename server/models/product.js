@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
+const {model,Schema,Types} = require("mongoose");
 
-const productSchema = mongoose.Schema({
+const productSchema = new Schema({
 
     PID:{
         type:String,
@@ -67,4 +67,4 @@ productSchema.pre('save', function(next) {
     next();
 });
 
-module.exports = mongoose.model("Product",productSchema);
+module.exports = model("Product",productSchema);

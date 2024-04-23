@@ -19,7 +19,7 @@ const signInRouter = require('./routes/auth.router')
 
 const app = express();
 
-database.connect_db();
+database.connectDB()
 
 //init_redis.connect_redis();
 
@@ -75,7 +75,7 @@ app.use(function (err, req, res, next) {
   return res.status(statusCode).json({ 
     status: 'Error',
     code: statusCode,
-    message: err.status == 500 ? 'Something went wrong :(' : (err.message || 'Internal Server Error')
+    message: statusCode === 500 ? 'Something went wrong :(' : (err.message || 'Internal Server Error')
   });
 });
 

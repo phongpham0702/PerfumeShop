@@ -188,6 +188,36 @@ class PipeLineGenerator {
         )
         return pipeLine
     }
+
+    generate_findProductById = (id_list) => {
+
+        let pipeline = [
+            {
+                '$match':{
+                    PID:{$in: id_list}
+                }
+            },             
+            {
+                '$lookup' : {
+                    from: 'brands',
+                    localField: 'Product_brand',
+                    foreignField: 'BID',
+                    as: 'brandInfo'
+                }
+            },
+            {
+                '$project':{
+                    _id: 0,
+                    PID: 1,
+                    Product_name: 1,
+                    Brand_Name: {$arrayElemAt:["$brandInfo.Name",0]},
+                    display_price: {$min: "$priceScale.Price"},
+                    Pictures: 1,
+                }
+            }
+        ]
+        return pipeline
+    }   
 }
 
 

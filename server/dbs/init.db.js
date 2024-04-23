@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
-let statusConnectDB = {
-  CONNECTING:'connecting',
+const statusConnectDB = {
   CONNECTED:'connected',
   DISCONNECTED: 'disconnected',
   RECONNECT: 'reconnected',
@@ -11,10 +10,10 @@ let statusConnectDB = {
 const handleEventConnection = (DB_Connection) => {
     
   DB_Connection.on(statusConnectDB.CONNECTED,function (){
-    console.log(`Connect Database: ${this.name} Connected`);
+    console.log(`Connect Database: ${this.name} connected`);
   }),
-  DB_Connection.on(statusConnectDB.DISCONNECTED,() => {
-      console.log(`Connect Database: Disconnected`);
+  DB_Connection.on(statusConnectDB.DISCONNECTED,function () {
+      console.log(`Connect Database: ${this.name} disconnected`);
   }),
 
   DB_Connection.on(statusConnectDB.RECONNECT,() => {
@@ -27,19 +26,30 @@ const handleEventConnection = (DB_Connection) => {
 
 }
 
-handleEventConnection(mongoose.connection)
+class Database{
+  constructor() {
+    handleEventConnection(mongoose.connection)
+  }
 
-async function connect_db() 
-{  
-  try 
-  {
-    await mongoose.connect(process.env.DB_URI,{
-      //connectTimeoutMS: 10000
-    })
-  } catch (error) 
-  {
-    console.error('Error connecting to MongoDB:', error);
+  static getInstance = () => {
+    if(!Database.instance)
+    {
+      Database.instance = new Database()
+    }
+    return Database.instance
+  }
+
+  connectDB = async ()=>{
+    try 
+    {
+      await mongoose.connect(process.env.DB_URI,{
+        //connectTimeoutMS: 10000
+      })
+    } catch (error) 
+    {
+      console.error(error);
+    }
   }
 }
 
-module.exports = { connect_db };
+module.exports = Database.getInstance();
