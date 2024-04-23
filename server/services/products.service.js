@@ -1,11 +1,12 @@
 const productModel = require('../models/product')
 const PipeLineGenerator = require('../helpers/pipeline.generator')
 const {BadRequestError, ServerError} = require('../helpers/error.response')
+const {Types} = require('mongoose')
 class ProductService
 {
 
     static checkProduct = async(productID) => {
-        let product = await productModel.findOne({"PID": productID}).select(["PID"]).lean()
+        let product = await productModel.findOne({'_id':new Types.ObjectId(productID)}).select(["_id"]).lean()
 
         if(!product)
         {
@@ -109,7 +110,7 @@ class ProductService
 
         let pipeline = [
             {
-                $match : {'PID': pid}
+                $match : {'_id': new Types.ObjectId(pid)}
             },
                                 
         ].concat(PipeLineGenerator.generate_productDetail()) 
@@ -134,12 +135,12 @@ class ProductService
         try 
         {
             const num_of_products = 10;
-            let current_product_id = product.PID
-            let gender = [product["Product_gender"]];
-            let main_scent = product.Scent.Main.join("|")
-            let first_scent = product.Scent.First.join("|")
-            let middle_scent = product.Scent.Middle.join("|")
-            let final_scent = product.Scent.Final.join("|")
+            let current_product_id = product['_id']
+            let gender = [product["productGender"]];
+            let mainScent = product.productScent.mainScent.join("|")
+            let firstNotes = product.productScent.firstNotes.join("|")
+            let middleNotes = product.productScent.middleNotes.join("|")
+            let finalNotes = product.productScent.finalNotes.join("|")
             
             if(gender[0] !== "Unisex")
             {
@@ -150,14 +151,14 @@ class ProductService
 
                 {
                     "$match":{
-                        "PID":{
-                            $ne: current_product_id
+                        "_id":{
+                            $ne: new Types.ObjectId(current_product_id)
                         },
-                        "Product_gender":{
+                        "productGender":{
                             $in: gender
                         },
-                        "Scent.Main":{
-                        $regex: main_scent,
+                        "productScent.mainScent":{
+                        $regex: mainScent,
                         $options: "i",
                         },
                     }
@@ -207,10 +208,10 @@ class ProductService
     }
 
 
-    static getProductNameById = async(pid) => {
-        let productName = await productModel.findOne({"PID":pid}).select(["Product_name"]).lean()
+    static getProductNameById = async(productID) => {
+        let productName = await productModel.findOne({'_id':new Types.ObjectId(productID)}).select(["productName"]).lean()
 
-        return productName['Product_name']
+        return productName['productName']
     }
     
     static getProductsById = async (id_list) => {

@@ -1,21 +1,33 @@
-const {model,Schema,Types} = require("mongoose");
+const {model,Schema,Types} = require("mongoose")
 
 const productSchema = new Schema({
 
-    PID:{
-        type:String,
-        unique: true,
+    productName:{
+        type: String,
+        required: true
+    },
+    productBrand:{
+        type: String,
         required: true,
     },
-
-    Product_name: String,
-    Product_gender:String,
-    Product_brand: String,
-    Scent:{
-        Main:[String],
-        First: [String],
-        Middle: [String],
-        Final: [String],
+    productGender:{
+        type:String,
+        enum:["Male","Female","Unisex"]
+    },
+    productScent:{
+        mainScent:[String],
+        firstNotes: [String],
+        middleNotes: [String],
+        finalNotes: [String],
+    },
+    priceScale: [{
+        capacity: String,
+        price: Number,
+    }],
+    productFeatures:{
+        release: String,
+        suitableAge: String,
+        savingTime: String
     },
     seasonRate: {
         Spring: Number,
@@ -28,43 +40,27 @@ const productSchema = new Schema({
         night: Number,
     },
     
-    priceScale: [{
-        Capacity: String,
-        Price: Number,
-    }],
-
-    Features:{
-        release: String,
-        suitable_age: String,
-        fragrant_saving: String,
-    },
-
-    Sold:{
+    productQuantity:{
         type:Number,
         default: 0,
         min: 0
     },
-    
-    Pictures: {
+    sold:{
+        type:Number,
+        default: 0,
+        min: 0
+    },
+    productThumbnail:{
         type:String,
+        required:true
     },
-    Description: String,
-    lastUpdated:{
-        type:Date,
-        default: new Date(Date.now())
-    },
+    productDescription: String
 
-    createdAt:{
-        type:Date,
-        default: new Date(Date.now())
-    },
-    
-})
+},
+{
+    timestamps: true,
+}
 
-productSchema.pre('save', function(next) {
-    
-    this.lastUpdated = new Date(Date.now())
-    next();
-});
+)
 
-module.exports = model("Product",productSchema);
+module.exports = model("Products", productSchema);
