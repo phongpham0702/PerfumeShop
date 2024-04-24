@@ -8,6 +8,8 @@ class SignUpService{
         let salt = parseInt(process.env.SALT_ROUNDS)
         let hashedPassword = bcrypt.hashSync(Password, salt)
         
+        DoB = DoB.split("/").reverse().join("/")
+
         let new_user = await userModel.create({
                     Email: Email,
                     Password: hashedPassword,

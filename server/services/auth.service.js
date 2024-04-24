@@ -5,7 +5,8 @@ const KeyTokenService = require('./keyToken.service')
 const {createTokenPair} = require('../utils/token.util')
 const {LoginFail, AuthFailureError, ForbiddenError} = require('../helpers/error.response')
 const bcrypt = require('bcrypt');
-const { verifyJWT } = require("../utils/auth.util")
+const { verifyJWT, decodeJWT} = require("../utils/auth.util")
+const { JsonWebTokenError } = require("jsonwebtoken")
 
 class AuthService{
 
@@ -82,9 +83,46 @@ class AuthService{
             throw new ForbiddenError('We suspect your account is being impersonated. Please log in again.')
         }
 
+        //Token is not used
+        //- find RT secret key in database
         let userToken = await KeyTokenService.findRefreshToken(refreshToken)
 
         if(!userToken) throw new AuthFailureError()
+
+        //- verify token
+        let { userId, Email} = await decodeJWT(refreshToken, userToken.privateKey)
+
+        //- check user email
+        let userInfo = await UserService.findByEmail(Email)
+
+        if(!userInfo) throw new AuthFailureError()
+
+        //create new token
+        let newToken = await createTokenPair({
+            userId: userInfo._id,
+            Email : userInfo.Email,
+        },userToken.publicKey, userToken.privateKey)
+
+        //update token
+
+        await userToken.updateOne({
+            $set:{
+                'refreshToken': newToken.refreshToken
+            },
+            $addToSet:{
+                'refreshTokenUsed': refreshToken
+            }
+        })
+
+        return {
+            userInfo:{
+                userId: userInfo._id,
+                email: userInfo.Email,
+                name: userInfo.FullName
+            },
+            token: token.accessToken
+        }
+
     }
 }
 
