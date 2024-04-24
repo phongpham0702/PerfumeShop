@@ -1,52 +1,48 @@
 export interface Product {
-  PID: string;
-  Product_name: string;
-  priceScale: {
-    Capacity: string;
-    Price: number;
-    _id: string;
-  }[];
-  Pictures: string;
-  Brand_Name: string;
-  display_price: number;
+  _id: string;
+  productName: string;
+  productGender: string;
+  productThumbnail: string;
+  productBrand: string;
+  displayPrice: number;
 }
 export interface BestsellerProduct {
-  PID: string;
-  Product_name: string;
-  Sold?: number;
-  Pictures: string;
-  Brand_Name: string;
-  display_price: number;
-  Product_gender?: string;
+  _id: string;
+  productName: string;
+  productThumbnail: string;
+  productBrand: string;
+  displayPrice: number;
+  productGender?: string;
 }
 export interface SimilarProduct {
-  PID: string;
-  Product_name: string;
-  Pictures: string;
-  Brand_Name: string;
-  display_price: number;
+  _id: string;
+  productName: string;
+  productThumbnail: string;
+  productBrand: string;
+  productGender: string;
+  displayPrice: number;
 }
 
 export interface ProductDetail {
-  PID: string;
-  Product_name: string;
-  Brand_Name: string;
-  Product_gender: string;
+  _id: string;
+  productName: string;
+  productBrand: string;
+  productGender: string;
   priceScale: {
-    Capacity: string;
-    Price: number;
+    capacity: string;
+    price: number;
     _id: string;
   }[];
-  Features: {
+  productFeatures: {
     release: string;
-    suitable_age: string;
-    fragrant_saving: string;
+    suitableAge: string;
+    savingTime: string;
   };
-  Scent: {
-    Main: string[];
-    First: string[];
-    Middle: string[];
-    Final: string[];
+  productScent: {
+    mainScent: string[];
+    firstNotes: string[];
+    middleNotes: string[];
+    finalNotes: string[];
   };
   seasonRate: {
     Spring: number;
@@ -58,8 +54,7 @@ export interface ProductDetail {
     day: number;
     night: number;
   };
-  Pictures: string;
-  Description: string;
-  display_price: number;
-  similar_products: SimilarProduct[];
+  productThumbnail: string;
+  productDescription: string;
+  similarProducts: SimilarProduct[];
 }

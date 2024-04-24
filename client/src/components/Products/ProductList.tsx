@@ -32,17 +32,17 @@ const ProductList = () => {
         (data: {
           metadata: {
             pageinfo: {
-              product_num: number;
+              productNum: number;
               productPerPage: number;
               currentPage: number;
-              Page_nums: number;
+              PageNum: number;
             };
             products: Product[];
           };
         }) => {
-          setPNum(data.metadata.pageinfo.product_num);
+          setPNum(data.metadata.pageinfo.productNum);
           setProducts(data.metadata.products);
-          setTotalPage(data.metadata.pageinfo.Page_nums);
+          setTotalPage(data.metadata.pageinfo.PageNum);
         },
       );
   };
@@ -72,12 +72,16 @@ const ProductList = () => {
       <div className="relative w-full xl:w-[80%]">
         <div className="grid grid-cols-2 gap-y-6 sm:grid-cols-2 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">
           {products.map((product) => (
-            <div key={product.PID}>
+            <div key={product._id}>
               <ProductItem product={product} />
             </div>
           ))}
         </div>
-        <Pagination currentPage={page ? page : 1} totalPages={totalPage} />
+        <Pagination
+          currentPage={page ? page : "1"}
+          productNum={pNum}
+          totalPages={totalPage}
+        />
         {products.length === 0 && (
           <p className="absolute left-[50%] top-[10%] translate-x-[-50%] p-4 text-xl font-medium outline outline-[#ddaf6a]">
             No products were found matching your selection.
@@ -88,23 +92,21 @@ const ProductList = () => {
         bg="bg-[#f6f3f360]"
         isShow={isLoading}
         children={
-          <div>
-            <ScaleLoader
-              color="#f8b500"
-              height={80}
-              margin={4}
-              radius={0}
-              speedMultiplier={1}
-              width={10}
-              cssOverride={{
-                top: "20%",
-                transform: "translateX(100%)",
-                position: "absolute",
-              }}
-            />
-          </div>
+          <ScaleLoader
+            color="#f8b500"
+            height={80}
+            margin={4}
+            radius={0}
+            speedMultiplier={1}
+            width={10}
+            cssOverride={{
+              top: "50%",
+              transform: "translateX(100%)",
+              position: "absolute",
+            }}
+          />
         }
-      ></Overlay>
+      />
     </>
   );
 };

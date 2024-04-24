@@ -1,8 +1,7 @@
-import React from "react";
-
 type propsType = {
   isShow: boolean;
   children: React.ReactNode;
+  handleClose?: () => void;
   bg: string;
 };
 
@@ -11,11 +10,11 @@ const Overlay = ({ isShow, children, bg }: propsType) => {
     <div
       className={
         isShow
-          ? `absolute left-0 top-0 flex h-[100%] w-[100%]  animate-[fadeIn_0.4s_ease-in-out]  justify-center rounded-md ${bg}`
-          : "hidden"
+          ? `fixed left-0 top-0 z-[100] flex h-[100%] w-[100%] animate-[fadeIn_0.4s_ease-in-out]  justify-center rounded-md ${bg}`
+          : " hidden animate-[fadeOut_0.4s_ease-in-out]"
       }
     >
-      <div>{children}</div>
+      {children}
     </div>
   );
 };

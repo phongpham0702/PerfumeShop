@@ -54,6 +54,22 @@ export default {
             "z-index": -10,
           },
         },
+        goIn: {
+          "0%": {
+            transform: "translateX(320px)",
+          },
+          "100%": {
+            transform: "translateX(0)",
+          },
+        },
+        goOut: {
+          "0%": {
+            transform: "translateX(0)",
+          },
+          "100%": {
+            transform: "translateX(100%)",
+          },
+        },
       },
       animation: {
         goUp: "goUp .45s ease-out both",

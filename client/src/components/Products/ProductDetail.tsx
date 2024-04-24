@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import Tabs from "../../ui/Tabs/Tabs";
 import { BsGenderFemale, BsGenderMale } from "react-icons/bs";
 import ProductItem from "./ProductItem";
+import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
 
 const ProductDetail = () => {
   const [isShowMore, setIsShowMore] = useState<boolean>(false);
@@ -13,7 +14,8 @@ const ProductDetail = () => {
   const [similarProduct, setSimilarProduct] = useState<SimilarProduct[]>();
   const [activeTab, setActiveTab] = useState<string>("tab1");
   const { pid } = useParams();
-
+  const displayPrice =
+    product?.priceScale[product?.priceScale.length - 1].price;
   const descriptionRef = useRef<HTMLParagraphElement>(null);
 
   const navs = [
@@ -29,25 +31,25 @@ const ProductDetail = () => {
         <div className="grid grid-cols-4">
           <p className="font-semibold">Main</p>
           <div className="col-span-3 mb-4 tracking-wider">
-            {product?.Scent.Main.join(", ")}
+            {product?.productScent.mainScent.join(", ")}
             <hr className="h-[1.5px] bg-[#333]" />
           </div>
 
           <p className="font-semibold">First</p>
           <div className="col-span-3 mb-4 tracking-wider">
-            {product?.Scent.First.join(", ")}
+            {product?.productScent.firstNotes.join(", ")}
             <hr className="h-[1.5px] bg-[#333]" />
           </div>
 
           <p className="font-semibold">Middle</p>
           <div className="col-span-3 mb-4 tracking-wider">
-            {product?.Scent.Middle.join(", ")}
+            {product?.productScent.middleNotes.join(", ")}
             <hr className="h-[1.5px] bg-[#333]" />
           </div>
 
           <p className="font-semibold">Final</p>
           <div className="col-span-3 mb-4 tracking-wider">
-            {product?.Scent.Final.join(", ")}
+            {product?.productScent.finalNotes.join(", ")}
             <hr className="h-[1.5px] bg-[#333]" />
           </div>
         </div>
@@ -59,11 +61,11 @@ const ProductDetail = () => {
       children: (
         <div className="grid grid-cols-4">
           <p className="mb-4 font-semibold">Release</p>
-          <p className="col-span-3">{product?.Features.release}</p>
+          <p className="col-span-3">{product?.productFeatures.release}</p>
           <p className="mb-4 font-semibold">Gender</p>
-          <p className="col-span-3">{product?.Product_gender}</p>
+          <p className="col-span-3">{product?.productGender}</p>
           <p className="mb-4 font-semibold">Age</p>
-          <p className="col-span-3">{product?.Features.suitable_age}</p>
+          <p className="col-span-3">{product?.productFeatures.suitableAge}</p>
           <p className="mb-4 mt-1 font-semibold">Retention</p>
           <p
             style={{
@@ -78,8 +80,8 @@ const ProductDetail = () => {
               className="h-[10px]"
               style={{
                 width: `${
-                  product?.Features.fragrant_saving
-                    ? +product?.Features.fragrant_saving * 10
+                  product?.productFeatures.savingTime
+                    ? +product?.productFeatures.savingTime * 10
                     : 0
                 }%`,
                 textAlign: "right",
@@ -88,7 +90,7 @@ const ProductDetail = () => {
               }}
             >
               <span className="absolute top-[-20px]">
-                {product?.Features.fragrant_saving}
+                {product?.productFeatures.savingTime}
               </span>
             </p>
             <span className="absolute right-0 top-[-20px]">10</span>
@@ -212,8 +214,8 @@ const ProductDetail = () => {
         `${import.meta.env.VITE_SERVER_URL}/products/detail/${pid}`,
       );
       const data = await res.json();
-      setProduct(data.metadata.product_detail);
-      setSimilarProduct(data.metadata.similar_products);
+      setProduct(data.metadata.productDetail);
+      setSimilarProduct(data.metadata.similarProducts);
     };
     fetchData();
   }, [pid]);
@@ -222,94 +224,94 @@ const ProductDetail = () => {
     event: React.ChangeEvent<HTMLSelectElement>,
   ) => {
     product?.priceScale.forEach((item) => {
-      item.Capacity === event.target.value && setPriceByCapacity(item.Price);
+      item.capacity === event.target.value && setPriceByCapacity(item.price);
     });
   };
 
-  const priceScaleReverse = [];
-  if (product?.priceScale.length) {
-    for (let i = product?.priceScale.length; i >= 0; i--) {
-      priceScaleReverse.push(product?.priceScale[i]);
-    }
-  }
-  priceScaleReverse.shift();
   let displayGender: JSX.Element = <></>;
   displayGender =
-    product?.Product_gender === "Male" ? (
+    product?.productGender === "Male" ? (
       <span className="flex gap-2">
         <BsGenderMale />
-        {product?.Product_gender}
+        {product?.productGender}
       </span>
-    ) : product?.Product_gender === "Female" ? (
+    ) : product?.productGender === "Female" ? (
       <span className="flex gap-2">
         <BsGenderFemale />
-        {product?.Product_gender}
+        {product?.productGender}
       </span>
     ) : (
       <span className="flex gap-2">
         <BsGenderMale />
         <BsGenderFemale />
-        {product?.Product_gender}
+        {product?.productGender}
       </span>
     );
 
   return (
     <>
-      <div className="mx-auto my-10 w-[90%]">
+      <div className="mx-auto my-10 w-[94%] xl:w-[90%]">
         <div className="mx-auto flex w-full flex-col sm:flex-row">
           <div className="mx-auto w-[100%] sm:w-[50%]">
             <img
-              className="mx-auto h-[400px] w-[400px]"
-              src={product?.Pictures}
+              className="mx-auto h-[200px] w-[200px] sm:h-[300px] sm:w-[300px] lg:h-[400px] lg:w-[400px]"
+              src={product?.productThumbnail}
               alt="product picture"
             />
           </div>
 
           <div className="w-full sm:w-[50%]">
-            <p className="mb-4">{product?.Brand_Name}</p>
-            <p className="mb-4 text-3xl text-[#000]">{product?.Product_name}</p>
+            <p className="mb-4">{product?.productBrand}</p>
+            <p className="mb-4 text-3xl text-[#000]">{product?.productName}</p>
             <p className="mb-4">{displayGender}</p>
             <p className="mb-4 text-2xl text-[#000]">
-              $ {priceByCapacity ? priceByCapacity : product?.display_price}
+              $ {priceByCapacity ? priceByCapacity : displayPrice}
             </p>
             <div className="flex gap-4">
-              <p className="mb-2 w-[200px]">Capacity</p>
-              <p>Quantity</p>
+              <p className="mb-2 w-[50%] sm:w-[200px]">Capacity</p>
+              <p className="w-[50%] sm:w-[200px]">Quantity</p>
             </div>
+
             <div className="flex gap-4">
               <select
                 onChange={handleCapacityChange}
-                className="mb-10 w-[200px] p-2 outline outline-1"
+                className="mb-10 w-[200px] p-2 outline outline-1 outline-[#888585]"
               >
-                {priceScaleReverse?.map((item) => (
-                  <option value={item?.Capacity} key={item?._id}>
-                    {item?.Capacity}
-                  </option>
-                ))}
+                {product?.priceScale
+                  .sort((a, b) => a.price - b.price)
+                  .map((item) => (
+                    <option value={item?.capacity} key={item?._id}>
+                      {item?.capacity}
+                    </option>
+                  ))}
               </select>
-              <div className=" flex h-[36px] w-[120px] items-center justify-evenly gap-3  text-xl outline outline-1">
+
+              <div className="flex h-[36px] items-center justify-center text-xl">
                 <button
                   disabled={quantity <= 1}
                   onClick={() => setQuantity((prev) => prev - 1)}
-                  className="cursor-pointer p-3"
+                  className="cursor-pointer px-4 py-2 outline outline-1 outline-[#888585]"
                 >
-                  -
+                  <AiOutlineMinus />
                 </button>
-                <span className="font-medium">{quantity}</span>
+                <span className="px-6 py-1 font-medium outline outline-1 outline-[#888585]">
+                  {quantity}
+                </span>
                 <button
                   disabled={quantity >= 10}
                   onClick={() => setQuantity((prev) => prev + 1)}
-                  className="cursor-pointer p-3"
+                  className="cursor-pointer px-4 py-2 outline outline-1 outline-[#888585]"
                 >
-                  +
+                  <AiOutlinePlus />
                 </button>
               </div>
             </div>
+
             <div className="flex gap-4">
-              <button className="w-[50%] bg-[#333] px-6 py-3 text-lg font-medium uppercase text-[#fff] sm:px-16">
+              <button className="w-[50%] bg-[#333] px-6 py-3 text-lg font-medium text-[#fff] lg:uppercase xl:px-16">
                 Add to cart
               </button>
-              <button className="w-[50%] bg-[#9a1919] px-6 py-3 text-lg font-medium uppercase text-[#fff] sm:px-16">
+              <button className="w-[50%] bg-[#9a1919] px-6 py-3 text-lg font-medium text-[#fff] lg:uppercase xl:px-16">
                 Buy now
               </button>
             </div>
@@ -328,15 +330,15 @@ const ProductDetail = () => {
                 ref={descriptionRef}
                 className="text-balance text-justify text-lg tracking-wider"
               >
-                {product?.Description.slice(
+                {product?.productDescription.slice(
                   0,
-                  isShowMore ? product.Description.length : 800,
+                  isShowMore ? product.productDescription.length : 800,
                 )}
               </p>
             </div>
             {!isShowMore &&
-              product?.Description.length &&
-              product?.Description.length > 800 && (
+              product?.productDescription.length &&
+              product?.productDescription.length > 800 && (
                 <p
                   onClick={() => setIsShowMore(true)}
                   className={`block cursor-pointer bg-[#ffffff29] text-center font-semibold text-[#93932a]`}
@@ -345,8 +347,8 @@ const ProductDetail = () => {
                 </p>
               )}
             {isShowMore &&
-              product?.Description.length &&
-              product?.Description.length > 800 && (
+              product?.productDescription.length &&
+              product?.productDescription.length > 800 && (
                 <p
                   onClick={() => setIsShowMore(false)}
                   className={`block cursor-pointer bg-[#ffffff29] text-center font-semibold text-[#93932a]`}
@@ -369,7 +371,7 @@ const ProductDetail = () => {
         </h1>
         <div className="mx-auto grid w-full grid-cols-2 sm:w-[90%] md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
           {similarProduct?.map((product) => (
-            <div className="mb-8 sm:mb-4" key={product.PID}>
+            <div className="mb-8 sm:mb-4" key={product._id}>
               <ProductItem product={product} />
             </div>
           ))}

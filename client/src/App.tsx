@@ -13,6 +13,8 @@ import ProductList from "./components/Products/ProductList";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import ProductDetail from "./components/Products/ProductDetail";
+import SignUp from "./pages/Signup";
+import Login from "./pages/Login";
 
 function App() {
   return (
@@ -30,6 +32,8 @@ function App() {
           <Route path="blog" element={<Blog />} />
           <Route path="account" element={<UserAccount />} />
           <Route path="cart" element={<Cart />} />
+          <Route path="signup" element={<SignUp />} />
+          <Route path="login" element={<Login />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>

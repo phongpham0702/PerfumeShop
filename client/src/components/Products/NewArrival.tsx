@@ -31,7 +31,7 @@ const NewArrival = () => {
       </div>
       <Carousel
         children={products.map((product) => (
-          <div key={product.PID}>
+          <div key={product._id}>
             <ProductItem product={product} />
           </div>
         ))}

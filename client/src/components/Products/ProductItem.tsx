@@ -46,10 +46,10 @@ const ProductItem = ({ product }: propsType) => {
         ref={pContentRef}
         className="product-item group relative z-10 overflow-hidden bg-[#f6f6f6]"
       >
-        <Link className="h-full w-full" to={"/product/detail/" + product.PID}>
+        <Link className="h-full w-full" to={"/product/detail/" + product._id}>
           <div className="py-12 sm:py-14">
             <img
-              src={product.Pictures}
+              src={product.productThumbnail}
               className="mx-auto h-[140px] w-[140px] transform transition-transform duration-500 group-hover:scale-110 sm:h-[200px] sm:w-[200px]"
             />
           </div>
@@ -151,12 +151,12 @@ const ProductItem = ({ product }: propsType) => {
 
       <div className="relative z-10 flex flex-col items-center">
         <p className="my-2 w-full overflow-hidden text-ellipsis whitespace-nowrap text-center text-lg text-[#856a20]">
-          {product.Brand_Name}
+          {product.productBrand}
         </p>
         <p className="w-full overflow-hidden text-ellipsis whitespace-nowrap text-center">
-          {product.Product_name}
+          {product.productName}
         </p>
-        <p className="mt-3">${product.display_price}</p>
+        <p className="mt-3">${product.displayPrice}</p>
       </div>
     </div>
   );

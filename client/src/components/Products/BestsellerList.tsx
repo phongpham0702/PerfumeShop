@@ -76,7 +76,7 @@ const BestsellerList = () => {
       </div>
       <Carousel
         children={products.map((product) => (
-          <div key={product.PID} className="">
+          <div key={product._id} className="">
             <ProductItem product={product} />
           </div>
         ))}
