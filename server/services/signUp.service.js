@@ -3,9 +3,10 @@ const { ServerError } = require('../helpers/error.response');
 const bcrypt = require('bcrypt');
 class SignUpService {
   static signUp = async ({ Email, Fullname, DoB, Phonenumber, Password }) => {
-    console.log({ Email, Fullname, DoB, Phonenumber, Password });
     let salt = parseInt(process.env.SALT_ROUNDS);
     let hashedPassword = bcrypt.hashSync(Password, salt);
+
+    DoB = DoB.split('/').reverse().join('/');
 
     let new_user = await userModel.create({
       Email: Email,

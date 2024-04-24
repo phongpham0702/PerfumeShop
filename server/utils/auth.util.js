@@ -24,6 +24,8 @@ const authentication = async (req,res,next) => {
 
     try 
     {   
+        let d = await JWT.decode(accessToken, keyStore.publicKey)
+        console.log(d);
         let decodeToken = await JWT.verify(accessToken, keyStore.publicKey)
 
         if(userId !== decodeToken.userId) throw new AuthFailureError("Invalid user")
@@ -43,7 +45,12 @@ const verifyJWT = async(token, keySecret) => {
     return await JWT.verify(token,keySecret)
 }
 
+const decodeJWT = async(token, keySecret) => {
+    return await JWT.decode(token, keySecret)
+}
+
 module.exports = {
     authentication,
-    verifyJWT
+    verifyJWT,
+    decodeJWT
 }

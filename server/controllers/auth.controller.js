@@ -5,6 +5,10 @@ const responseHelper = require("../helpers/success.response");
 const { AuthFailureError } = require('../helpers/error.response');
 class AuthController{
     
+    handlerToken = async(req,res,next) => {
+        
+    }
+
     local_login = async (req,res,next) => {
         
         let checkResult = await validationResult(req);
