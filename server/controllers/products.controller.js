@@ -40,6 +40,15 @@ class ProductController
             metadata: await ProductService.searchByName(searchValue)
         }).send(res)
     }
+
+    getAllBrand = async(req,res,next) => {
+
+        new responseHelper.OK({
+            metadata: await ProductService.getAllBrand()
+        }).send(res)
+
+    }
+
 }
 
 module.exports = new ProductController()

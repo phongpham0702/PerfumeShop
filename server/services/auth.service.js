@@ -3,9 +3,10 @@ const UserService = require('./user.service')
 const crypto = require('crypto')
 const KeyTokenService = require('./keyToken.service')
 const {createTokenPair} = require('../utils/token.util')
-const {LoginFail, AuthFailureError} = require('../helpers/error.response')
+const {LoginFail, AuthFailureError, ForbiddenError} = require('../helpers/error.response')
 const bcrypt = require('bcrypt');
-;
+const { verifyJWT } = require("../utils/auth.util")
+
 class AuthService{
 
     static login = async (email,password)=> {
@@ -43,9 +44,6 @@ class AuthService{
         let token = await createTokenPair({
             userId: userInfo._id,
             Email : userInfo.Email,
-            Password: userInfo.Password,
-            isVerify: userInfo.isVerify,
-            isAdmin: userInfo.isAdmin
         },publicKey,privateKey)
 
         await KeyTokenService.createKeyToken({
@@ -71,6 +69,22 @@ class AuthService{
 
         return delKey
 
+    }
+
+    static handlerRefreshToken = async (refreshToken) =>{
+        //check refresh token used or not
+        let foundToken = await KeyTokenService.findRefreshTokenUsed(refreshToken)
+
+        if(foundToken){
+            let decodeToken = await verifyJWT(refreshToken, foundToken.privateKey)
+            console.log(decodeToken);
+            await KeyTokenService.deleteKeyById()
+            throw new ForbiddenError('We suspect your account is being impersonated. Please log in again.')
+        }
+
+        let userToken = await KeyTokenService.findRefreshToken(refreshToken)
+
+        if(!userToken) throw new AuthFailureError()
     }
 }
 

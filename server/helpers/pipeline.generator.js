@@ -183,7 +183,32 @@ class PipeLineGenerator {
             }
         ]
         return pipeline
-    }   
+    }  
+    
+    generate_getAllBrand = () =>{
+        let pipeline =[
+            {
+                '$group':{
+                    '_id': "$productBrand",
+                    'productNum': { '$count':{} }
+                }
+            },
+            {
+                '$project':{
+                    '_id': 0,
+                    'brand' : "$_id",
+                    'productNum': 1
+                }
+            },
+            {
+                '$sort':{
+                    'brand': 1
+                }
+            }
+        ]
+
+        return pipeline
+    }
 }
 
 
