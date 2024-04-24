@@ -32,10 +32,6 @@ const userSchema = new Schema({
         unique: true,
         require:true
     },
-    Cart:{
-        type:[String],
-        default:[]
-    },
 
     WishList:{
         type:[String],
@@ -45,17 +41,6 @@ const userSchema = new Schema({
     LastSearch:{
         type: String,
         default: ""
-    },
-
-    CreatedAt:{
-        type: Date,
-        default: new Date(Date.now()),
-        immutable: true,
-    },
-
-    LastUpdated:{
-        type: Date,
-        default: new Date(Date.now()),
     },
 
     isVerify:{
@@ -68,12 +53,10 @@ const userSchema = new Schema({
         default:false,
     }
 
+},
+{
+    timestamps: true,
 })
 
-// Define pre-save middleware to update lastUpdate
-userSchema.pre('save', function(next) {
-    this.lastUpdate = new Date(Date.now());
-    next();
-});
 
 module.exports = model("Users", userSchema);

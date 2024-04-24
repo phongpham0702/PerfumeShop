@@ -56,10 +56,10 @@ class ProductService
 
         return {
             "pageinfo":{
-                "product_num": product_amount,
+                "productNum": product_amount,
                 "productPerPage": productPerPage,
                 "currentPage": curr_page,
-                "Page_nums": page_num
+                "pageNum": page_num
             },
             "products": productData
         }
@@ -117,16 +117,14 @@ class ProductService
 
         let product_detail = await productModel.aggregate(pipeline)
         
-        if(!product_detail[0])
-        {
-            throw new BadRequestError("No product found.")
-        }
+        if(!product_detail[0]) throw new BadRequestError("No product found.")
+   
 
         let similar_products = await this.__findSimular__(product_detail[0])
 
         return {
-            product_detail: product_detail[0],
-            similar_products
+            productDetail: product_detail[0],
+            similarProducts : similar_products
         }
     }
 
@@ -227,6 +225,16 @@ class ProductService
         return {
             item_amount,
             items
+        }
+    }
+
+    static getAllBrand = async () => {
+        let pipeline = PipeLineGenerator.generate_getAllBrand()
+
+        let brandList = await productModel.aggregate(pipeline)
+
+        return{
+            brandList
         }
     }
 
