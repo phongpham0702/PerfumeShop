@@ -77,36 +77,33 @@ const ProductList = () => {
             </div>
           ))}
         </div>
+
         <Pagination
           currentPage={page ? page : "1"}
           productNum={pNum}
           totalPages={totalPage}
         />
+
         {products.length === 0 && (
           <p className="absolute left-[50%] top-[10%] translate-x-[-50%] p-4 text-xl font-medium outline outline-[#ddaf6a]">
             No products were found matching your selection.
           </p>
         )}
       </div>
-      <Overlay
-        bg="bg-[#f6f3f360]"
-        isShow={isLoading}
-        children={
-          <ScaleLoader
-            color="#f8b500"
-            height={80}
-            margin={4}
-            radius={0}
-            speedMultiplier={1}
-            width={10}
-            cssOverride={{
-              top: "50%",
-              transform: "translateX(100%)",
-              position: "absolute",
-            }}
-          />
-        }
-      />
+      <Overlay bg="bg-[#f6f3f360]" isShow={isLoading}>
+        <ScaleLoader
+          color="#f8b500"
+          height={80}
+          margin={4}
+          speedMultiplier={1}
+          width={10}
+          cssOverride={{
+            top: "50%",
+            transform: "translateX(100%)",
+            position: "absolute",
+          }}
+        />
+      </Overlay>
     </>
   );
 };
