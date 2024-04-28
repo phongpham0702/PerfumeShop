@@ -11,7 +11,7 @@ class UserController{
     getWishList = async(req,res,next) => {
 
         new responseHelper.SuccessResponse({
-            metadata: await UserService.getUserWishList(req.headers[HEADER.CLIENT_ID])
+            metadata: await UserService.getUserWishList(req.userid)
         }).send(res)
        
     }
@@ -21,14 +21,14 @@ class UserController{
         if(!req.body.PID) throw new BadRequestError("Missing product ID")
 
         new responseHelper.SuccessResponse({
-            metadata: await UserService.addWishList(req.headers[HEADER.CLIENT_ID], new Types.ObjectId(req.body.PID))
+            metadata: await UserService.addWishList(req.userid, new Types.ObjectId(req.body.PID))
         }).send(res)
 
     }
 
     removeFromWishList = async(req,res,next) => {
         new responseHelper.SuccessResponse({
-            metadata: await UserService.removeFromWishList(req.headers[HEADER.CLIENT_ID],new Types.ObjectId(req.body.PID))
+            metadata: await UserService.removeFromWishList(req.userid,new Types.ObjectId(req.body.PID))
         }).send(res)
     }
 }

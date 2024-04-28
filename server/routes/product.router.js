@@ -16,6 +16,6 @@ router.route("/search/:value")
 .get(errorHandler(productController.searchProduct))
 
 router.route("/:page")
-.get(errorHandler(productController.getProduct))
+.get(errorHandler(productController.getProductPage))
 
 module.exports = router;

@@ -1,23 +1,13 @@
 const productModel = require('../models/product')
 const PipeLineGenerator = require('../helpers/pipeline.generator')
 const {BadRequestError, ServerError} = require('../helpers/error.response')
-const {Types} = require('mongoose')
+const converterHelper = require('../helpers/converter.helper')
+const { findSimilarProducts } = require('../models/reposities/product.repo')
+
 class ProductService
 {
 
-    static checkProduct = async(productID) => {
-        let product = await productModel.findOne({'_id':new Types.ObjectId(productID)}).select(["_id"]).lean()
-
-        if(!product)
-        {
-            return false
-        }
-        else{
-            return true
-        } 
-    }
-
-    static getProducts = async (currentPage = 1, Filter = {},productPerPage = 20) =>{
+    static getProductPage = async (currentPage = 1, Filter = {},productPerPage = 20) =>{
 
 
         let curr_page = parseInt(currentPage)
@@ -31,7 +21,7 @@ class ProductService
         }
         else
         {
-            let {pagePipeline,filterPipeLine} = PipeLineGenerator.generate_productPageFilter(productPerPage,curr_page,Filter)
+            let {pagePipeline,filterPipeLine} = PipeLineGenerator.generate_productPageWithFilter(productPerPage,curr_page,Filter)
   
             product_amount = await productModel.aggregate([...filterPipeLine].concat([{'$count':'count'}]))
      
@@ -66,11 +56,10 @@ class ProductService
 
     } 
 
-    static bestSeller = async()=>{
+    static getBestSeller = async(limit_products = 10)=>{
         
         try 
         {
-            const limit_products = 10;
             let pipeLine = PipeLineGenerator.generate_bestSeller(limit_products)
             let bestSeller = await productModel.aggregate(pipeLine)
             
@@ -87,11 +76,10 @@ class ProductService
 
     }
 
-    static newArrival = async() => {
+    static getNewArrival = async(limit_products = 5) => {
 
         try 
         {
-        const limit_products = 5;
             let pipeline = PipeLineGenerator.generate_newArrival(limit_products)
             let newArrival = await productModel.aggregate(pipeline)
             return{
@@ -106,94 +94,27 @@ class ProductService
         
     }
 
-    static productDetail = async(pid) =>{
+    static getProductDetail = async(productId) =>{
 
-        let pipeline = [
-            {
-                $match : {'_id': new Types.ObjectId(pid)}
-            },
-                                
-        ].concat(PipeLineGenerator.generate_productDetail()) 
+        let productDetail = await productModel.findOne({
+            '_id' : converterHelper.toObjectIdMongo(productId)
+        },{
+            sold: 0,
+            createdAt: 0,
+            updatedAt: 0,
+            productQuantity:0
+        }).lean()
 
-        let product_detail = await productModel.aggregate(pipeline)
-        
-        if(!product_detail[0]) throw new BadRequestError("No product found.")
+        if(!productDetail) throw new BadRequestError("No product found.")
    
 
-        let similar_products = await this.__findSimular__(product_detail[0])
+        let similarProducts = await findSimilarProducts(productDetail)
 
         return {
-            productDetail: product_detail[0],
-            similarProducts : similar_products
+            productDetail: productDetail,
+            similarProducts : similarProducts
         }
     }
-
-    static __findSimular__ = async(product) => {
-
-        try 
-        {
-            const num_of_products = 10;
-            let current_product_id = product['_id']
-            let gender = [product["productGender"]];
-            let mainScent = product.productScent.mainScent.join("|")
-            let firstNotes = product.productScent.firstNotes.join("|")
-            let middleNotes = product.productScent.middleNotes.join("|")
-            let finalNotes = product.productScent.finalNotes.join("|")
-            
-            if(gender[0] !== "Unisex")
-            {
-                gender.push("Unisex")
-            }
-
-            let pipeLine = [
-
-                {
-                    "$match":{
-                        "_id":{
-                            $ne: new Types.ObjectId(current_product_id)
-                        },
-                        "productGender":{
-                            $in: gender
-                        },
-                        "productScent.mainScent":{
-                        $regex: mainScent,
-                        $options: "i",
-                        },
-                    }
-                },
-
-                // {
-                //     "$match":{
-                //             "Scent.First": {
-                //               $regex: first_scent,
-                //               $options: "i",
-                //             },
-                //             "Scent.Middle": {
-                //               $regex: middle_scent,
-                //               $options: "i",
-                //             },
-                //               "Scent.Final": {
-                //               $regex: final_scent,
-                //               $options: "i",
-                //             },   
-                //     }
-                // },
-                {"$sample":{size : num_of_products}},
-                
-                
-            ].concat(PipeLineGenerator.generate_productBasic())
-
-            let similarProducts = await productModel.aggregate(pipeLine);
-
-            return similarProducts;
-
-        } 
-        catch (error) 
-        {
-            throw new ServerError(error)
-        }
-        
-    } 
 
     static searchByName = async(searchValue) => {
 
@@ -202,29 +123,6 @@ class ProductService
 
         return{
             productsByName
-        }
-    }
-
-
-    static getProductNameById = async(productID) => {
-        let productName = await productModel.findOne({'_id':new Types.ObjectId(productID)}).select(["productName"]).lean()
-
-        return productName['productName']
-    }
-    
-    static getProductsById = async (id_list) => {
-        let items = {}
-        let item_amount = id_list.length
-
-        if(id_list.length === 0 ) return {wish_list_num,items}
-
-        let pipeLine = PipeLineGenerator.generate_findProductById(id_list)
-        
-        items = await productModel.aggregate(pipeLine);
-
-        return {
-            item_amount,
-            items
         }
     }
 

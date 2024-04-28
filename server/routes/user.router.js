@@ -1,20 +1,24 @@
 const express = require('express');
 const router = express.Router();
 
-const {authentication} = require("../utils/auth.util");
+const {authentication, protectTokenProvider} = require("../utils/auth.util");
 const userController = require('../controllers/user.controller');
 const authController = require('../controllers/auth.controller');
 const {errorHandler} = require("../helpers/error_handler")
 
 
-router.use(errorHandler(authentication));
-
+router.route('/gain-access').get(errorHandler(protectTokenProvider), errorHandler(authController.getNewToken))
 router.get('/', function(req, res, next) {
   return res.status(200).json({"Message":"Nothing here!"})
 });
 
+
+router.use(errorHandler(authentication));
+
+
+
 router.route('/logout')
-.post(errorHandler(authController.logout))
+.get(errorHandler(authController.logout))
 
 
 router.route('/wishlist')

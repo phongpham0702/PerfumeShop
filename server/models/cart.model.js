@@ -21,7 +21,7 @@ const cartSchema = new Schema({
     },
     /*
         {
-            productID,
+            productId,
             brand,
             productName,
             capacity

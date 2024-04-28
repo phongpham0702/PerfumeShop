@@ -1,56 +1,102 @@
 const JWT = require('jsonwebtoken')
-const {AuthFailureError, NotFoundError} = require('../helpers/error.response')
-const KeyTokenService = require('../services/keyToken.service')
+const {AuthFailureError, NotFoundError, LockedError} = require('../helpers/error.response')
+const { findUserKeyById } = require('../models/reposities/keystore.repo')
+const { removeUIDCookie, removeRTCookie } = require('../helpers/cookieHelpers/removeCookie.helper')
 
 const HEADER = {
-    CLIENT_ID:'x-client-id',
-    AUTHORIZATION: 'authorization'
+    AUTHORIZATION: 'authorization',
 }
 
 const authentication = async (req,res,next) => {
 
-    let userId = req.headers[HEADER.CLIENT_ID]
+    let userId = req.cookies._uid_
 
-    if(!userId) throw new AuthFailureError('Invalid request')
-
-    let keyStore = await KeyTokenService.findUserKeyById(userId)
-
-    if(!keyStore) throw new NotFoundError('Cannot find user key store')
+    if(!userId) throw new AuthFailureError()
     
-
+    let keyStore = await findUserKeyById(userId)
+    
+    if(!keyStore) throw new NotFoundError()
+    
     let accessToken = req.headers[HEADER.AUTHORIZATION]
 
-    if(!accessToken) throw new AuthFailureError('Invalid request')
+    if(!accessToken) throw new AuthFailureError()
 
     try 
     {   
-        let d = await JWT.decode(accessToken, keyStore.publicKey)
-        console.log(d);
-        let decodeToken = await JWT.verify(accessToken, keyStore.publicKey)
+        
+        let decodedToken = await JWT.verify(accessToken, keyStore.publicKey,(err,decode) => {
+            if(err)
+            {   
+                throw err
+            }
 
-        if(userId !== decodeToken.userId) throw new AuthFailureError("Invalid user")
+            return decode
+        })
+
+        if(userId !== decodedToken.userId) throw new AuthFailureError('Invalid user ID')
 
         req.keyStore = keyStore
-        
+        req.userid = decodedToken.userId
         return next()
     } 
     catch (error) 
-    {
+    {   
+        if(error.name === "TokenExpiredError") {throw new LockedError("Your token is expired")}
         throw new AuthFailureError("Cannot authenticate user")   
     }
 
 }
 
-const verifyJWT = async(token, keySecret) => {
-    return await JWT.verify(token,keySecret)
+const protectTokenProvider = async (req,res,next) => {
+
+    let refreshToken = req.cookies['uRT']
+
+    if(!refreshToken){
+        removeUIDCookie(res)
+        throw new AuthFailureError("Please login again !")
+    }
+
+    let userId = req.cookies['_uid_']
+
+    if(!userId){
+        removeRTCookie(res)
+        throw new AuthFailureError("Please login again !")
+    }
+
+    let keyStore = await findUserKeyById(userId)
+    
+    if(!keyStore) throw new AuthFailureError("Please login again !")
+
+    try 
+    {   
+        
+        let decodedToken = await JWT.verify(refreshToken, keyStore.privateKey,(err,decode) => {
+            if(err)
+            {   
+                throw err
+            }
+
+            return decode
+        })
+
+        if(userId !== decodedToken.userId) throw new AuthFailureError()
+
+        req.keyStore = keyStore
+        req.userid = decodedToken.userId
+        req.refreshToken = refreshToken
+        return next()
+    } 
+    catch (error) 
+    {   
+        throw new AuthFailureError("Please login again !")   
+    }
+
+
 }
 
-const decodeJWT = async(token, keySecret) => {
-    return await JWT.decode(token, keySecret)
-}
+
 
 module.exports = {
     authentication,
-    verifyJWT,
-    decodeJWT
+    protectTokenProvider
 }

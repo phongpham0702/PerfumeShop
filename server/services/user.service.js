@@ -1,22 +1,16 @@
 const userModel = require("../models/users")
 const ProductService = require("./products.service")
 const {BadRequestError} = require('../helpers/error.response')
-const {Types} = require('mongoose')
+const converterHelper = require("../helpers/converter.helper")
+const { getProductList, checkProductIsExist } = require("../models/reposities/product.repo")
+
 class UserService{
-
-    findByEmail = async(email,select = {
-        'Email': 1 ,'FullName': 1,'Password': 1, 'isVerify': 1,'isAdmin': 1, 
-    }) => {
-
-        return await userModel.findOne({"Email": email}).select(select).lean()
-
-    }
 
     getUserWishList = async(userID) =>{
 
-        let user_wish_list = await userModel.findOne(
+        let userWishList = await userModel.findOne(
             {
-                '_id' : userID
+                '_id' : converterHelper.toObjectIdMongo(userID)
             },
             {
                 '_id': 0,
@@ -24,20 +18,27 @@ class UserService{
             }
         ).lean()
 
-        if(!user_wish_list) {throw new BadRequestError("Cannot find user wish list")}
+        if(!userWishList) {throw new BadRequestError("Cannot find user wish list")}
 
-        let wish_list_detail = await ProductService.getProductsById(user_wish_list['WishList'])
+        let wishListData = {
+            'itemAmount': userWishList['WishList'].length,
+            'items' : {} 
+        }
 
-        return {wish_list_detail}
+        if(wishListData['itemAmount'] === 0 ) return {wishListData}
+
+        wishListData['items'] = await getProductList(userWishList['WishList'])
+
+        return {wishListData}
     }
 
     addWishList = async (userID, productID) => {
 
-        let checkProduct = await ProductService.checkProduct(productID)
+        let checkProduct = await checkProductIsExist(productID)
 
         if(!checkProduct) throw new BadRequestError("This product id is not invalid")
 
-        let userWishList = await userModel.findOne({'_id':new Types.ObjectId(userID)}).select(["_id","WishList"])
+        let userWishList = await userModel.findOne({'_id':converterHelper.toObjectIdMongo(userID)}).select(["_id","WishList"])
         let isContain = userWishList['WishList'].includes(productID)
 
         if(isContain) throw new BadRequestError("This product is already in your wish list")
@@ -52,11 +53,11 @@ class UserService{
 
     removeFromWishList = async(userID, productID) => {
 
-        let checkProduct = await ProductService.checkProduct(productID)
+        let checkProduct = await checkProductIsExist(productID)
 
         if(!checkProduct) throw new BadRequestError("This product id is not invalid")
 
-        let removeResult  = await userModel.updateOne({'_id':new Types.ObjectId(userID)},{
+        let removeResult  = await userModel.updateOne({'_id':converterHelper.toObjectIdMongo(userID)},{
             "$pull": {WishList: productID}
         })
 

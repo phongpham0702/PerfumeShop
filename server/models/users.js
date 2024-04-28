@@ -59,4 +59,8 @@ const userSchema = new Schema({
 })
 
 
+userSchema.index({
+    'Email': 1
+})
+
 module.exports = model("Users", userSchema);

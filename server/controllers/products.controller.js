@@ -6,30 +6,30 @@ const ProductService = require("../services/products.service")
 
 class ProductController 
 {
-    getProduct = async (req,res,next) => {
+    getProductPage = async (req,res,next) => {
 
         new responseHelper.OK({
-            metadata: await ProductService.getProducts(req.params.page, req.query)
+            metadata: await ProductService.getProductPage(req.params.page, req.query)
         }).send(res)
     }
 
     getProductDetail = async(req,res,next) => {
         
         new responseHelper.OK({
-            metadata: await ProductService.productDetail(new Types.ObjectId(req.params.pid))
+            metadata: await ProductService.getProductDetail(new Types.ObjectId(req.params.pid))
         }).send(res)
 
     }
 
     getBestSeller = async(req,res,next) => {
         new responseHelper.OK({
-            metadata: await ProductService.bestSeller()
+            metadata: await ProductService.getBestSeller()
         }).send(res)
     }
 
     getNewArrival = async(req,res,next) => {
         new responseHelper.OK({
-            metadata: await ProductService.newArrival()
+            metadata: await ProductService.getNewArrival()
         }).send(res)
     }
 

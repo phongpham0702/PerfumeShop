@@ -1,12 +1,11 @@
-const userModel = require("../models/users")
 const UserService = require('./user.service')
-const crypto = require('crypto')
 const KeyTokenService = require('./keyToken.service')
 const {createTokenPair} = require('../utils/token.util')
 const {LoginFail, AuthFailureError, ForbiddenError} = require('../helpers/error.response')
 const bcrypt = require('bcrypt');
-const { verifyJWT, decodeJWT} = require("../utils/auth.util")
-const { JsonWebTokenError } = require("jsonwebtoken")
+const crypto = require('crypto')
+const { findUserByEmail,findUserById } = require("../models/reposities/user.repo");
+const { removeUIDCookie, removeRTCookie } = require('../helpers/cookieHelpers/removeCookie.helper');
 
 class AuthService{
 
@@ -16,12 +15,11 @@ class AuthService{
             1 - check email
             2 - check password
             3 - create AT and RT
-            4 - generate token
-            5 - return result
+            4 - return result
         */
 
         //1)
-        let userInfo = await UserService.findByEmail(email)
+        let userInfo = await findUserByEmail(email)
         
         if(!userInfo )
         {
@@ -37,7 +35,6 @@ class AuthService{
         }
 
         //3)
-        //create public key (AT) and private key (RT)
         let publicKey = crypto.randomBytes(64).toString('hex') 
         let privateKey = crypto.randomBytes(64).toString('hex') 
 
@@ -58,72 +55,61 @@ class AuthService{
             userInfo:{
                 userId: userInfo._id,
                 email: userInfo.Email,
-                name: userInfo.FullName
+                name: userInfo.FullName,
             },
-            token: token.accessToken
+            accessToken: token.accessToken,
+            refreshToken: token.refreshToken
         }
     }
 
-    static logout = async(keyStore)=> {
+    static logout = async(userId,res)=> {
 
-        let delKey = await KeyTokenService.removeUserKey(keyStore._id)
-
+        let delKey = await KeyTokenService.deleteUserKeyById(userId)
+        removeRTCookie(res)
+        removeUIDCookie(res)
         return delKey
 
     }
 
-    static handlerRefreshToken = async (refreshToken) =>{
-        //check refresh token used or not
-        let foundToken = await KeyTokenService.findRefreshTokenUsed(refreshToken)
+    static handlerRefreshToken = async ({refreshToken, userId, keyStore}) =>{
 
-        if(foundToken){
-            let decodeToken = await verifyJWT(refreshToken, foundToken.privateKey)
-            console.log(decodeToken);
-            await KeyTokenService.deleteKeyById()
-            throw new ForbiddenError('We suspect your account is being impersonated. Please log in again.')
+        if(keyStore.refreshTokenUsed.includes(refreshToken))
+        {
+            await KeyTokenService.deleteUserKeyById(userId) 
+            throw new AuthFailureError('We suspect your account is being impersonated. Please log in again.')
         }
 
-        //Token is not used
-        //- find RT secret key in database
-        let userToken = await KeyTokenService.findRefreshToken(refreshToken)
+        if(keyStore.refreshToken !== refreshToken) throw new AuthFailureError('Please login again !')
+        
+        let userInfo = await findUserById(userId)
 
-        if(!userToken) throw new AuthFailureError()
+        if(!userInfo) throw new AuthFailureError('Cannot find user')
 
-        //- verify token
-        let { userId, Email} = await decodeJWT(refreshToken, userToken.privateKey)
-
-        //- check user email
-        let userInfo = await UserService.findByEmail(Email)
-
-        if(!userInfo) throw new AuthFailureError()
-
-        //create new token
         let newToken = await createTokenPair({
             userId: userInfo._id,
             Email : userInfo.Email,
-        },userToken.publicKey, userToken.privateKey)
+        },keyStore.publicKey, keyStore.privateKey)
 
-        //update token
+        await keyStore.updateOne({
+             $set:{
+                 'refreshToken': newToken.refreshToken
+             },
+             $addToSet:{
+                 'refreshTokenUsed': refreshToken
+             }
+         })
 
-        await userToken.updateOne({
-            $set:{
-                'refreshToken': newToken.refreshToken
-            },
-            $addToSet:{
-                'refreshTokenUsed': refreshToken
-            }
-        })
-
-        return {
+         return {
             userInfo:{
                 userId: userInfo._id,
                 email: userInfo.Email,
-                name: userInfo.FullName
+                name: userInfo.FullName,
             },
-            token: token.accessToken
+            accessToken: newToken.accessToken,
+            refreshToken: newToken.refreshToken
         }
 
-    }
+     }
 }
 
 module.exports = AuthService

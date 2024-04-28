@@ -51,7 +51,7 @@ class SignUpInValid extends ErrorResponse{
 
 class AuthFailureError extends ErrorResponse{
 
-    constructor(message = HTTP_STATUS_CODE.StatusCodes.UNAUTHORIZED,
+    constructor(message = HTTP_STATUS_CODE.ReasonMessage.UNAUTHORIZED,
         status = HTTP_STATUS_CODE.StatusCodes.UNAUTHORIZED) 
     {
         super(message,status)   
@@ -62,13 +62,22 @@ class AuthFailureError extends ErrorResponse{
 
 class NotFoundError extends ErrorResponse{
 
-    constructor(message = HTTP_STATUS_CODE.StatusCodes.NOT_FOUND,
+    constructor(message = HTTP_STATUS_CODE.ReasonMessage.NOT_FOUND,
         status = HTTP_STATUS_CODE.StatusCodes.NOT_FOUND) 
     {
         super(message,status)   
         this.message = message 
     }
 
+}
+
+class LockedError extends ErrorResponse{
+    constructor(message = HTTP_STATUS_CODE.ReasonMessage.LOCKED,
+        status = HTTP_STATUS_CODE.StatusCodes.LOCKED) 
+    {
+        super(message,status)
+        
+    }
 }
 
 class NotAcceptError extends ErrorResponse{
@@ -88,5 +97,6 @@ module.exports = {
     ServerError,
     SignUpInValid,
     AuthFailureError,
-    NotFoundError
+    NotFoundError,
+    LockedError
 }

@@ -1,11 +1,13 @@
 const {model,Schema,Types} = require("mongoose")
 
 const keyTokenSchema = new Schema({
-    User:{
+    userId:{
         type: Schema.Types.ObjectId,
         required: true,
-        ref: 'Users'
+        ref: 'Users',
+        unique: true
     },
+    
     publicKey:{ 
         type:String, 
         required: true
@@ -15,13 +17,14 @@ const keyTokenSchema = new Schema({
         required: true
     },
 
+    refreshToken:{
+        type: String,
+        required: true
+    },
+
     refreshTokenUsed:{
         type: Schema.Types.Array,
         default: []
-    },
-    refreshToken:{
-        type: String,
-        require: true
     },
 
 },
@@ -30,5 +33,6 @@ const keyTokenSchema = new Schema({
 }
 
 )
+
 
 module.exports = model("Keys", keyTokenSchema);

@@ -1,16 +1,17 @@
 const keyTokenModel = require('../models/keytoken.model')
-
-const {ServerError} = require('../helpers/error.response') 
+const {ServerError, AuthFailureError} = require('../helpers/error.response') 
 const {Types} = require('mongoose')
+const JWT = require('jsonwebtoken')
+
 class KeyTokenService{
  
-    static createKeyToken = async({userId, publicKey, privateKey, refreshToken}) => {
+    static createKeyToken = async({userId, refreshToken,publicKey,privateKey}) => {
 
         try 
         {
 
             let filter = {
-                User: userId
+                userId: userId
             }
 
             let update = {
@@ -35,29 +36,10 @@ class KeyTokenService{
 
     }
 
-    static findUserKeyById = async (userID)=>{
-
-        return await keyTokenModel.findOne({'User':new Types.ObjectId(userID)}).lean()
-
+    static deleteUserKeyById = async (userId) => {
+        return await keyTokenModel.deleteOne({"userId": new Types.ObjectId(userId)})
     }
 
-    static removeUserKey = async (keyId)=>{
-        
-        return await keyTokenModel.deleteOne({'_id': new Types.ObjectId(keyId)})
-
-    }   
-
-    static findRefreshTokenUsed = async(refreshToken)=>{
-        return await keyTokenModel.findOne({'refreshTokenUsed': refreshToken}).lean()
-    }
-
-    static findRefreshToken = async(refreshToken)=>{
-        return await keyTokenModel.findOne({'refreshToken': refreshToken})
-    }
-
-    static deleteKeyById = async (userId) => {
-        return await keyTokenModel.deleteOne({"User": new Types.ObjectId(userId)})
-    }
 }
 
 module.exports = KeyTokenService

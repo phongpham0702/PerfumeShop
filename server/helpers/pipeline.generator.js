@@ -1,5 +1,6 @@
-const {Types} = require('mongoose')
-const seasonAcceptRate = 0.65;
+const filterBuilder = require('./Filter/filterBuilder');
+const converterHelper = require('./converter.helper');
+
 class PipeLineGenerator {
     constructor() {
         if (!PipeLineGenerator.instance) {
@@ -57,7 +58,7 @@ class PipeLineGenerator {
 
     }
 
-    generate_productPageFilter = (productPerPage , currentPage, Filter) => {
+    generate_productPageWithFilter = (productPerPage , currentPage, Filter) => {
 
         let filterPipeLine = [
                 
@@ -164,27 +165,6 @@ class PipeLineGenerator {
         return pipeLine
     }
 
-    generate_findProductById = (id_list) => {
-
-        let pipeline = [
-            {
-                '$match':{
-                    _id:{$in: id_list}
-                }
-            },             
-            {
-                '$project':{
-                    _id: 1,
-                    productName: 1,
-                    productBrand: 1,
-                    displayPrice: {$min: "$priceScale.price"},
-                    productThumbnail: 1,
-                }
-            }
-        ]
-        return pipeline
-    }  
-    
     generate_getAllBrand = () =>{
         let pipeline =[
             {
@@ -214,28 +194,16 @@ class PipeLineGenerator {
 
 function generateFilter(filterObj)
 {   
-    let filterQuery = []
 
     if(filterObj.brand)
     {
         let brandName = filterObj.brand.replaceAll("-"," ")
-        filterQuery.push({
-            '$match': {'productBrand' : brandName}
-        })
+        filterBuilder.addBrandFilter(brandName)
     }
 
-    if((filterObj.gender) && (typeof(filterObj.gender) === "string"))
+    if(filterObj.gender)
     {
-        filterQuery.push({
-            '$match': {'productGender' : filterObj.gender}
-        })
-    }
-
-    if((filterObj.gender) && (typeof(filterObj.gender) === "object"))
-    {
-        filterQuery.push({
-            '$match': {'productGender' :{'$in':[...filterObj.gender]} }
-        })
+        filterBuilder.addGenderFilter(filterObj.gender)
     }
 
     if(filterObj.price)
@@ -244,76 +212,21 @@ function generateFilter(filterObj)
         let minPrice = priceRange[0]
         let maxPrice = priceRange[1]
 
-        filterQuery.push({
-            '$match': {
-                'displayPrice':{
-                    '$gte': parseInt(minPrice),
-                    '$lte': parseInt(maxPrice)
-                }
-            }
-        })
+        filterBuilder.addPriceFilter(minPrice,maxPrice)
     }
     
     if(filterObj.season)
     {   
-        let season_filter = []
-        if(typeof(filterObj.season) === "string")
-        {   
-            let query_prop = 'seasonRate.'+filterObj.season;
-            season_filter.push(generateSeasonQuery(query_prop))
-        }
-        else
-        {
-            for(let s of filterObj.season)
-            {
-                let query_prop = 'seasonRate.'+s;
-                season_filter.push(generateSeasonQuery(query_prop))
-            }
-        }
-
-        //Closure func
-        function generateSeasonQuery(query_prop){
-            let seasonFilterQuery = {}
-            seasonFilterQuery[query_prop] = {'$gte': seasonAcceptRate}
-            return seasonFilterQuery;
-        }
-
-        filterQuery.push({
-            '$match': {
-                '$or' :season_filter 
-            }
-        })
-
+        filterBuilder.addSeasonFilter(filterObj.season)
     }
 
 
     if(filterObj.sort)
     {
-        switch (filterObj.sort) {
-            case 'price':
-                filterQuery.push({      
-                    "$sort": {'displayPrice' : 1}    
-               })
-                break;
-            case 'price_desc':
-                filterQuery.push({      
-                    "$sort": {'displayPrice' : -1}    
-               })
-                break;
-            case 'az':
-                filterQuery.push({      
-                    "$sort": {'productName' : 1}    
-               })
-                break;
-            case 'za':
-                filterQuery.push({      
-                    "$sort": {'productName' : -1}    
-               })
-                break;
-        }
+        filterBuilder.addSortFilter(filterObj.sort)
     }
 
-    return filterQuery;
+    return filterBuilder.build();
 }
 
 
