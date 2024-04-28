@@ -29,13 +29,13 @@ const NewArrival = () => {
           The stylish and organized cosmetic products
         </p>
       </div>
-      <Carousel
-        children={products.map((product) => (
+      <Carousel>
+        {products.map((product) => (
           <div key={product._id}>
             <ProductItem product={product} />
           </div>
         ))}
-      />
+      </Carousel>
     </div>
   );
 };

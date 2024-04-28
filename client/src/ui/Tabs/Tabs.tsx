@@ -5,7 +5,7 @@ type NavItem = {
   id: string;
   activeTab: string;
   setActiveTab: (id: string) => void;
-  title: string;
+  title: JSX.Element;
 };
 
 type ContentItem = {
@@ -17,12 +17,17 @@ type ContentItem = {
 type propsType = {
   navs: NavItem[];
   contents: ContentItem[];
+  type: string;
 };
 
-const Tabs = ({ navs, contents }: propsType) => {
+const Tabs = ({ navs, contents, type }: propsType) => {
   return (
-    <>
-      <ul className="flex justify-start text-xl text-[#656565]">
+    <div className={`flex flex-${type}`}>
+      <div
+        className={`flex justify-start text-xl text-[#656565] ${
+          type === "row" ? "flex-col" : ""
+        }`}
+      >
         {navs.map(({ id, title, activeTab, setActiveTab }) => (
           <TabNavItem
             key={id}
@@ -32,21 +37,18 @@ const Tabs = ({ navs, contents }: propsType) => {
             setActiveTab={setActiveTab}
           />
         ))}
-      </ul>
+      </div>
 
       <hr className="mb-4" />
 
       <div>
         {contents.map(({ id, activeTab, children }) => (
-          <TabContent
-            key={id}
-            id={id}
-            activeTab={activeTab}
-            children={children}
-          />
+          <TabContent key={id} id={id} activeTab={activeTab}>
+            {children}
+          </TabContent>
         ))}
       </div>
-    </>
+    </div>
   );
 };
 

@@ -12,6 +12,18 @@ import MenuContext from "../../MenuContext";
 
 const Header = () => {
   const menuContext = useContext(MenuContext);
+  function getCookie(name: string) {
+    const value = `; `;
+    const parts = document.cookie.split(value);
+    for (let i = 0; i < parts.length; i++) {
+      const part = parts[i].split("=");
+      if (part.length === 2 && name === part[0]) {
+        return part[1];
+      }
+    }
+    return "";
+  }
+  const token = getCookie("accessToken");
 
   return (
     <header>
@@ -82,7 +94,7 @@ const Header = () => {
             <li className="hidden cursor-pointer text-2xl sm:block">
               <NavLink
                 className="aria-[current=page]:font-medium aria-[current=page]:text-[#f8b500]"
-                to="/login"
+                to={token ? "/account" : "/login"}
               >
                 <AiOutlineUser />
               </NavLink>

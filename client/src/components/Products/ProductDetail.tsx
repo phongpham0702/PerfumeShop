@@ -19,9 +19,9 @@ const ProductDetail = () => {
   const descriptionRef = useRef<HTMLParagraphElement>(null);
 
   const navs = [
-    { id: "tab1", title: "Scent", activeTab, setActiveTab },
-    { id: "tab2", title: "Feature", activeTab, setActiveTab },
-    { id: "tab3", title: "Recommend", activeTab, setActiveTab },
+    { id: "tab1", title: <p>Sent</p>, activeTab, setActiveTab },
+    { id: "tab2", title: <p>Feature</p>, activeTab, setActiveTab },
+    { id: "tab3", title: <p>Recommend</p>, activeTab, setActiveTab },
   ];
   const contents = [
     {
@@ -358,7 +358,7 @@ const ProductDetail = () => {
               )}
           </div>
           <div className="mt-10 w-full sm:mt-0 sm:w-[50%]">
-            <Tabs navs={navs} contents={contents} />
+            <Tabs type="col" navs={navs} contents={contents} />
           </div>
         </div>
       </div>
