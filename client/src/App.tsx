@@ -9,35 +9,79 @@ import UserAccount from "./pages/UserAccount";
 import Cart from "./pages/Cart";
 import NotFound from "./pages/NotFound";
 import ProductList from "./components/Products/ProductList";
-
+import ProductDetail from "./components/Products/ProductDetail";
+import Login from "./pages/Login";
+import SignUp from "./pages/SignUp";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import ProductDetail from "./components/Products/ProductDetail";
-import SignUp from "./pages/Signup";
-import Login from "./pages/Login";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { ReactNode, useState } from "react";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 60 * 1000,
+    },
+  },
+});
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const handleLoginSuccess = () => {
+    setIsLoggedIn(true); // Update login state after successful login
+  };
+
+  function ProtectedRoute({ children }: { children: ReactNode }) {
+    const isLoggedIn = localStorage.getItem("accessToken"); // Or sessionStorage.getItem('token')
+
+    if (!isLoggedIn) {
+      return <Navigate to="/login" replace />;
+    }
+
+    return children;
+  }
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route element={<AppLayOut />}>
-          <Route index element={<Home />} />
-          <Route path="about" element={<About />} />
-          <Route path="brands" element={<Brands />} />
-          <Route path="shop" element={<Navigate to="1" replace />} />
-          <Route element={<Shop />}>
-            <Route path="/shop/:page" element={<ProductList />} />
+    <QueryClientProvider client={queryClient}>
+      <ReactQueryDevtools initialIsOpen={false} />
+      <BrowserRouter>
+        <Routes>
+          <Route element={<AppLayOut />}>
+            <Route index element={<Home />} />
+            <Route path="about" element={<About />} />
+            <Route path="brands" element={<Brands />} />
+            <Route path="shop" element={<Navigate to="1" replace />} />
+            <Route element={<Shop />}>
+              <Route path="/shop/:page" element={<ProductList />} />
+            </Route>
+            <Route path="product/detail/:pid" element={<ProductDetail />} />
+            <Route path="blog" element={<Blog />} />
+            <Route
+              path="account"
+              element={
+                <ProtectedRoute>
+                  <UserAccount />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="cart"
+              element={
+                <ProtectedRoute>
+                  <Cart />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="signup" element={<SignUp />} />
+            <Route
+              path="login"
+              element={<Login onLoginSuccess={handleLoginSuccess} />}
+            />
+            <Route path="*" element={<NotFound />} />
           </Route>
-          <Route path="product/detail/:pid" element={<ProductDetail />} />
-          <Route path="blog" element={<Blog />} />
-          <Route path="account" element={<UserAccount />} />
-          <Route path="cart" element={<Cart />} />
-          <Route path="signup" element={<SignUp />} />
-          <Route path="login" element={<Login />} />
-          <Route path="*" element={<NotFound />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+        </Routes>
+      </BrowserRouter>
+    </QueryClientProvider>
   );
 }
 

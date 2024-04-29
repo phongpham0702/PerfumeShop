@@ -1,11 +1,14 @@
 type propsType = {
-  id: string;
-  title: JSX.Element;
-  activeTab: string;
-  setActiveTab: (id: string) => void;
+  nav: {
+    id: string;
+    title: JSX.Element;
+    activeTab: string;
+    setActiveTab: (id: string) => void;
+  };
 };
 
-const TabNavItem = ({ id, title, activeTab, setActiveTab }: propsType) => {
+const TabNavItem = ({ nav }: propsType) => {
+  const { id, title, activeTab, setActiveTab } = nav;
   const handleClick = () => {
     setActiveTab(id);
   };
@@ -13,9 +16,9 @@ const TabNavItem = ({ id, title, activeTab, setActiveTab }: propsType) => {
   return (
     <div
       onClick={handleClick}
-      className={`flex w-[30%] cursor-pointer flex-nowrap p-2 ${
-        activeTab === id ? "font-bold" : ""
-      } `}
+      className={`cursor-pointer hover:bg-[#f2f2f2] ${
+        activeTab === id ? "bg-[#f7cfcf] text-[#df5c5c] hover:bg-[#f7cfcf]" : ""
+      }`}
     >
       {title}
     </div>

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { AiOutlineMail, AiTwotoneLock } from "react-icons/ai";
 import { Link, useNavigate } from "react-router-dom";
 
-const Login = () => {
+const Login = ({ onLoginSuccess }: { onLoginSuccess: () => void }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -18,16 +18,17 @@ const Login = () => {
       .then((response) => response.json())
       .then((data) => {
         if (data.status === 200) {
-          //   onLoginSuccess(data.token); // Call callback with token if login is successful
+          onLoginSuccess(); // Call callback with token if login is successful
           setEmail("");
           setPassword("");
 
-          const expires = new Date();
-          expires.setTime(expires.getTime() + 24 * 60 * 60 * 1000);
-          document.cookie = `accessToken=${
-            data.metadata.token
-          }; expires=${expires.toUTCString()}; path="/"`;
-
+          // const expires = new Date();
+          // expires.setTime(expires.getTime() + 24 * 60 * 60 * 1000);
+          // document. = `accessToken=${
+          //   data.metadata.AT
+          // }; expires=${expires.toUTCString()}; path="/"`;
+          localStorage.setItem("accessToken", data.metadata.AT);
+          // alert("login success")
           navigate("/");
         } else {
           alert(data.message); // Handle login errors (optional)

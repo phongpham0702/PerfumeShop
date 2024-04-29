@@ -17,21 +17,18 @@ type ContentItem = {
 type propsType = {
   navs: NavItem[];
   contents: ContentItem[];
-  type: string;
 };
 
-const Tabs = ({ navs, contents }: propsType) => {
+const TabHR = ({ navs, contents }: propsType) => {
   return (
-    <div>
-      <div className="mb-4 flex justify-start gap-[100px] text-xl text-[#656565]">
+    <div className="mt-10 flex w-full justify-between font-inter">
+      <div className="w-[20%] bg-[#ffffff] shadow-xl">
         {navs.map((nav) => (
           <TabNavItem nav={nav} />
         ))}
       </div>
 
-      <hr className="mb-4" />
-
-      <div>
+      <div className="w-[75%] bg-[#ffffff] shadow-xl">
         {contents.map((content) => (
           <TabContent key={content.id} content={content} />
         ))}
@@ -40,4 +37,4 @@ const Tabs = ({ navs, contents }: propsType) => {
   );
 };
 
-export default Tabs;
+export default TabHR;

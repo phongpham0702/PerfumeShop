@@ -7,23 +7,28 @@ import {
 } from "react-icons/ai";
 import { NavLink } from "react-router-dom";
 import OffCanvasMenu from "../OffCanvasMenu";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import MenuContext from "../../MenuContext";
 
 const Header = () => {
   const menuContext = useContext(MenuContext);
-  function getCookie(name: string) {
-    const value = `; `;
-    const parts = document.cookie.split(value);
-    for (let i = 0; i < parts.length; i++) {
-      const part = parts[i].split("=");
-      if (part.length === 2 && name === part[0]) {
-        return part[1];
+  const [token, setToken] = useState<string>("");
+
+  useEffect(() => {
+    const getCookie = (name: string) => {
+      const value = `; `;
+      const parts = document.cookie.split(value);
+      for (let i = 0; i < parts.length; i++) {
+        const part = parts[i].split("=");
+        if (part.length === 2 && name === part[0]) {
+          return part[1];
+        }
       }
-    }
-    return "";
-  }
-  const token = getCookie("accessToken");
+      return "";
+    };
+    if (getCookie("accessToken") !== "") setToken(getCookie("accessToken"));
+    else setToken("");
+  }, []);
 
   return (
     <header>
@@ -117,8 +122,6 @@ const Header = () => {
             </li>
             <li
               onClick={() => {
-                console.log("menuClick");
-
                 menuContext.handleOpen();
               }}
               className="block cursor-pointer text-3xl sm:text-2xl lg:hidden"
