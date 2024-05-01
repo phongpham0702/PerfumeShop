@@ -13,10 +13,10 @@ router.get('/', async function (req, res, next) {
   // const value = await c.get('key');
   // console.log(value);
   //let c = g.get_Redis();
-  let a = gen.generate_productWithPageNumber()
+  //let a = gen.generate_productWithPageNumber()
   //console.log(a);
   //let p = await productModel.aggregate(a)
-  console.log(p);
+  //console.log(p);
   return res.status(200).json({ Message: 'Nothing here!' });
 });
 

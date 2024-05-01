@@ -57,7 +57,7 @@ const protectTokenProvider = async (req,res,next) => {
     }
 
     let userId = req.cookies['_uid_']
-
+    
     if(!userId){
         removeRTCookie(res)
         throw new AuthFailureError("Please login again !")

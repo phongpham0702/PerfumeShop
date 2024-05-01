@@ -4,16 +4,10 @@ const cartSchema = new Schema({
     userID:{
         type: Schema.Types.ObjectId,
         required: true,
-        ref: 'Users'
+        ref: 'Users',
+        unique: true
     },
-
-    cartState:{
-        type:String,
-        required:true,
-        enum:["active","completed","failed","pending"],
-        default: 'active'
-    },
-
+    
     cartProduct:{
         type:Array,
         required:true,
@@ -42,5 +36,11 @@ const cartSchema = new Schema({
 }
 
 )
+
+
+cartSchema.pre('save', (next) => {
+    this.cartCountProduct = this.cartProduct.length
+    next();
+})
 
 module.exports = model("Carts", cartSchema);

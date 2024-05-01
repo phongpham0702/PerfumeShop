@@ -1,6 +1,6 @@
 const CartModel = require('../models/cart.model')
-const {BadRequestError} = require('../helpers/error.response')
-const { getProductById } = require('../models/reposities/product.repo')
+const {BadRequestError, NotFoundError} = require('../helpers/error.response')
+const { getProductInfomation, checkProductCapacity } = require('../models/reposities/product.repo')
 
 /*
     Key features:
@@ -15,7 +15,7 @@ const { getProductById } = require('../models/reposities/product.repo')
 class CartService{
 
     static createUserCart = async(userId , product) => {
-        let query = {'userID': userId, 'cartState': 'active'}
+        let query = {'userID': userId}
         let updateOrInsert = {
             '$addToSet':{
                 'cartProduct': product
@@ -27,6 +27,52 @@ class CartService{
         }
         return CartModel.findOneAndUpdate(query,updateOrInsert,options)
     }
+
+    /*
+        product = {
+            productId,
+            capacityId,
+            quantity,
+
+        }
+    */
+
+    static addToCart = async(userId, product = {}) => {
+
+        let userCart = await CartModel.findOne({'userID':userId})
+        // user cart not exist
+        if(!userCart)
+        {
+            //create user cart
+            return await CartService.createUserCart(userId, product)
+        }
+
+        // user cart exist but no product inside
+        if(!userCart.cartProduct.length)
+        {
+            userCart.cartProduct = [product]
+            return await userCart.save()
+        }
+
+        return await CartService.updateUserCartQuantity(userId,product)
+
+    }
+    static addToCartV2 = async(userId, product = {}) => {
+            let {productId, quantity, old_quantity} = product
+
+            let findProduct = await getProductInfomation(productId)
+
+            if(!findProduct) throw new NotFoundError('This product is unavailable')
+
+            if(quantity === 0 )
+            {
+                //delete
+            }
+            return await CartService.updateUserCartQuantity(userId, {
+                productId,
+                quantity: quantity - old_quantity
+            })
+        }
 
     static updateUserCartQuantity = async(userId,product) =>{
         let {productId, quantity} = product
@@ -47,31 +93,25 @@ class CartService{
         return CartModel.findOneAndUpdate(query,updateSet,options)
     }
 
-    static addToCart = async(userId, product = {}) => {
+    
 
-        let userCart = await CartModel.findOne({'userID':userId})
-        if(!userCart)
-        {
-            //create user cart
-            return await CartService.createUserCart(userId, product)
+    
+
+    static deleteUserCart = async (userId, productId) => {
+        let query = {
+            'userID': userId,
+            'cartState': 'active'
         }
-
-        if(!userCart.cartProduct.length)
-        {
-            userCart.cartProduct = [product]
-            userCart.cartCountProduct = userCart.cartProduct.length
-            return await userCart.save()
+        let updateSet = {
+            '$pull':{
+                'cartProduct': productId
+            }
         }
-
-        return await CartService.updateUserCartQuantity(userId,product)
-
+        
+        let deleteItem = await CartModel.updateOne(query,updateSet)
+        return deleteItem
     }
 
-    static addToCartV2 = async(userId, product) => {
-        let {productId, quantity} = product
-
-        let findProduct = await getProductById(productId)
-    }
 }
 
 module.exports = CartService
