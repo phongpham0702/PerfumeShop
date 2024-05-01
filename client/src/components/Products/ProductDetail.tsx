@@ -14,8 +14,8 @@ const ProductDetail = () => {
   const [similarProduct, setSimilarProduct] = useState<SimilarProduct[]>();
   const [activeTab, setActiveTab] = useState<string>("tab1");
   const { pid } = useParams();
-  const displayPrice =
-    product?.priceScale[product?.priceScale.length - 1].price;
+  // const displayPrice =
+  //   product?.priceScale[product?.priceScale.length - 1].price;
   const descriptionRef = useRef<HTMLParagraphElement>(null);
 
   const navs = [
@@ -23,6 +23,7 @@ const ProductDetail = () => {
     { id: "tab2", title: <p>Feature</p>, activeTab, setActiveTab },
     { id: "tab3", title: <p>Recommend</p>, activeTab, setActiveTab },
   ];
+
   const contents = [
     {
       id: "tab1",
@@ -265,7 +266,11 @@ const ProductDetail = () => {
             <p className="mb-4 text-3xl text-[#000]">{product?.productName}</p>
             <p className="mb-4">{displayGender}</p>
             <p className="mb-4 text-2xl text-[#000]">
-              $ {priceByCapacity ? priceByCapacity : displayPrice}
+              ${" "}
+              {priceByCapacity
+                ? priceByCapacity
+                : product?.priceScale.sort((a, b) => a.price - b.price)[0]
+                    .price}
             </p>
             <div className="flex gap-4">
               <p className="mb-2 w-[50%] sm:w-[200px]">Capacity</p>

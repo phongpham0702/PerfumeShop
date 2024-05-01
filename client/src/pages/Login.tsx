@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useState } from "react";
 import { AiOutlineMail, AiTwotoneLock } from "react-icons/ai";
 import { Link, useNavigate } from "react-router-dom";
@@ -6,37 +7,61 @@ const Login = ({ onLoginSuccess }: { onLoginSuccess: () => void }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Perform login logic (e.g., API call)
-    fetch(`${import.meta.env.VITE_SERVER_URL}/sign-in`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ Email: email, Password: password }),
-    })
-      .then((response) => response.json())
+    axios
+      .post(
+        `${import.meta.env.VITE_SERVER_URL}/sign-in`,
+        {
+          Email: email,
+          Password: password,
+        },
+        { withCredentials: true },
+      )
+      .then((res) => res.data)
       .then((data) => {
         if (data.status === 200) {
-          onLoginSuccess(); // Call callback with token if login is successful
+          onLoginSuccess();
           setEmail("");
           setPassword("");
 
-          // const expires = new Date();
-          // expires.setTime(expires.getTime() + 24 * 60 * 60 * 1000);
-          // document. = `accessToken=${
-          //   data.metadata.AT
-          // }; expires=${expires.toUTCString()}; path="/"`;
           localStorage.setItem("accessToken", data.metadata.AT);
-          // alert("login success")
+
           navigate("/");
         } else {
-          alert(data.message); // Handle login errors (optional)
+          alert(data.message);
         }
       })
       .catch((error) => {
         console.error("Login error:", error);
       });
+
+    // console.log(res);
+
+    // fetch(`${import.meta.env.VITE_SERVER_URL}/sign-in`, {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   credentials: "same-origin",
+    //   body: JSON.stringify({ Email: email, Password: password }),
+    // })
+    //   .then((response) => response.json())
+    //   .then((data) => {
+    //     if (data.status === 200) {
+    //       onLoginSuccess();
+    //       setEmail("");
+    //       setPassword("");
+
+    //       localStorage.setItem("accessToken", data.metadata.AT);
+
+    //       navigate("/");
+    //     } else {
+    //       alert(data.message);
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.error("Login error:", error);
+    //   });
   };
 
   return (

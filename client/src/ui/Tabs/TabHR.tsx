@@ -24,13 +24,17 @@ const TabHR = ({ navs, contents }: propsType) => {
     <div className="mt-10 flex w-full justify-between font-inter">
       <div className="w-[20%] bg-[#ffffff] shadow-xl">
         {navs.map((nav) => (
-          <TabNavItem nav={nav} />
+          <div key={nav.id}>
+            <TabNavItem nav={nav} />
+          </div>
         ))}
       </div>
 
       <div className="w-[75%] bg-[#ffffff] shadow-xl">
         {contents.map((content) => (
-          <TabContent key={content.id} content={content} />
+          <div key={content.id}>
+            <TabContent key={content.id} content={content} />
+          </div>
         ))}
       </div>
     </div>

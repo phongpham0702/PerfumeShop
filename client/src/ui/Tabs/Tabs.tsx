@@ -25,7 +25,9 @@ const Tabs = ({ navs, contents }: propsType) => {
     <div>
       <div className="mb-4 flex justify-start gap-[100px] text-xl text-[#656565]">
         {navs.map((nav) => (
-          <TabNavItem nav={nav} />
+          <div key={nav.id}>
+            <TabNavItem nav={nav} />
+          </div>
         ))}
       </div>
 
@@ -33,7 +35,9 @@ const Tabs = ({ navs, contents }: propsType) => {
 
       <div>
         {contents.map((content) => (
-          <TabContent key={content.id} content={content} />
+          <div key={content.id}>
+            <TabContent content={content} />
+          </div>
         ))}
       </div>
     </div>

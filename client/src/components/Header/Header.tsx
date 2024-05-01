@@ -7,28 +7,13 @@ import {
 } from "react-icons/ai";
 import { NavLink } from "react-router-dom";
 import OffCanvasMenu from "../OffCanvasMenu";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import MenuContext from "../../MenuContext";
 
 const Header = () => {
   const menuContext = useContext(MenuContext);
-  const [token, setToken] = useState<string>("");
-
-  useEffect(() => {
-    const getCookie = (name: string) => {
-      const value = `; `;
-      const parts = document.cookie.split(value);
-      for (let i = 0; i < parts.length; i++) {
-        const part = parts[i].split("=");
-        if (part.length === 2 && name === part[0]) {
-          return part[1];
-        }
-      }
-      return "";
-    };
-    if (getCookie("accessToken") !== "") setToken(getCookie("accessToken"));
-    else setToken("");
-  }, []);
+  // const [token, setToken] = useState<string | null>("");
+  const token = localStorage?.getItem("accessToken");
 
   return (
     <header>
