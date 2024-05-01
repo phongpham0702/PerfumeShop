@@ -1,11 +1,10 @@
 type propsType = {
-  key: string;
   content: { id: string; activeTab: string; children: React.ReactNode };
 };
 
-const TabContent = ({ content, key }: propsType) => {
+const TabContent = ({ content }: propsType) => {
   const { children, id, activeTab } = content;
-  return id === activeTab ? <div key={key}>{children}</div> : <></>;
+  return id === activeTab ? <div>{children}</div> : null;
 };
 
 export default TabContent;
