@@ -1,7 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import About from "./pages/About";
-import Brands from "./pages/Brands";
+
 import Shop from "./pages/Shop";
 import Blog from "./pages/Blog";
 import AppLayOut from "./ui/AppLayOut";
@@ -16,7 +16,9 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
+import Brands from "./components/Brands/BrandList";
+import WishList from "./pages/WishList";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -27,14 +29,18 @@ const queryClient = new QueryClient({
 });
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    !!localStorage.getItem("accessToken"),
+  );
   const handleLoginSuccess = () => {
-    setIsLoggedIn(true); // Update login state after successful login
+    setIsLoggedIn(true);
   };
 
   function ProtectedRoute({ children }: { children: ReactNode }) {
-    const isLoggedIn = localStorage.getItem("accessToken"); // Or sessionStorage.getItem('token')
-
+    useEffect(() => {
+      const storeToken = localStorage.getItem("accessToken");
+      setIsLoggedIn(!!storeToken);
+    }, []);
     if (!isLoggedIn) {
       return <Navigate to="/login" replace />;
     }
@@ -49,7 +55,9 @@ function App() {
           <Route element={<AppLayOut />}>
             <Route index element={<Home />} />
             <Route path="about" element={<About />} />
+
             <Route path="brands" element={<Brands />} />
+
             <Route path="shop" element={<Navigate to="1" replace />} />
             <Route element={<Shop />}>
               <Route path="/shop/:page" element={<ProductList />} />
@@ -69,6 +77,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Cart />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="wishlist"
+              element={
+                <ProtectedRoute>
+                  <WishList />
                 </ProtectedRoute>
               }
             />

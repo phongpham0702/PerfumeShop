@@ -1,0 +1,64 @@
+import axios from "axios";
+
+const requestAPI = (endpoint: string, body: unknown, method: string) => {
+  const headers = {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": "*",
+  };
+
+  const instance = axios.create({ withCredentials: true, headers });
+
+  instance.interceptors.request.use(
+    (config) => {
+      const accessToken = localStorage.getItem("accessToken");
+
+      if (accessToken) {
+        config.headers["authorization"] = accessToken;
+      }
+      console.log(config.headers.authorization);
+      console.log(config);
+
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
+    },
+  );
+
+  instance.interceptors.response.use(
+    (res) => {
+      console.log(res);
+
+      return res;
+    },
+    async (err) => {
+      const originalConfig = err.config;
+      console.log("AccessToken expired");
+      if (err.response && err.response.status === 423) {
+        try {
+          console.log("Call refresh token api");
+          const result = await instance.get(
+            `http://localhost:8080/user/gain-access`,
+          );
+          localStorage.setItem("accessToken", result.data.metadata.AT);
+          originalConfig.headers["authorization"] = result.data.metadata.AT;
+
+          return instance(originalConfig);
+        } catch (_error) {
+          window.location.href = "/login";
+          return Promise.reject(_error);
+        }
+      }
+      return Promise.reject(err);
+    },
+  );
+
+  return instance.request({
+    method: method,
+    data: body,
+    url: `http://localhost:8080${endpoint}`,
+  });
+};
+
+export default requestAPI;

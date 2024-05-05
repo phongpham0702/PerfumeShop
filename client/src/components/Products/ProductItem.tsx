@@ -8,6 +8,7 @@ import { AiOutlineShoppingCart } from "react-icons/ai";
 import { BsEye, BsHeart, BsLink45Deg } from "react-icons/bs";
 import { useEffect, useRef } from "react";
 import useHover from "../../hooks/useHover";
+import requestAPI from "../../helpers/api";
 
 type propsType = {
   product: Product | SimilarProduct | BestsellerProduct;
@@ -40,6 +41,58 @@ const ProductItem = ({ product }: propsType) => {
     pDetailRef.current?.classList.remove("animate-fadeOut");
   }, []);
 
+  const isFavorite = useRef<boolean>(false);
+  const wishlists = localStorage.getItem("wishlist_items");
+  if (wishlists) {
+    const listParsed = JSON.parse(wishlists);
+    const index = listParsed.findIndex(
+      (item: Product) => item._id === product._id,
+    );
+    if (index !== -1) isFavorite.current = true;
+  }
+
+  const toggleWishList = () => {
+    const curList = localStorage.getItem("wishlist_items");
+    if (curList) {
+      const index = JSON.parse(curList).findIndex(
+        (item: Product) => item._id === product._id,
+      );
+      if (index !== -1) {
+        requestAPI("/user/wishlist", { PID: product._id }, "delete").then(
+          (res) => {
+            if (res.status === 200) {
+              localStorage.setItem(
+                "wishlist_items",
+                JSON.stringify(
+                  JSON.parse(curList).filter(
+                    (item: Product) => item._id !== product._id,
+                  ),
+                ),
+              );
+            }
+          },
+        );
+      } else {
+        requestAPI("/user/wishlist", { PID: product._id }, "post").then(
+          (res) => {
+            if (res.data.status === 200) {
+              if (curList) {
+                localStorage.setItem(
+                  "wishlist_items",
+                  JSON.stringify([...JSON.parse(curList), product]),
+                );
+              } else
+                localStorage.setItem(
+                  "wishlist_items",
+                  JSON.stringify([product]),
+                );
+            }
+          },
+        );
+      }
+    }
+  };
+
   return (
     <div className="flex flex-col px-3 sm:mt-8">
       <div
@@ -49,6 +102,7 @@ const ProductItem = ({ product }: propsType) => {
         <Link className="h-full w-full" to={"/product/detail/" + product._id}>
           <div className="py-12 sm:py-14">
             <img
+              loading="lazy"
               src={product.productThumbnail}
               className="mx-auto h-[140px] w-[140px] transform transition-transform duration-500 group-hover:scale-110 sm:h-[200px] sm:w-[200px]"
             />
@@ -58,10 +112,13 @@ const ProductItem = ({ product }: propsType) => {
         <div className="absolute right-[-40px] top-[16px] flex flex-col gap-2 transition-all duration-500">
           <div>
             <div
-              className={`peer cursor-pointer bg-[#fff] p-3 font-bold shadow-lg hover:bg-[#f50963] hover:text-[#fff] hover:transition-all hover:duration-500 ${
+              onClick={() => toggleWishList()}
+              className={`peer cursor-pointer  p-3 font-bold shadow-lg hover:bg-[#f50963] hover:text-[#fff] hover:transition-all hover:duration-500 ${
                 isHovered
                   ? "animate-rightInF group-hover:animate-rightInF"
                   : "animate-rightOutL"
+              } ${
+                isFavorite.current ? "bg-[#f50963] text-white" : "bg-[#fff]"
               }`}
               ref={heartIconRef}
             >
