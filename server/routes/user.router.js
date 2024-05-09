@@ -6,8 +6,8 @@ const {errorHandler} = require("../helpers/error_handler");
 const userController = require('../controllers/user.controller');
 const authController = require('../controllers/auth.controller');
 const cartController = require('../controllers/cart.controller');
-
-
+const AddToCartValidator = require('../controllers/validators/addCart.validator');
+const UpdateCartValidator = require('../controllers/validators/updateCart.validator');
 
 
 router.route('/gain-access').get(errorHandler(protectTokenProvider), errorHandler(authController.getNewToken))
@@ -29,6 +29,9 @@ router.route('/wishlist')
 .post(errorHandler(userController.addWishList))
 .delete(errorHandler(userController.removeFromWishList))
 
-router.route('/cart/add')
-.post(errorHandler(cartController.addToCart))
+router.route('/cart')
+.get(errorHandler(cartController.getUserCart))
+.post( AddToCartValidator ,errorHandler(cartController.addToCart))
+.put( UpdateCartValidator,errorHandler(cartController.updateCart))
+
 module.exports = router;

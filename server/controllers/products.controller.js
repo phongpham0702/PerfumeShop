@@ -22,7 +22,7 @@ class ProductController
     }
 
     getBestSeller = async(req,res,next) => {
-        console.log(req.cookies);
+
         new responseHelper.OK({
             metadata: await ProductService.getBestSeller()
         }).send(res)

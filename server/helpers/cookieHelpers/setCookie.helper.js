@@ -4,7 +4,7 @@ const setUIDCookie = (uid,response) =>{
         secure: false,
         sameSite: 'Lax',
         maxAge: 604800000,
-        sign: true
+        signed: true
     })
 }
 
@@ -15,7 +15,7 @@ const setRTCookie = (RT,response) => {
         secure: false,
         sameSite: 'Lax',
         maxAge: 604800000,
-        sign: true
+        signed: true
     })
 }
 

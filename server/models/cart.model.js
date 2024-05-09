@@ -1,4 +1,4 @@
-const {model,Schema} = require("mongoose")
+const {model,Schema} = require("mongoose");
 
 const cartSchema = new Schema({
     userID:{
@@ -9,38 +9,35 @@ const cartSchema = new Schema({
     },
     
     cartProduct:{
-        type:Array,
+        type:[{
+            productId:{
+                type: Schema.Types.ObjectId,
+                required: true,
+                ref:'Products'
+            },
+            modelId:{
+                type: Schema.Types.ObjectId,
+                required: true,
+            },
+            quantity:{
+                type: Number,
+                default: 1
+            }
+        }],
         required:true,
         default:[]
     },
-    /*
-        {
-            productId,
-            brand,
-            productName,
-            capacity
-            price,
-            quantity
-        }
-    */
-
-
+    
     cartCountProduct:{
         type:Number,
         default:0
     },
 
 },
-{
-    timestamps: true
+{   
+    timestamps: true,
 }
 
 )
-
-
-cartSchema.pre('save', (next) => {
-    this.cartCountProduct = this.cartProduct.length
-    next();
-})
 
 module.exports = model("Carts", cartSchema);
