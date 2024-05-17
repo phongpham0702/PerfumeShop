@@ -33,5 +33,9 @@ router.route('/cart')
 .get(errorHandler(cartController.getUserCart))
 .post( AddToCartValidator ,errorHandler(cartController.addToCart))
 .put( UpdateCartValidator,errorHandler(cartController.updateCart))
+.delete(errorHandler(cartController.deleteCartItem))
+
+router.route('/clear-cart')
+.get(errorHandler(cartController.deleteAllItems))
 
 module.exports = router;

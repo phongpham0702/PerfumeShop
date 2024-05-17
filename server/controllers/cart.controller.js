@@ -28,12 +28,16 @@ class CartController {
             let result = await CartService.addToCart(req.userid, {productData,quantity})
 
             if(!result) throw new ServerError()
-
+            
             new responseHelper.SuccessResponse({
                 metadata: {
-                    userID: result.userID,
+                    cartId: result._id,
                     cartCountProduct: result.cartCountProduct,
-                    cartProduct: result.cartProduct
+                    addedItem: {
+                        productId: productData.productId,
+                        modelId: productData.modelId,
+                        quantity: quantity
+                    }
                 }
             }).send(res)
         }
@@ -66,13 +70,50 @@ class CartController {
 
         let increaseBy = quantity - old_quantity
 
+        let updateResult = await CartService.updateUserCartQuantity(req.userid,productId,modelId,increaseBy)
+
+        if(!updateResult) throw new ServerError()
+
         new responseHelper.SuccessResponse({
-            metadata: await CartService.updateUserCartQuantity(req.userid,productId,modelId,increaseBy)
+            metadata: {
+                cartId: updateResult._id,
+                cartCountProduct: updateResult.cartCountProduct,
+                updatedItem:{
+                    productId,
+                    modelId,
+                    old_quantity: old_quantity,
+                    new_quantity: quantity
+                }
+            }
         }).send(res)
     }  
     
     deleteCartItem = async(req,res,next) => {
+        let {productId,modelId} = req.body
+
+        let deleteResult = await CartService.deleteItem(req.userid,productId,modelId)
         
+        if(!deleteResult){
+            throw new BadRequestError('This product is not in your cart')
+        }
+
+        let {cartId,cartCountProduct} = deleteResult
+
+        new responseHelper.SuccessResponse({
+            metadata: {
+                cartId,
+                cartCountProduct,
+                deletedItem: deleteResult.deletedItem
+            }
+        }).send(res)
+    }
+
+    deleteAllItems = async(req,res,next) => {
+
+        new responseHelper.SuccessResponse({
+            metadata: await CartService.deleteAllItems(req.userid)
+        }).send(res)
+
     }
 
 }

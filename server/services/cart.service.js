@@ -35,7 +35,7 @@ class CartService{
         let options = {
             'upsert':true,
             'new': true,
-            'select': 'userID cartCountProduct cartProduct'
+            'select': 'userID cartCountProduct cartProduct.productId cartProduct.modelId cartProduct.quantity'
         }
         return CartModel.findOneAndUpdate(query,updateOrInsert,options)
     }
@@ -75,7 +75,8 @@ class CartService{
             }
         })
 
-        return {userID: userCart.userID,
+        return {
+            cartId: userCart._id,
             cartCountProduct: userCart.cartCountProduct,
             cartData
         }
@@ -84,7 +85,11 @@ class CartService{
     static addToCart = async(userId, product = {}) => {
 
         let userCart = await CartModel.findOne({'userID':userId},{
-            _id: 1, userID:1,cartCountProduct:1, cartProduct:1
+            _id: 1,
+            cartCountProduct:1, 
+            "cartProduct.productId":1,
+            "cartProduct.modelId":1,
+            "cartProduct.quantity":1
         })
         
         // user cart not exist
@@ -105,7 +110,7 @@ class CartService{
             return false
         })
 
-        if(isContainsProduct)
+        if(isContainsProduct) 
         {
             return await CartService.updateUserCartQuantity(userId,productId, modelId, quantity)
         }
@@ -117,6 +122,7 @@ class CartService{
                 quantity
             })
             userCart.cartCountProduct += quantity
+            
             return await userCart.save()
         }
         
@@ -137,28 +143,64 @@ class CartService{
         let options = {
             upsert:true,
             new: true,
-            select: 'userID cartCountProduct cartProduct'
+            select: 'cartCountProduct cartProduct.productId cartProduct.modelId cartProduct.quantity'
         }
         return CartModel.findOneAndUpdate(query,updateSet,options)
     }
 
-    
+    static deleteItem = async (userId, productId, modelId) => {
 
-    
-
-    static deleteUserCart = async (userId, productId) => {
-        let query = {
-            'userID': userId,
-            'cartState': 'active'
+        let userCart = await CartModel.findOne({userID: userId}).select(['userID','cartCountProduct',"cartProduct"])
+        let deletedItem
+        for(let i in userCart.cartProduct){
+            
+            if(userCart.cartProduct[i].productId.toString() === productId && 
+            userCart.cartProduct[i].modelId.toString() === modelId)
+            {   
+                deletedItem = userCart.cartProduct[i]
+                userCart.cartProduct.pull(userCart.cartProduct[i])
+                userCart.cartCountProduct -= deletedItem.quantity
+                break;
+            }    
         }
-        let updateSet = {
-            '$pull':{
-                'cartProduct': productId
+
+        if(!deletedItem){
+            return null
+        }
+
+        await userCart.save();
+        return {
+            cartId: userCart._id,
+            cartCountProduct: userCart.cartCountProduct,
+            deletedItem:{
+                productId: deletedItem.productId,
+                modelId: deletedItem.modelId,
+                quantity: deletedItem.quantity
             }
+            
+        };
+    }
+
+    
+    static deleteAllItems = async (userId) => {
+
+        let userCart = await CartModel.findOne({userID: userId}).select(['userID','cartCountProduct',"cartProduct"]);
+
+        if(!userCart || userCart.cartCountProduct === 0)
+            {
+                return {
+                    deleteResult: "Your cart is empty"
+                }
+            }
+
+        userCart.cartProduct = [];
+        userCart.cartCountProduct = 0;
+        await userCart.save();
+
+        return {
+            deleteResult: "Your cart is clear now"
         }
-        
-        let deleteItem = await CartModel.updateOne(query,updateSet)
-        return deleteItem
+
     }
 
 }

@@ -23,7 +23,7 @@ const cartSchema = new Schema({
                 type: Number,
                 default: 1
             }
-        }],
+        },{_id:false}],
         required:true,
         default:[]
     },
