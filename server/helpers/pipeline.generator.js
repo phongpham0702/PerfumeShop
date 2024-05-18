@@ -173,8 +173,10 @@ function generateFilter(filterObj)
 {   
 
     if (filterObj.search) 
-    {
-        filterBuilder.addSearchFilter(filterObj.search)    
+    {   
+        let searchValue = filterObj.search.replace(/[+\-_]/g," ")
+        filterBuilder.addSearchFilter(searchValue)
+         
     }
 
     if(filterObj.brand)
