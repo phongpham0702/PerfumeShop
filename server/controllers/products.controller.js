@@ -33,15 +33,7 @@ class ProductController
             metadata: await ProductService.getNewArrival()
         }).send(res)
     }
-
-    searchProduct = async(req,res,next) => {
-        let searchValue = req.params.value.replace(/[+\-_]/g," ")
-
-        new responseHelper.OK({
-            metadata: await ProductService.searchByName(searchValue)
-        }).send(res)
-    }
-
+    
     getAllBrand = async(req,res,next) => {
 
         new responseHelper.OK({

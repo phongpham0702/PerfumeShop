@@ -116,16 +116,6 @@ class ProductService
         }
     }
 
-    static searchByName = async(searchValue) => {
-
-        let pipeline = PipeLineGenerator.generate_searchByName(searchValue)
-        let productsByName = await productModel.aggregate(pipeline)
-
-        return{
-            productsByName
-        }
-    }
-
     static getAllBrand = async () => {
         let pipeline = PipeLineGenerator.generate_getAllBrand()
 

@@ -4,6 +4,27 @@ class FilterBuilder{
         this.filter = [];
     }
 
+
+    addSearchFilter(search)
+    {
+        this.filter.push(
+            {    $addFields:{
+                    'fullName': { $concat: ["$productBrand"," ","$productName"] }
+                }
+            },
+            {
+                $match:{
+                    "fullName": { $regex: search.toString(), $options: "i" }
+                }  
+            },
+            {
+                $project:{
+                    "fullName":0
+                }
+            }
+        )
+    }
+
     addBrandFilter(brand)
     {
         this.filter.push(

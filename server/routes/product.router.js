@@ -12,9 +12,6 @@ router.route("/newarrival")
 router.route("/detail/:pid")
 .get(errorHandler(productController.getProductDetail))
 
-router.route("/search/:value")
-.get(errorHandler(productController.searchProduct))
-
 router.route("/:page")
 .get(errorHandler(productController.getProductPage))
 
