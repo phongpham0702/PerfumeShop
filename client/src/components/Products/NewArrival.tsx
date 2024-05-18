@@ -1,7 +1,7 @@
 import ProductItem from "./ProductItem";
 import Carousel from "../../ui/Carousel";
 import { useQuery } from "@tanstack/react-query";
-import { BestsellerProduct } from "../../types/Product";
+import { BestsellerProduct } from "../../interfaces/Product";
 
 const NewArrival = () => {
   async function fetchData() {

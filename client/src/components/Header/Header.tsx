@@ -5,15 +5,38 @@ import {
   AiOutlineHeart,
   AiOutlineMenuFold,
 } from "react-icons/ai";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import OffCanvasMenu from "../OffCanvasMenu";
-import { useContext, useState } from "react";
-import MenuContext from "../../MenuContext";
+import { FormEvent, useContext, useEffect, useRef } from "react";
+import MenuContext from "../../contexts/MenuContext";
+import SearchContext from "../../contexts/SearchContext";
 
 const Header = () => {
   const menuContext = useContext(MenuContext);
-  const [isSearch, setIsSearch] = useState<boolean>(false);
+  const searchContext = useContext(SearchContext);
   const token = localStorage?.getItem("accessToken");
+  const navigate = useNavigate();
+  const handleSubmitSearch = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    navigate(`/shop/1?search=${searchContext.searchVal}`);
+    searchContext.handleClose();
+  };
+
+  const formRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    const handleClickOutSide = (event: MouseEvent) => {
+      if (
+        formRef.current &&
+        !formRef.current.contains(event.target as HTMLDivElement)
+      )
+        searchContext.handleClose();
+    };
+    document.addEventListener("mousedown", handleClickOutSide);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutSide);
+    };
+  }, [searchContext, formRef]);
 
   return (
     <header>
@@ -74,13 +97,41 @@ const Header = () => {
         </div>
 
         <div className="w-[50%] lg:w-[40%]">
-          <ul className="flex justify-end gap-8">
-            <li
-              onClick={() => setIsSearch((prev) => !prev)}
-              className="hidden cursor-pointer text-2xl sm:block"
-            >
-              <AiOutlineSearch />
-            </li>
+          <ul className="flex items-center justify-end gap-8">
+            {searchContext.isOpen ? (
+              <form
+                ref={formRef}
+                action=""
+                onSubmit={handleSubmitSearch}
+                className="mx-auto flex w-[80%] items-center gap-2 rounded-lg border border-[#d5cfcf] px-4 text-lg transition-all duration-1000"
+              >
+                <input
+                  className="w-full p-1 outline-none"
+                  type="text"
+                  placeholder="Search..."
+                  name="searchVal"
+                  // value={searchContext.searchVal}
+                  onChange={(e) =>
+                    searchContext.handleSearchVal(e.target.value)
+                  }
+                  required
+                />
+                <button
+                  type="submit"
+                  // onClick={() => setIsSearch((prev) => !prev)}
+                  className="hidden cursor-pointer text-2xl sm:block"
+                >
+                  <AiOutlineSearch />
+                </button>
+              </form>
+            ) : (
+              <li
+                onClick={() => searchContext.handleOpen()}
+                className="hidden cursor-pointer text-2xl sm:block"
+              >
+                <AiOutlineSearch />
+              </li>
+            )}
             <li className="hidden cursor-pointer text-2xl sm:block">
               <NavLink
                 className="aria-[current=page]:font-medium aria-[current=page]:text-[#f8b500]"

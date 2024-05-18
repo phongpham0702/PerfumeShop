@@ -1,4 +1,4 @@
-import { FilterCategory } from "../types/Category";
+import { FilterCategory } from "../interfaces/Category";
 
 export const categories: FilterCategory[] = [
   {

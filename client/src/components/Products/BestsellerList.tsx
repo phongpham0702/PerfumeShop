@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Product } from "../../types/Product";
+import { Product } from "../../interfaces/Product";
 import ProductItem from "./ProductItem";
 import Carousel from "../../ui/Carousel";
 import { useQuery } from "@tanstack/react-query";

@@ -5,14 +5,20 @@ import Tabs from "../../ui/Tabs/Tabs";
 import { BsGenderFemale, BsGenderMale } from "react-icons/bs";
 import ProductItem from "./ProductItem";
 import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
-import { useQuery } from "@tanstack/react-query";
-import { ProductDetail as PDetail, SimilarProduct } from "../../types/Product";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  ProductDetail as PDetail,
+  SimilarProduct,
+} from "../../interfaces/Product";
+import requestAPI from "../../helpers/api";
+import toast from "react-hot-toast";
 
 const ProductDetail = () => {
   const [isShowMore, setIsShowMore] = useState<boolean>(false);
 
   const [priceByCapacity, setPriceByCapacity] = useState<number | null>(null);
   const [quantity, setQuantity] = useState<number>(1);
+
   const [activeTab, setActiveTab] = useState<string>("tab1");
   const { pid } = useParams();
   const descriptionRef = useRef<HTMLParagraphElement>(null);
@@ -33,6 +39,30 @@ const ProductDetail = () => {
     similarProducts: similarProduct,
   }: { productDetail: PDetail; similarProducts: SimilarProduct[] } = data || {};
 
+  const [capacity, setCapacity] = useState<string>(
+    product?.priceScale.sort((a, b) => a.price - b.price)[0]._id,
+  );
+
+  const { mutate } = useMutation({
+    mutationFn: async () => {
+      try {
+        await requestAPI(
+          "/user/cart",
+          {
+            productData: {
+              productId: product?._id,
+              modelId: capacity,
+            },
+            quantity: quantity,
+          },
+          "post",
+        );
+        toast.success("Success add to cart");
+      } catch (error) {
+        toast.error("Failed to add to cart");
+      }
+    },
+  });
   useEffect(() => {
     window.scrollTo(0, 0);
     if (descriptionRef.current) {
@@ -230,7 +260,10 @@ const ProductDetail = () => {
     event: React.ChangeEvent<HTMLSelectElement>,
   ) => {
     product?.priceScale.forEach((item) => {
-      item.capacity === event.target.value && setPriceByCapacity(item.price);
+      if (item.capacity === event.target.value) {
+        setCapacity(item._id);
+        setPriceByCapacity(item.price);
+      }
     });
   };
 
@@ -253,6 +286,7 @@ const ProductDetail = () => {
         {product?.productGender}
       </span>
     );
+
   if (isLoading) return <div>Loading...</div>;
   return (
     <>
@@ -318,10 +352,13 @@ const ProductDetail = () => {
             </div>
 
             <div className="flex gap-4">
-              <button className="w-[50%] bg-[#333] px-6 py-3 text-lg font-medium text-[#fff] lg:uppercase xl:px-16">
+              <button
+                onClick={() => mutate()}
+                className="w-[50%] bg-[#333] px-6 py-3 text-lg font-medium tracking-wide text-[#fff] lg:uppercase xl:px-16"
+              >
                 Add to cart
               </button>
-              <button className="w-[50%] bg-[#9a1919] px-6 py-3 text-lg font-medium text-[#fff] lg:uppercase xl:px-16">
+              <button className="w-[50%] bg-[#f50963] px-6 py-3 text-lg font-medium tracking-wide text-[#fff] lg:uppercase xl:px-16">
                 Buy now
               </button>
             </div>

@@ -3,7 +3,7 @@ import {
   BestsellerProduct,
   Product,
   SimilarProduct,
-} from "../../types/Product";
+} from "../../interfaces/Product";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { BsEye, BsHeart, BsLink45Deg } from "react-icons/bs";
 import { useEffect, useRef } from "react";

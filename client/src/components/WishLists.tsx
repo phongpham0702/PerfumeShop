@@ -1,4 +1,4 @@
-import { Product } from "../types/Product";
+import { Product } from "../interfaces/Product";
 import requestAPI from "../helpers/api";
 import ProductItem from "./Products/ProductItem";
 import { useQuery } from "@tanstack/react-query";
