@@ -1,13 +1,6 @@
 import { ReactNode, createContext, useState } from "react";
 
-const SearchContext = createContext({
-  isOpen: false,
-  handleOpen: () => {},
-  handleClose: () => {},
-  searchVal: "",
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  handleSearchVal: (val: string) => {},
-});
+const SearchContext = createContext({});
 
 export const SearchProvider = ({ children }: { children: ReactNode }) => {
   const [isOpen, setIsOpen] = useState(false);

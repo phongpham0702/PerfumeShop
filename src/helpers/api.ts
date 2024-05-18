@@ -41,7 +41,7 @@ const requestAPI = (endpoint: string, body: unknown, method: string) => {
         try {
           console.log("Call refresh token api");
           const result = await instance.get(
-            `http://localhost:8080/user/gain-access`,
+            `${import.meta.env.VITE_SERVER_URL}/user/gain-access`,
           );
           localStorage.setItem("accessToken", result.data.metadata.AT);
           originalConfig.headers["authorization"] = result.data.metadata.AT;
