@@ -59,7 +59,7 @@ const requestAPI = (endpoint: string, body: unknown, method: string) => {
   return instance.request({
     method: method,
     data: body,
-    url: `http://localhost:8080${endpoint}`,
+    url: `${import.meta.env.VITE_SERVER_URL}${endpoint}`,
   });
 };
 
