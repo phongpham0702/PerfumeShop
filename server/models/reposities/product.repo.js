@@ -30,6 +30,14 @@ const getProductList = async (id_list) =>{
     return await productModel.aggregate(pipeline)
 }
 
+const getProductInfomation = async (id,select = {
+    '_id': 1, productBrand: 1, productName: 1, priceScale: 1, productThumbnail: 1 
+}) => {
+    return await productModel.findOne({
+        '_id': converterHelper.toObjectIdMongo(id)
+    },select).lean()
+}
+
 const checkProductIsExist = async (id) =>{
     let product = await productModel.findOne({"_id": converterHelper.toObjectIdMongo(id)},)
     .select(['productName'])
@@ -38,6 +46,10 @@ const checkProductIsExist = async (id) =>{
     if(product) return true
 
     return false
+}
+
+const checkProductCapacity = async (productId, capacityId) => {
+
 }
 
 const findSimilarProducts = async(productDetail, limit = 10) => {
@@ -80,7 +92,9 @@ module.exports = {
     getProductById,
     getProductList,
     checkProductIsExist,
-    findSimilarProducts
+    findSimilarProducts,
+    getProductInfomation,
+    checkProductCapacity
 } 
 
 

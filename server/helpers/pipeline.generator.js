@@ -142,29 +142,6 @@ class PipeLineGenerator {
         return newArrival_PipeLine
     }
 
-    generate_searchByName = (searchValue)=> {
-        let pipeLine = this.generate_productBasic().concat(
-            [
-                {
-                    $addFields:{
-                        'FullName': { $concat: ["$productBrand"," ","$productName"] }
-                    }
-                },
-                {
-                    $match:{
-                        "FullName": { $regex: searchValue.toString(), $options: "i" }
-                    }  
-                },
-                {
-                    $project:{
-                        "FullName":0
-                    }
-                }
-            ]
-        )
-        return pipeLine
-    }
-
     generate_getAllBrand = () =>{
         let pipeline =[
             {
@@ -194,6 +171,13 @@ class PipeLineGenerator {
 
 function generateFilter(filterObj)
 {   
+
+    if (filterObj.search) 
+    {   
+        let searchValue = filterObj.search.replace(/[+\-_]/g," ")
+        filterBuilder.addSearchFilter(searchValue)
+         
+    }
 
     if(filterObj.brand)
     {
@@ -225,7 +209,7 @@ function generateFilter(filterObj)
     {
         filterBuilder.addSortFilter(filterObj.sort)
     }
-
+    console.log(filterBuilder.filter);
     return filterBuilder.build();
 }
 

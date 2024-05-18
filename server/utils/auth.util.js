@@ -2,6 +2,7 @@ const JWT = require('jsonwebtoken')
 const {AuthFailureError, NotFoundError, LockedError} = require('../helpers/error.response')
 const { findUserKeyById } = require('../models/reposities/keystore.repo')
 const { removeUIDCookie, removeRTCookie } = require('../helpers/cookieHelpers/removeCookie.helper')
+const converterHelper = require('../helpers/converter.helper')
 
 const HEADER = {
     AUTHORIZATION: 'authorization',
@@ -9,7 +10,7 @@ const HEADER = {
 
 const authentication = async (req,res,next) => {
 
-    let userId = req.cookies._uid_
+    let userId = req.signedCookies._uid_
 
     if(!userId) throw new AuthFailureError()
     
@@ -36,7 +37,7 @@ const authentication = async (req,res,next) => {
         if(userId !== decodedToken.userId) throw new AuthFailureError('Invalid user ID')
 
         req.keyStore = keyStore
-        req.userid = decodedToken.userId
+        req.userid = converterHelper.toObjectIdMongo(decodedToken.userId)
         return next()
     } 
     catch (error) 
@@ -49,15 +50,15 @@ const authentication = async (req,res,next) => {
 
 const protectTokenProvider = async (req,res,next) => {
 
-    let refreshToken = req.cookies['uRT']
+    let refreshToken = req.signedCookies.uRT
 
     if(!refreshToken){
         removeUIDCookie(res)
         throw new AuthFailureError("Please login again !")
     }
 
-    let userId = req.cookies['_uid_']
-
+    let userId = req.signedCookies._uid_
+    
     if(!userId){
         removeRTCookie(res)
         throw new AuthFailureError("Please login again !")

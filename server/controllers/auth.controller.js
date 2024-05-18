@@ -36,6 +36,7 @@ class AuthController{
                 maxAge: 604800000,
                 sign: true
             }) */
+
             setUIDCookie(result.userInfo.userId,res)
             /* res.cookie('uRT', result.refreshToken,{
                 httpOnly: true,
@@ -47,7 +48,7 @@ class AuthController{
             setRTCookie(result.refreshToken,res)
             new responseHelper.SuccessResponse({
                 metadata: {
-                    user: result.userInfo,
+                    userInfo: result.userInfo,
                     AT: result.accessToken,
                 }
             }).send(res)

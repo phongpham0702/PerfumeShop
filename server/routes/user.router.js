@@ -2,9 +2,13 @@ const express = require('express');
 const router = express.Router();
 
 const {authentication, protectTokenProvider} = require("../utils/auth.util");
+const {errorHandler} = require("../helpers/error_handler");
 const userController = require('../controllers/user.controller');
 const authController = require('../controllers/auth.controller');
-const {errorHandler} = require("../helpers/error_handler")
+const cartController = require('../controllers/cart.controller');
+const AddToCartValidator = require('../controllers/validators/addCart.validator');
+const UpdateCartValidator = require('../controllers/validators/updateCart.validator');
+const checkOutController = require('../controllers/checkOut.controller');
 
 
 router.route('/gain-access').get(errorHandler(protectTokenProvider), errorHandler(authController.getNewToken))
@@ -25,4 +29,17 @@ router.route('/wishlist')
 .get(errorHandler(userController.getWishList))
 .post(errorHandler(userController.addWishList))
 .delete(errorHandler(userController.removeFromWishList))
+
+router.route('/cart')
+.get(errorHandler(cartController.getUserCart))
+.post( AddToCartValidator ,errorHandler(cartController.addToCart))
+.put( UpdateCartValidator,errorHandler(cartController.updateCart))
+.delete(errorHandler(cartController.deleteCartItem))
+
+router.route('/clear-cart')
+.get(errorHandler(cartController.deleteAllItems))
+
+router.route('/review')
+.get(errorHandler(checkOutController.reviewOrder))
+
 module.exports = router;

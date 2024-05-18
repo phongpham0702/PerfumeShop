@@ -1,7 +1,6 @@
 const userModel = require("../models/users")
 const ProductService = require("./products.service")
 const {BadRequestError} = require('../helpers/error.response')
-const converterHelper = require("../helpers/converter.helper")
 const { getProductList, checkProductIsExist } = require("../models/reposities/product.repo")
 
 class UserService{
@@ -10,7 +9,7 @@ class UserService{
 
         let userWishList = await userModel.findOne(
             {
-                '_id' : converterHelper.toObjectIdMongo(userID)
+                '_id' : userID
             },
             {
                 '_id': 0,
@@ -38,7 +37,7 @@ class UserService{
 
         if(!checkProduct) throw new BadRequestError("This product id is not invalid")
 
-        let userWishList = await userModel.findOne({'_id':converterHelper.toObjectIdMongo(userID)}).select(["_id","WishList"])
+        let userWishList = await userModel.findOne({'_id': userID}).select(["_id","WishList"])
         let isContain = userWishList['WishList'].includes(productID)
 
         if(isContain) throw new BadRequestError("This product is already in your wish list")
@@ -57,7 +56,7 @@ class UserService{
 
         if(!checkProduct) throw new BadRequestError("This product id is not invalid")
 
-        let removeResult  = await userModel.updateOne({'_id':converterHelper.toObjectIdMongo(userID)},{
+        let removeResult  = await userModel.updateOne({'_id':userID},{
             "$pull": {WishList: productID}
         })
 
