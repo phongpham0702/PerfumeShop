@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Product } from "../../types/Product";
 import ProductItem from "./ProductItem";
 import Carousel from "../../ui/Carousel";
+import { useQuery } from "@tanstack/react-query";
 
 type bestSellerDataType = {
   gender: string;
@@ -15,28 +16,30 @@ const category: Array<{ [key: string]: string }> = [
 ];
 
 const BestsellerList = () => {
-  const [data, setData] = useState<bestSellerDataType[]>([]);
   const [products, setProducts] = useState<Product[] | []>([]);
   const [gender, setGender] = useState<string>("Male");
 
   async function fetchData() {
-    await fetch(`${import.meta.env.VITE_SERVER_URL}/products/bestseller`)
-      .then((res) => res.json())
-      .then((data) => {
-        setData(data.metadata.bestSeller);
-        let male: Product[] = [];
-        data.metadata.bestSeller.forEach(
-          (element: { gender: string; products: Product[] }) => {
-            if (element.gender === "Male") male = element.products;
-          },
-        );
-        setProducts(male);
-      });
+    const res = await fetch(
+      `${import.meta.env.VITE_SERVER_URL}/products/bestseller`,
+    );
+    const data = await res.json();
+
+    let male: Product[] = [];
+    data.metadata.bestSeller.forEach(
+      (element: { gender: string; products: Product[] }) => {
+        if (element.gender === "Male") male = element.products;
+      },
+    );
+    setProducts(male);
+
+    return data.metadata.bestSeller;
   }
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  const { data, isLoading } = useQuery({
+    queryKey: ["bestSeller"],
+    queryFn: async () => await fetchData(),
+  });
 
   const genderFilter = (gender: string) => {
     const dataFilter: bestSellerDataType[] = data.filter(
@@ -45,6 +48,7 @@ const BestsellerList = () => {
     setProducts(dataFilter[0].products);
   };
 
+  if (isLoading) return <div>Loading...</div>;
   return (
     <div className="mb-10 mt-14 w-full">
       <div className="mx-auto flex w-[80%] flex-col items-center">

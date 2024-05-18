@@ -7,12 +7,12 @@ import {
 } from "react-icons/ai";
 import { NavLink } from "react-router-dom";
 import OffCanvasMenu from "../OffCanvasMenu";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import MenuContext from "../../MenuContext";
 
 const Header = () => {
   const menuContext = useContext(MenuContext);
-  // const [token, setToken] = useState<string | null>("");
+  const [isSearch, setIsSearch] = useState<boolean>(false);
   const token = localStorage?.getItem("accessToken");
 
   return (
@@ -76,7 +76,7 @@ const Header = () => {
         <div className="w-[50%] lg:w-[40%]">
           <ul className="flex justify-end gap-8">
             <li
-              // onClick={() => setIsSearch((prev) => !prev)}
+              onClick={() => setIsSearch((prev) => !prev)}
               className="hidden cursor-pointer text-2xl sm:block"
             >
               <AiOutlineSearch />

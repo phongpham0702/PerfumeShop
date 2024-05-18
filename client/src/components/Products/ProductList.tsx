@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Product } from "../../types/Product";
 import ProductItem from "./ProductItem";
 import Pagination from "../Pagination/Pagination";
 import { useOutletContext, useParams, useSearchParams } from "react-router-dom";
 import ScaleLoader from "react-spinners/ScaleLoader";
 import Overlay from "../../ui/Overlay";
+import { useQuery } from "@tanstack/react-query";
 
 type propsType = {
   handleProductNumChange: (productNum: number) => void;
@@ -12,66 +13,50 @@ type propsType = {
 
 const ProductList = () => {
   const { page } = useParams();
-  const [products, setProducts] = useState<Product[] | []>([]);
-  const [totalPage, setTotalPage] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
-  const [pNum, setPNum] = useState<number | 0>(0);
   const [searchParams] = useSearchParams();
 
   const gender = searchParams.get("gender");
+  const search = searchParams.get("search");
   const season = searchParams.get("season");
   const price = searchParams.get("price");
   const brand = searchParams.get("brand");
   const sort = searchParams.get("sort");
   const { handleProductNumChange }: propsType = useOutletContext();
+  const queryString = `${page ? page : 1}?${gender ? "gender=" + gender : ""}${
+    season ? "&season=" + season : ""
+  }${price ? "&price=" + price : ""}${brand ? "&brand=" + brand : ""}${
+    sort ? "&sort=" + sort : ""
+  }${search ? "&search=" + search : ""}`;
 
   const fetchData = async (query: number | string) => {
-    fetch(`${import.meta.env.VITE_SERVER_URL}/products/${query}`)
-      .then((res) => res.json())
-      .then(
-        (data: {
-          metadata: {
-            pageinfo: {
-              productNum: number;
-              productPerPage: number;
-              currentPage: number;
-              PageNum: number;
-            };
-            products: Product[];
-          };
-        }) => {
-          setPNum(data.metadata.pageinfo.productNum);
-          setProducts(data.metadata.products);
-          setTotalPage(data.metadata.pageinfo.PageNum);
-        },
-      );
+    const res = await fetch(
+      `${import.meta.env.VITE_SERVER_URL}/products/${query}`,
+    );
+    const data = await res.json();
+
+    return data.metadata;
   };
+
+  const { data, isLoading } = useQuery({
+    queryKey: [`productsList/${queryString}`],
+    queryFn: () => fetchData(queryString),
+  });
+
+  const { products, pageinfo } = data || {};
+  const { pageNum, productNum } = pageinfo || {};
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    handleProductNumChange(pNum);
-    setIsLoading(true);
+    handleProductNumChange(productNum);
+  }, [handleProductNumChange, productNum]);
 
-    fetchData(
-      `${page ? page : 1}?${gender ? "gender=" + gender : ""}${
-        season ? "&season=" + season : ""
-      }${price ? "&price=" + price : ""}${brand ? "&brand=" + brand : ""}${
-        sort ? "&sort=" + sort : ""
-      }`,
-    );
-
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-
-    return () => clearTimeout(timer);
-  }, [gender, page, brand, price, season, sort, handleProductNumChange, pNum]);
+  if (isLoading) return <div>Loading...</div>;
 
   return (
     <>
       <div className="relative w-full xl:w-[80%]">
         <div className="grid grid-cols-2 gap-y-6 sm:grid-cols-2 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">
-          {products.map((product) => (
+          {products.map((product: Product) => (
             <div key={product._id}>
               <ProductItem product={product} />
             </div>
@@ -80,8 +65,8 @@ const ProductList = () => {
 
         <Pagination
           currentPage={page ? page : "1"}
-          productNum={pNum}
-          totalPages={totalPage}
+          productNum={productNum}
+          totalPages={pageNum}
         />
 
         {products.length === 0 && (

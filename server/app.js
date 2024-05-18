@@ -24,7 +24,7 @@ database.connectDB();
 
 app.use(
   cors({
-    origin: 'http://localhost:5173',
+    origin: ['http://localhost:3000', 'http://localhost:5173'],
     method: ['POST', 'PUT', 'GET', 'OPTIONS', 'HEAD'],
     credentials: true,
   })
