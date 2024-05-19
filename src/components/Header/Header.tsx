@@ -99,7 +99,7 @@ const Header = () => {
           <NavLink to="/">
             <img
               className="w-[120px] lg:mx-auto"
-              src="http://localhost:5173/images/luxe-logo.svg"
+              src="./images/luxe-logo.svg"
               alt="logo"
             />
           </NavLink>

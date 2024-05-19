@@ -11,7 +11,7 @@ export default {
     },
     extend: {
       content: {
-        checked: 'url("http://localhost:5173/images/icons8-done.svg")',
+        checked: 'url("./images/icons8-done.svg")',
       },
       keyframes: {
         goUp: {

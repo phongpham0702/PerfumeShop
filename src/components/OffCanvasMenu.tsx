@@ -25,7 +25,7 @@ const OffCanvasMenu = () => {
         <NavLink to="/">
           <img
             className="mb-4 w-[120px]"
-            src="http://localhost:5173/images/luxe-logo.svg"
+            src="./images/luxe-logo.svg"
             alt="logo"
           />
         </NavLink>
