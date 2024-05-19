@@ -24,7 +24,7 @@ database.connectDB();
 
 app.use(
   cors({
-    origin: 'http://localhost:5173',
+    origin: ['https://perfume-shop-pd.vercel.app'],
     methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'HEAD', 'DELETE'],
     credentials: true,
   })

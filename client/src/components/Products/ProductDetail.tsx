@@ -39,9 +39,15 @@ const ProductDetail = () => {
     similarProducts: similarProduct,
   }: { productDetail: PDetail; similarProducts: SimilarProduct[] } = data || {};
 
-  const [capacity, setCapacity] = useState<string>(
-    product?.priceScale.sort((a, b) => a.price - b.price)[0]._id,
-  );
+  const [capacity, setCapacity] = useState<string>("");
+
+  useEffect(() => {
+    setCapacity(product?.priceScale.sort((a, b) => a.price - b.price)[0]._id);
+    window.scrollTo(0, 0);
+    if (descriptionRef.current) {
+      setIsShowMore(descriptionRef.current?.clientHeight > 800);
+    }
+  }, [pid, data, product?.priceScale]);
 
   const { mutate } = useMutation({
     mutationFn: async () => {
@@ -63,12 +69,6 @@ const ProductDetail = () => {
       }
     },
   });
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    if (descriptionRef.current) {
-      setIsShowMore(descriptionRef.current?.clientHeight > 800);
-    }
-  }, [pid, data]);
 
   const navs = [
     { id: "tab1", title: <p>Sent</p>, activeTab, setActiveTab },
