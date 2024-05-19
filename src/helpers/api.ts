@@ -22,6 +22,8 @@ const requestAPI = (endpoint: string, body: unknown, method: string) => {
       return config;
     },
     (error) => {
+      console.log(error);
+
       return Promise.reject(error);
     },
   );

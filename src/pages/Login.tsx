@@ -18,7 +18,7 @@ const Login = ({ onLoginSuccess }: { onLoginSuccess: () => void }) => {
           Email: email,
           Password: password,
         },
-        { withCredentials: true },
+        // { withCredentials: true },
       )
       .then((res) => res.data)
       .then((data) => {
