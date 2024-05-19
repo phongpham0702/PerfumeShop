@@ -1,2 +1,2 @@
 /// <reference types="vite/client" />
-VITE_SERVER_URL = "http://localhost:8080";
+VITE_SERVER_URL = "https://perfumeshop-jzfuw6oikq-as.a.run.app";
