@@ -7,7 +7,7 @@ const requestAPI = (endpoint: string, body: unknown, method: string) => {
     "Access-Control-Allow-Origin": "*",
   };
 
-  const instance = axios.create({ withCredentials: true, headers });
+  const instance = axios.create({ headers });
 
   instance.interceptors.request.use(
     (config) => {
