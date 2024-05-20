@@ -40,6 +40,6 @@ router.route('/clear-cart')
 .get(errorHandler(cartController.deleteAllItems))
 
 router.route('/review')
-.get(errorHandler(checkOutController.reviewOrder))
+.post(errorHandler(checkOutController.reviewOrder))
 
 module.exports = router;

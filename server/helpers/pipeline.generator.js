@@ -175,8 +175,7 @@ function generateFilter(filterObj)
     if (filterObj.search) 
     {   
         let searchValue = filterObj.search.replace(/[+\-_]/g," ")
-        filterBuilder.addSearchFilter(searchValue)
-         
+        filterBuilder.addSearchFilter(searchValue) 
     }
 
     if(filterObj.brand)
@@ -209,7 +208,6 @@ function generateFilter(filterObj)
     {
         filterBuilder.addSortFilter(filterObj.sort)
     }
-    console.log(filterBuilder.filter);
     return filterBuilder.build();
 }
 
