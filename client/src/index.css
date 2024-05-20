@@ -55,3 +55,9 @@ body.preload * {
 .show-less {
   -webkit-mask-image: unset;
 }
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { NavLink } from "react-router-dom";
-import MenuContext from "../MenuContext";
+import MenuContext from "../contexts/MenuContext";
 
 const OffCanvasMenu = () => {
   const { isOpen, handleClose } = useContext(MenuContext);

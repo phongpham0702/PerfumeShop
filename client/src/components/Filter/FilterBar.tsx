@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FilterCategory } from "../../types/Category";
+import { FilterCategory } from "../../interfaces/Category";
 import { useSearchParams } from "react-router-dom";
 
 type FilterSideBarProps = {

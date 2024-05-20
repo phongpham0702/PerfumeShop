@@ -1,24 +1,23 @@
-import { useEffect, useState } from "react";
-import { BestsellerProduct } from "../../types/Product";
 import ProductItem from "./ProductItem";
 import Carousel from "../../ui/Carousel";
+import { useQuery } from "@tanstack/react-query";
+import { BestsellerProduct } from "../../interfaces/Product";
 
 const NewArrival = () => {
-  const [products, setProducts] = useState<BestsellerProduct[]>([]);
-
   async function fetchData() {
-    await fetch(`${import.meta.env.VITE_SERVER_URL}/products/newarrival`)
-      .then((res) => res.json())
-      .then((data) => {
-        setProducts(data.metadata.newArrival);
-      });
+    const res = await fetch(
+      `${import.meta.env.VITE_SERVER_URL}/products/newarrival`,
+    );
+    const data = await res.json();
+    return data.metadata.newArrival;
   }
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    fetchData();
-  }, []);
+  const { data: products, isLoading } = useQuery({
+    queryKey: ["newArrival"],
+    queryFn: fetchData,
+  });
 
+  if (isLoading) return <div>Loading...</div>;
   return (
     <div className="mb-10 mt-14 w-full">
       <div className="mx-auto flex w-[85%] flex-col items-center">
@@ -30,7 +29,7 @@ const NewArrival = () => {
         </p>
       </div>
       <Carousel>
-        {products.map((product) => (
+        {products.map((product: BestsellerProduct) => (
           <div key={product._id}>
             <ProductItem product={product} />
           </div>

@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { AiOutlineMail, AiTwotoneLock } from "react-icons/ai";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -27,41 +28,17 @@ const Login = ({ onLoginSuccess }: { onLoginSuccess: () => void }) => {
           setPassword("");
 
           localStorage.setItem("accessToken", data.metadata.AT);
-
+          toast.success("Login successful");
           navigate("/");
         } else {
           alert(data.message);
         }
       })
       .catch((error) => {
-        console.error("Login error:", error);
+        console.log(error);
+
+        toast.error("Invalid credentials");
       });
-
-    // console.log(res);
-
-    // fetch(`${import.meta.env.VITE_SERVER_URL}/sign-in`, {
-    //   method: "POST",
-    //   headers: { "Content-Type": "application/json" },
-    //   credentials: "same-origin",
-    //   body: JSON.stringify({ Email: email, Password: password }),
-    // })
-    //   .then((response) => response.json())
-    //   .then((data) => {
-    //     if (data.status === 200) {
-    //       onLoginSuccess();
-    //       setEmail("");
-    //       setPassword("");
-
-    //       localStorage.setItem("accessToken", data.metadata.AT);
-
-    //       navigate("/");
-    //     } else {
-    //       alert(data.message);
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.error("Login error:", error);
-    //   });
   };
 
   return (

@@ -1,22 +1,74 @@
 import { useEffect, useRef, useState } from "react";
-import { ProductDetail as PDetail, SimilarProduct } from "../../types/Product";
+// import { ProductDetail as PDetail, SimilarProduct } from "../../types/Product";
 import { useParams } from "react-router-dom";
 import Tabs from "../../ui/Tabs/Tabs";
 import { BsGenderFemale, BsGenderMale } from "react-icons/bs";
 import ProductItem from "./ProductItem";
 import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  ProductDetail as PDetail,
+  SimilarProduct,
+} from "../../interfaces/Product";
+import requestAPI from "../../helpers/api";
+import toast from "react-hot-toast";
 
 const ProductDetail = () => {
   const [isShowMore, setIsShowMore] = useState<boolean>(false);
-  const [product, setProduct] = useState<PDetail>();
+
   const [priceByCapacity, setPriceByCapacity] = useState<number | null>(null);
   const [quantity, setQuantity] = useState<number>(1);
-  const [similarProduct, setSimilarProduct] = useState<SimilarProduct[]>();
+
   const [activeTab, setActiveTab] = useState<string>("tab1");
   const { pid } = useParams();
-  // const displayPrice =
-  //   product?.priceScale[product?.priceScale.length - 1].price;
   const descriptionRef = useRef<HTMLParagraphElement>(null);
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["/products/detail", pid],
+    queryFn: async () => {
+      const res = await fetch(
+        `${import.meta.env.VITE_SERVER_URL}/products/detail/${pid}`,
+      );
+      const data = await res.json();
+      return data.metadata;
+    },
+  });
+
+  const {
+    productDetail: product,
+    similarProducts: similarProduct,
+  }: { productDetail: PDetail; similarProducts: SimilarProduct[] } = data || {};
+
+  const [capacity, setCapacity] = useState<string>(
+    product?.priceScale.sort((a, b) => a.price - b.price)[0]._id,
+  );
+
+  const { mutate } = useMutation({
+    mutationFn: async () => {
+      try {
+        await requestAPI(
+          "/user/cart",
+          {
+            productData: {
+              productId: product?._id,
+              modelId: capacity,
+            },
+            quantity: quantity,
+          },
+          "post",
+        );
+        toast.success("Success add to cart");
+      } catch (error) {
+        toast.error("Failed to add to cart");
+      }
+    },
+  });
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    if (descriptionRef.current) {
+      setIsShowMore(descriptionRef.current?.clientHeight > 800);
+    }
+  }, [pid, data]);
 
   const navs = [
     { id: "tab1", title: <p>Sent</p>, activeTab, setActiveTab },
@@ -204,28 +256,14 @@ const ProductDetail = () => {
     },
   ];
 
-  useEffect(() => {
-    if (descriptionRef.current) {
-      setIsShowMore(descriptionRef.current?.clientHeight > 800);
-    }
-
-    window.scrollTo(0, 0);
-    const fetchData = async () => {
-      const res = await fetch(
-        `${import.meta.env.VITE_SERVER_URL}/products/detail/${pid}`,
-      );
-      const data = await res.json();
-      setProduct(data.metadata.productDetail);
-      setSimilarProduct(data.metadata.similarProducts);
-    };
-    fetchData();
-  }, [pid]);
-
   const handleCapacityChange = (
     event: React.ChangeEvent<HTMLSelectElement>,
   ) => {
     product?.priceScale.forEach((item) => {
-      item.capacity === event.target.value && setPriceByCapacity(item.price);
+      if (item.capacity === event.target.value) {
+        setCapacity(item._id);
+        setPriceByCapacity(item.price);
+      }
     });
   };
 
@@ -249,6 +287,7 @@ const ProductDetail = () => {
       </span>
     );
 
+  if (isLoading) return <div>Loading...</div>;
   return (
     <>
       <div className="mx-auto my-10 w-[94%] xl:w-[90%]">
@@ -313,10 +352,13 @@ const ProductDetail = () => {
             </div>
 
             <div className="flex gap-4">
-              <button className="w-[50%] bg-[#333] px-6 py-3 text-lg font-medium text-[#fff] lg:uppercase xl:px-16">
+              <button
+                onClick={() => mutate()}
+                className="w-[50%] bg-[#333] px-6 py-3 text-lg font-medium tracking-wide text-[#fff] lg:uppercase xl:px-16"
+              >
                 Add to cart
               </button>
-              <button className="w-[50%] bg-[#9a1919] px-6 py-3 text-lg font-medium text-[#fff] lg:uppercase xl:px-16">
+              <button className="w-[50%] bg-[#f50963] px-6 py-3 text-lg font-medium tracking-wide text-[#fff] lg:uppercase xl:px-16">
                 Buy now
               </button>
             </div>

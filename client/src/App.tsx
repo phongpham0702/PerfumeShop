@@ -14,16 +14,18 @@ import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { Toaster } from "react-hot-toast";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ReactNode, useEffect, useState } from "react";
 import Brands from "./components/Brands/BrandList";
 import WishList from "./pages/WishList";
+// import Search from "./pages/Search";
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 60 * 1000,
+      staleTime: 0,
     },
   },
 });
@@ -62,6 +64,10 @@ function App() {
             <Route element={<Shop />}>
               <Route path="/shop/:page" element={<ProductList />} />
             </Route>
+            {/* <Route path="search" element={<Navigate to="1" replace />} /> */}
+            {/* <Route element={<Search />}>
+              <Route path="/search/:pName" element={<ProductList />} />
+            </Route> */}
             <Route path="product/detail/:pid" element={<ProductDetail />} />
             <Route path="blog" element={<Blog />} />
             <Route
@@ -80,6 +86,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
+
             <Route
               path="wishlist"
               element={
@@ -97,6 +104,26 @@ function App() {
           </Route>
         </Routes>
       </BrowserRouter>
+      <Toaster
+        position="top-center"
+        gutter={12}
+        containerStyle={{ margin: "8px" }}
+        toastOptions={{
+          success: {
+            duration: 3000,
+          },
+          error: {
+            duration: 5000,
+          },
+          style: {
+            fontSize: "16px",
+            maxWidth: "500px",
+            padding: "16px 24px",
+            backgroundColor: "#333",
+            color: "#fff",
+          },
+        }}
+      />
     </QueryClientProvider>
   );
 }

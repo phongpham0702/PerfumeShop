@@ -8,6 +8,7 @@ import {
 import TabHR from "../ui/Tabs/TabHR";
 import { BiLockAlt } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const UserAccount = () => {
   const [activeTab, setActiveTab] = useState<string>("tab1");
@@ -71,9 +72,9 @@ const UserAccount = () => {
       title: (
         <div
           onClick={() => {
-            // delete_cookie("accessToken", "/", "localhost");
             localStorage.removeItem("accessToken");
             navigate("/login");
+            toast.success("Logout successfully");
           }}
           className="flex items-center gap-2 p-3 text-lg"
         >
@@ -164,23 +165,6 @@ const UserAccount = () => {
       ),
     },
   ];
-
-  // function get_cookie(name: string) {
-  //   return document.cookie.split(";").some((c) => {
-  //     return c.trim().startsWith(name + "=");
-  //   });
-  // }
-
-  // function delete_cookie(name: string, path: string, domain: string) {
-  //   if (get_cookie(name)) {
-  //     document.cookie =
-  //       name +
-  //       "=" +
-  //       (path ? ";path=" + path : "") +
-  //       (domain ? ";domain=" + domain : "") +
-  //       ";expires=Thu, 01 Jan 1970 00:00:01 GMT";
-  //   }
-  // }
 
   return (
     <div className="mx-auto flex w-[90%] gap-4 font-inter">

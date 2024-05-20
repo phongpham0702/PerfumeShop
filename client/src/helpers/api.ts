@@ -35,7 +35,9 @@ const requestAPI = (endpoint: string, body: unknown, method: string) => {
     async (err) => {
       const originalConfig = err.config;
       console.log("AccessToken expired");
-      if (err.response && err.response.status === 423) {
+      console.log(err);
+
+      if (err.response && err.response.status === 404) {
         try {
           console.log("Call refresh token api");
           const result = await instance.get(
