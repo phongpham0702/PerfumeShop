@@ -1,9 +1,83 @@
 const userModel = require("../models/users")
-const ProductService = require("./products.service")
-const {BadRequestError} = require('../helpers/error.response')
+const {BadRequestError, NotAcceptError} = require('../helpers/error.response')
 const { getProductList, checkProductIsExist } = require("../models/reposities/product.repo")
+const useraddressModel = require("../models/useraddress.model")
+
+const addressLimit = 5
 
 class UserService{
+
+    getUserProfile = async(userId) => {
+        let foundUser = await userModel.findOne({
+            _id: userId
+        })
+        .select([
+            "_id",
+            "Email",
+            "FullName",
+            "DoB",
+            "PhoneNumber",
+            "Addresses"
+        ])
+        .populate(
+        {
+            path:"Addresses",
+            select:"receiverName receiverPhoneNumber Nation City District Ward addressDetail"
+        })
+        .lean()
+        .exec()
+        
+        return {
+            userProfile: foundUser
+        }
+    }
+
+    addUserAddressList = async(userId, body) => {
+
+        let foundUser = await userModel.findOne({
+            _id: userId
+        },
+        {   
+            Addresses:1
+        })
+
+        if(!foundUser)
+        {
+            throw new BadRequestError()
+        }
+
+        if(foundUser.Addresses.length >= addressLimit)
+        {
+            throw new NotAcceptError(`You can have only ${addressLimit} address. Please delete one.`)
+        }
+
+        let newAddress = await useraddressModel.create({
+            addressOwner: foundUser.toJSON()._id,
+            receiverName: body.receiverName,
+            receiverPhoneNumber: body.receiverPhone,
+            Nation: body.nation,
+            City: body.city,
+            Ward: body.ward,
+            District: body.district,
+            addressDetail: body.detail
+        })
+        
+        foundUser.Addresses.push(newAddress._id)
+        await foundUser.save()
+
+        return {
+            addedAddress:{
+                addressId: newAddress._id,
+                receiverName: newAddress.receiverName,
+                receiverPhoneNumber: newAddress.receiverPhoneNumber,
+                Nation: newAddress.Nation,
+                City: newAddress.City,
+                Ward: newAddress.Ward,
+                District: newAddress.District,
+                addressDetail: newAddress.addressDetail
+            }
+        }
+    }
 
     getUserWishList = async(userID) =>{
 

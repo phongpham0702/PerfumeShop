@@ -98,5 +98,6 @@ module.exports = {
     SignUpInValid,
     AuthFailureError,
     NotFoundError,
-    LockedError
+    LockedError,
+    NotAcceptError
 }
