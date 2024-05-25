@@ -80,6 +80,7 @@ class CartService {
         productCapacity: itemModel.capacity,
         unitPrice: itemModel.price,
         quantity: i.quantity,
+        priceScale: i.productId.priceScale,
       };
     });
 
