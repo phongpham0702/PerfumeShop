@@ -21,12 +21,13 @@ const ProductDetail = () => {
   const { pid } = useParams();
   const descriptionRef = useRef<HTMLParagraphElement>(null);
 
-  const { data, isLoading } = useGetPDetail({ pid });
+  const { data, isLoading } = useGetPDetail(pid || "");
 
   const {
     productDetail: product,
     similarProducts: similarProduct,
-  }: { productDetail: PDetail; similarProducts: SimilarProduct[] } = data || {};
+  }: { productDetail: PDetail; similarProducts: SimilarProduct[] } =
+    data || Object.create(null);
 
   const [capacity, setCapacity] = useState<string>("");
 

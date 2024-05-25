@@ -9,10 +9,17 @@ import TabHR from "../ui/Tabs/TabHR";
 import { BiLockAlt } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import AddAddressModal from "../components/user/AddAddressModal";
 
 const UserAccount = () => {
   const [activeTab, setActiveTab] = useState<string>("tab1");
   const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
+  console.log(isOpen);
+
+  const closeModal = () => {
+    setIsOpen(false);
+  };
 
   const navs = [
     {
@@ -42,13 +49,13 @@ const UserAccount = () => {
       setActiveTab,
     },
     {
-      id: "tab3",
+      id: "address",
       title: (
         <div className="flex items-center gap-2 p-3 text-lg">
           <span className="text-xl">
             <AiOutlineInfoCircle />
           </span>
-          <p>Information</p>
+          <p>Address</p>
         </div>
       ),
       activeTab,
@@ -138,11 +145,18 @@ const UserAccount = () => {
       ),
     },
     {
-      id: "tab3",
+      id: "address",
       activeTab,
       children: (
         <>
-          <p>Information</p>
+          <div>
+            <button
+              onClick={() => setIsOpen(true)}
+              className="border border-[#1a1306] px-6 py-2"
+            >
+              Add new address
+            </button>
+          </div>
         </>
       ),
     },
@@ -169,6 +183,7 @@ const UserAccount = () => {
   return (
     <div className="mx-auto flex w-[90%] gap-4 font-inter">
       <TabHR navs={navs} contents={contents} />
+      <AddAddressModal modalIsOpen={isOpen} closeModal={closeModal} />
     </div>
   );
 };

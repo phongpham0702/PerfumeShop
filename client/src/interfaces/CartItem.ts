@@ -7,4 +7,9 @@ export interface ICartItem {
   productCapacity: string;
   unitPrice: number;
   quantity: number;
+  priceScale: {
+    capacity: string;
+    price: number;
+    _id: string;
+  }[];
 }

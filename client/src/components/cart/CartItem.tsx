@@ -37,8 +37,7 @@ const CartItem = ({ item }: { item: ICartItem }) => {
       });
     },
   });
-  //   const [quantity, setQuantity] = useState<string>(item.quantity.toString());
-  //   const quantityRef = useRef<string>(item.quantity.toString());
+
   return (
     <div className="mx-auto flex w-[100%] items-center justify-between rounded-md p-2">
       <EditCartModal
@@ -58,8 +57,16 @@ const CartItem = ({ item }: { item: ICartItem }) => {
             <span>{item.productCapacity}</span>
           </div>
           <p>Quantity: {item.quantity}</p>
-          <p className="mt-10 text-lg font-medium">
+          <p className="mt-2">
+            Unit price:{" "}
             {item.unitPrice.toLocaleString("en-US", {
+              style: "currency",
+              currency: "USD",
+            })}
+          </p>
+          <p className="mt-4 text-lg font-medium">
+            Total:{" "}
+            {(item.unitPrice * item.quantity).toLocaleString("en-US", {
               style: "currency",
               currency: "USD",
             })}

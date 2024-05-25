@@ -6,15 +6,18 @@ import useGetCart from "../hooks/Cart/useGetCart";
 const Cart = () => {
   const { data, isLoading } = useGetCart();
 
-  const totalPrice = data?.cartData
-    ?.reduce(
-      (acc: number, item: ICartItem) => acc + item.unitPrice * item.quantity,
-      0,
-    )
-    .toLocaleString("en-US", {
-      style: "currency",
-      currency: "USD",
-    });
+  const totalPrice = Array.isArray(data?.cartData)
+    ? data.cartData
+        .reduce(
+          (acc: number, item: ICartItem) =>
+            acc + item.unitPrice * item.quantity,
+          0,
+        )
+        .toLocaleString("en-US", {
+          style: "currency",
+          currency: "USD",
+        })
+    : "";
 
   return (
     <div>
@@ -22,11 +25,12 @@ const Cart = () => {
         <div className="w-[75%]">
           <hr />
           {isLoading && <ListSkeleton cards={3} />}
-          {data?.cartData?.map((item: ICartItem) => (
-            <div key={item.productId}>
-              <CartItem item={item} />
-            </div>
-          ))}
+          {Array.isArray(data?.cartData) &&
+            data?.cartData.map((item: ICartItem) => (
+              <div key={item.productId}>
+                <CartItem item={item} />
+              </div>
+            ))}
           <hr />
         </div>
 

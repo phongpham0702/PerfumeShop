@@ -52,7 +52,7 @@ class CartController {
       {
         userID: req.userid,
         'cartProduct.productId': productId,
-        'cartProduct.modelId': modelId,
+        //'cartProduct.modelId': modelId,
       },
       { 'cartProduct.$': 1 }
     ).lean();

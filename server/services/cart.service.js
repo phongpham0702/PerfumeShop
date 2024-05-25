@@ -150,9 +150,10 @@ class CartService {
     let query = {
       userID: userId,
       'cartProduct.productId': converterHelper.toObjectIdMongo(productId),
-      'cartProduct.modelId': converterHelper.toObjectIdMongo(modelId),
+      //'cartProduct.modelId': converterHelper.toObjectIdMongo(modelId),
     };
     let updateSet = {
+      'cartProduct.$.modelId': converterHelper.toObjectIdMongo(modelId),
       $inc: {
         'cartProduct.$.quantity': quantity,
         cartCountProduct: quantity,

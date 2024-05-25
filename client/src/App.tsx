@@ -21,7 +21,6 @@ import { ReactNode, useEffect, useState } from "react";
 import Brands from "./components/Brands/BrandList";
 import WishList from "./pages/WishList";
 import { SkeletonTheme } from "react-loading-skeleton";
-// import Search from "./pages/Search";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -66,10 +65,6 @@ function App() {
               <Route element={<Shop />}>
                 <Route path="/shop/:page" element={<ProductList />} />
               </Route>
-              {/* <Route path="search" element={<Navigate to="1" replace />} /> */}
-              {/* <Route element={<Search />}>
-              <Route path="/search/:pName" element={<ProductList />} />
-            </Route> */}
               <Route path="product/detail/:pid" element={<ProductDetail />} />
               <Route path="blog" element={<Blog />} />
               <Route
