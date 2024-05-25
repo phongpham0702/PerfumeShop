@@ -71,7 +71,8 @@ class CartService{
                 productThumbnail: i.productId.productThumbnail,
                 productCapacity: itemModel.capacity,
                 unitPrice: itemModel.price,
-                quantity: i.quantity
+                quantity: i.quantity,
+                priceScale: i.productId.priceScale
             }
         })
 

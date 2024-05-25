@@ -17,6 +17,7 @@ router.get('/', async function (req, res, next) {
   //console.log(a);
   //let p = await productModel.aggregate(a)
   //console.log(p);
+  req.session.First = "hello"
   return res.status(200).json({ Message: 'Nothing here!' });
 });
 

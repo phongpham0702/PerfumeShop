@@ -17,7 +17,7 @@ class AuthService{
             3 - create AT and RT
             4 - return result
         */
-
+        
         //1)
         let userInfo = await findUserByEmail(email)
         
