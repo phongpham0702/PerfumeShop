@@ -61,3 +61,12 @@ input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
+@keyframes rightIn {
+  from {
+    transform: translateX(60%);
+  }
+  to {
+    transform: translateX(40%);
+  }
+}

@@ -1,17 +1,15 @@
 import { useEffect, useRef, useState } from "react";
-// import { ProductDetail as PDetail, SimilarProduct } from "../../types/Product";
 import { useParams } from "react-router-dom";
 import Tabs from "../../ui/Tabs/Tabs";
 import { BsGenderFemale, BsGenderMale } from "react-icons/bs";
 import ProductItem from "./ProductItem";
 import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
-import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   ProductDetail as PDetail,
   SimilarProduct,
 } from "../../interfaces/Product";
-import requestAPI from "../../helpers/api";
-import toast from "react-hot-toast";
+import useAddToCart from "../../hooks/Cart/useAddToCart";
+import useGetPDetail from "../../hooks/product/useGetPDetail";
 
 const ProductDetail = () => {
   const [isShowMore, setIsShowMore] = useState<boolean>(false);
@@ -23,16 +21,7 @@ const ProductDetail = () => {
   const { pid } = useParams();
   const descriptionRef = useRef<HTMLParagraphElement>(null);
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["/products/detail", pid],
-    queryFn: async () => {
-      const res = await fetch(
-        `${import.meta.env.VITE_SERVER_URL}/products/detail/${pid}`,
-      );
-      const data = await res.json();
-      return data.metadata;
-    },
-  });
+  const { data, isLoading } = useGetPDetail({ pid });
 
   const {
     productDetail: product,
@@ -49,26 +38,7 @@ const ProductDetail = () => {
     }
   }, [pid, data, product?.priceScale]);
 
-  const { mutate } = useMutation({
-    mutationFn: async () => {
-      try {
-        await requestAPI(
-          "/user/cart",
-          {
-            productData: {
-              productId: product?._id,
-              modelId: capacity,
-            },
-            quantity: quantity,
-          },
-          "post",
-        );
-        toast.success("Success add to cart");
-      } catch (error) {
-        toast.error("Failed to add to cart");
-      }
-    },
-  });
+  const mutate = useAddToCart({ _id: product?._id, capacity, quantity });
 
   const navs = [
     { id: "tab1", title: <p>Sent</p>, activeTab, setActiveTab },

@@ -19,7 +19,7 @@ const BrandList = () => {
         {brandsLogo.map((logo, index) => (
           <div
             key={index}
-            className="flex justify-center rounded-md border border-[#959191]"
+            className="flex h-[200px] w-[200px] justify-center rounded-md border border-[#959191]"
           >
             <BrandItem logo={logo} />
           </div>

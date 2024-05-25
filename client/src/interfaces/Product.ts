@@ -56,5 +56,4 @@ export interface ProductDetail {
   };
   productThumbnail: string;
   productDescription: string;
-  similarProducts: SimilarProduct[];
 }

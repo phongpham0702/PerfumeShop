@@ -3,9 +3,10 @@ import { Product } from "../../interfaces/Product";
 import ProductItem from "./ProductItem";
 import Pagination from "../Pagination/Pagination";
 import { useOutletContext, useParams, useSearchParams } from "react-router-dom";
-import ScaleLoader from "react-spinners/ScaleLoader";
-import Overlay from "../../ui/Overlay";
+// import ScaleLoader from "react-spinners/ScaleLoader";
+// import Overlay from "../../ui/Overlay";
 import { useQuery } from "@tanstack/react-query";
+import SkeletonCard from "../../ui/CardSkeleton";
 
 type propsType = {
   handleProductNumChange: (productNum: number) => void;
@@ -50,13 +51,12 @@ const ProductList = () => {
     handleProductNumChange(productNum);
   }, [handleProductNumChange, productNum]);
 
-  if (isLoading) return <div>Loading...</div>;
-
   return (
     <>
       <div className="relative w-full xl:w-[80%]">
         <div className="grid grid-cols-2 gap-y-6 sm:grid-cols-2 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">
-          {products.map((product: Product) => (
+          {isLoading && <SkeletonCard cards={10} />}
+          {products?.map((product: Product) => (
             <div key={product._id}>
               <ProductItem product={product} />
             </div>
@@ -68,14 +68,13 @@ const ProductList = () => {
           productNum={productNum}
           totalPages={pageNum}
         />
-
-        {products.length === 0 && (
+        {products?.length === 0 && (
           <p className="absolute left-[50%] top-[10%] translate-x-[-50%] p-4 text-xl font-medium outline outline-[#ddaf6a]">
             No products were found matching your selection.
           </p>
         )}
       </div>
-      <Overlay bg="bg-[#f6f3f360]" isShow={isLoading}>
+      {/* <Overlay bg="bg-[#f6f3f360]" isShow={isLoading}>
         <ScaleLoader
           color="#f8b500"
           height={80}
@@ -88,7 +87,7 @@ const ProductList = () => {
             position: "absolute",
           }}
         />
-      </Overlay>
+      </Overlay> */}
     </>
   );
 };

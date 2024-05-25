@@ -20,6 +20,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ReactNode, useEffect, useState } from "react";
 import Brands from "./components/Brands/BrandList";
 import WishList from "./pages/WishList";
+import { SkeletonTheme } from "react-loading-skeleton";
 // import Search from "./pages/Search";
 
 const queryClient = new QueryClient({
@@ -50,81 +51,83 @@ function App() {
     return children;
   }
   return (
-    <QueryClientProvider client={queryClient}>
-      <ReactQueryDevtools initialIsOpen={false} />
-      <BrowserRouter>
-        <Routes>
-          <Route element={<AppLayOut />}>
-            <Route index element={<Home />} />
-            <Route path="about" element={<About />} />
+    <SkeletonTheme baseColor="#ccc" highlightColor="#aaa">
+      <QueryClientProvider client={queryClient}>
+        <ReactQueryDevtools initialIsOpen={false} />
+        <BrowserRouter>
+          <Routes>
+            <Route element={<AppLayOut />}>
+              <Route index element={<Home />} />
+              <Route path="about" element={<About />} />
 
-            <Route path="brands" element={<Brands />} />
+              <Route path="brands" element={<Brands />} />
 
-            <Route path="shop" element={<Navigate to="1" replace />} />
-            <Route element={<Shop />}>
-              <Route path="/shop/:page" element={<ProductList />} />
-            </Route>
-            {/* <Route path="search" element={<Navigate to="1" replace />} /> */}
-            {/* <Route element={<Search />}>
+              <Route path="shop" element={<Navigate to="1" replace />} />
+              <Route element={<Shop />}>
+                <Route path="/shop/:page" element={<ProductList />} />
+              </Route>
+              {/* <Route path="search" element={<Navigate to="1" replace />} /> */}
+              {/* <Route element={<Search />}>
               <Route path="/search/:pName" element={<ProductList />} />
             </Route> */}
-            <Route path="product/detail/:pid" element={<ProductDetail />} />
-            <Route path="blog" element={<Blog />} />
-            <Route
-              path="account"
-              element={
-                <ProtectedRoute>
-                  <UserAccount />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="cart"
-              element={
-                <ProtectedRoute>
-                  <Cart />
-                </ProtectedRoute>
-              }
-            />
+              <Route path="product/detail/:pid" element={<ProductDetail />} />
+              <Route path="blog" element={<Blog />} />
+              <Route
+                path="account"
+                element={
+                  <ProtectedRoute>
+                    <UserAccount />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="cart"
+                element={
+                  <ProtectedRoute>
+                    <Cart />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route
-              path="wishlist"
-              element={
-                <ProtectedRoute>
-                  <WishList />
-                </ProtectedRoute>
-              }
-            />
-            <Route path="signup" element={<SignUp />} />
-            <Route
-              path="login"
-              element={<Login onLoginSuccess={handleLoginSuccess} />}
-            />
-            <Route path="*" element={<NotFound />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-      <Toaster
-        position="top-center"
-        gutter={12}
-        containerStyle={{ margin: "8px" }}
-        toastOptions={{
-          success: {
-            duration: 3000,
-          },
-          error: {
-            duration: 5000,
-          },
-          style: {
-            fontSize: "16px",
-            maxWidth: "500px",
-            padding: "16px 24px",
-            backgroundColor: "#333",
-            color: "#fff",
-          },
-        }}
-      />
-    </QueryClientProvider>
+              <Route
+                path="wishlist"
+                element={
+                  <ProtectedRoute>
+                    <WishList />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="signup" element={<SignUp />} />
+              <Route
+                path="login"
+                element={<Login onLoginSuccess={handleLoginSuccess} />}
+              />
+              <Route path="*" element={<NotFound />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+        <Toaster
+          position="top-center"
+          gutter={12}
+          containerStyle={{ margin: "8px" }}
+          toastOptions={{
+            success: {
+              duration: 3000,
+            },
+            error: {
+              duration: 5000,
+            },
+            style: {
+              fontSize: "16px",
+              maxWidth: "500px",
+              padding: "16px 24px",
+              backgroundColor: "#333",
+              color: "#fff",
+            },
+          }}
+        />
+      </QueryClientProvider>
+    </SkeletonTheme>
   );
 }
 
