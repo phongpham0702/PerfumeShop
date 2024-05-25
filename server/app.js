@@ -40,7 +40,7 @@ app.use(
   session({
     secret: process.env.SESSION_SECRET_KEY,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
   })
 );
 
@@ -48,7 +48,14 @@ if (app.get('env') === 'production') {
   app.set('trust proxy', 1); // trust first proxy
   sess.cookie.secure = true; // serve secure cookies
 }
-
+app.use((req, res, next) => {
+  console.log(req.session);
+  console.log(req.session.id);
+  req.sessionStore.all((err, ss) => {
+    console.log(ss);
+  });
+  next();
+});
 app.use('/', indexRouter);
 app.use('/user', usersRouter); // users have account
 app.use('/guest', usersRouter); // no account users

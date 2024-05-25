@@ -9,6 +9,7 @@ const cartController = require('../controllers/cart.controller');
 const AddToCartValidator = require('../controllers/validators/addCart.validator');
 const UpdateCartValidator = require('../controllers/validators/updateCart.validator');
 const checkOutController = require('../controllers/checkOut.controller');
+const AddAddressValidator = require('../controllers/validators/addAddress.validator');
 
 
 router.route('/gain-access').get(errorHandler(protectTokenProvider), errorHandler(authController.getNewToken))
@@ -24,6 +25,11 @@ router.use(errorHandler(authentication));
 router.route('/logout')
 .get(errorHandler(authController.logout))
 
+router.route('/profile')
+.get(errorHandler(userController.getUerProfile))
+
+router.route('/address')
+.post(AddAddressValidator ,errorHandler(userController.addUserAddressList))
 
 router.route('/wishlist')
 .get(errorHandler(userController.getWishList))
@@ -40,6 +46,6 @@ router.route('/clear-cart')
 .get(errorHandler(cartController.deleteAllItems))
 
 router.route('/review')
-.get(errorHandler(checkOutController.reviewOrder))
+.post(errorHandler(checkOutController.reviewOrder))
 
 module.exports = router;

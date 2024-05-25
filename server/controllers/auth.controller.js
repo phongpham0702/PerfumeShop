@@ -28,23 +28,8 @@ class AuthController{
         {   
             let result = await AuthService.login(req.body.Email,req.body.Password)
             
-            /* res.cookie('_uid_',result.userInfo.userId, 
-            { 
-                httpOnly: true,
-                secure: false,
-                sameSite: 'Lax',
-                maxAge: 604800000,
-                sign: true
-            }) */
-
             setUIDCookie(result.userInfo.userId,res)
-            /* res.cookie('uRT', result.refreshToken,{
-                httpOnly: true,
-                secure: false,
-                sameSite: 'Lax',
-                maxAge: 604800000,
-                sign: true
-            }) */
+            
             setRTCookie(result.refreshToken,res)
             new responseHelper.SuccessResponse({
                 metadata: {

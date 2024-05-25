@@ -38,9 +38,15 @@ const userSchema = new Schema({
         default:[]
     },
 
-    LastSearch:{
-        type: String,
-        default: ""
+    Addresses:{
+        type: [{
+
+            type: Schema.Types.ObjectId,
+            required: true,
+            ref:'UserAddress'
+            
+        }],
+        default: [],
     },
 
     isVerify:{
@@ -56,11 +62,14 @@ const userSchema = new Schema({
 },
 {
     timestamps: true,
+    _id: false
 })
 
 
 userSchema.index({
     'Email': 1
 })
+
+
 
 module.exports = model("Users", userSchema);
