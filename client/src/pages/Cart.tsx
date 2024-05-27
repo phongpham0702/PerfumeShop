@@ -1,38 +1,36 @@
-import { useQuery } from "@tanstack/react-query";
-import requestAPI from "../helpers/api";
 import { ICartItem } from "../interfaces/CartItem";
-import CartItem from "../components/CartItem";
+import CartItem from "../components/cart/CartItem";
+import ListSkeleton from "../ui/ListSkeleton";
+import useGetCart from "../hooks/Cart/useGetCart";
 
 const Cart = () => {
-  const { data } = useQuery({
-    queryKey: ["cart"],
-    queryFn: async () => {
-      const res = await requestAPI(`/user/cart`, {}, "GET");
-      const data = res.data.metadata;
-      return data;
-    },
-  });
+  const { data, isLoading } = useGetCart();
 
-  const totalPrice = data?.cartData
-    ?.reduce(
-      (acc: number, item: ICartItem) => acc + item.unitPrice * item.quantity,
-      0,
-    )
-    .toLocaleString("en-US", {
-      style: "currency",
-      currency: "USD",
-    });
+  const totalPrice = Array.isArray(data?.cartData)
+    ? data.cartData
+        .reduce(
+          (acc: number, item: ICartItem) =>
+            acc + item.unitPrice * item.quantity,
+          0,
+        )
+        .toLocaleString("en-US", {
+          style: "currency",
+          currency: "USD",
+        })
+    : "";
 
   return (
     <div>
       <div className="mx-auto my-10 flex w-[80%] items-start gap-10 ">
         <div className="w-[75%]">
           <hr />
-          {data?.cartData?.map((item: ICartItem) => (
-            <div key={item.productId}>
-              <CartItem item={item} />
-            </div>
-          ))}
+          {isLoading && <ListSkeleton cards={3} />}
+          {Array.isArray(data?.cartData) &&
+            data?.cartData.map((item: ICartItem) => (
+              <div key={item.productId}>
+                <CartItem item={item} />
+              </div>
+            ))}
           <hr />
         </div>
 

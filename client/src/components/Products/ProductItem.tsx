@@ -45,6 +45,12 @@ const ProductItem = ({ product }: propsType) => {
     pDetailRef.current?.classList.remove("animate-fadeOut");
   }, []);
 
+  // const addToCartMutate = useAddToCart({
+  //   _id: product._id,
+  //   capacity: product.displayPrice,
+  //   quantity: 1,
+  // });
+
   const queryClient = useQueryClient();
   const curList = localStorage.getItem("wishlist_items");
 
@@ -89,7 +95,7 @@ const ProductItem = ({ product }: propsType) => {
     return data;
   };
 
-  const { mutate } = useMutation({
+  const { mutate: favoriteMutate } = useMutation({
     mutationFn: async () => {
       try {
         if (curList) {
@@ -147,7 +153,7 @@ const ProductItem = ({ product }: propsType) => {
         <div className="absolute right-[-40px] top-[16px] flex flex-col gap-2 transition-all duration-500">
           <div>
             <div
-              onClick={() => mutate()}
+              onClick={() => favoriteMutate()}
               className={`peer cursor-pointer  p-3 font-bold shadow-lg hover:bg-[#f50963] hover:text-[#fff] hover:transition-all hover:duration-500 ${
                 isHovered
                   ? "animate-rightInF group-hover:animate-rightInF"

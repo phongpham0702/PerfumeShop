@@ -37,11 +37,11 @@ const requestAPI = (endpoint: string, body: unknown, method: string) => {
       console.log("AccessToken expired");
       console.log(err);
 
-      if (err.response && err.response.status === 404) {
+      if (err.response && err.response.status === 423) {
         try {
-          console.log("Call refresh token api");
+          // console.log("Call refresh token api");
           const result = await instance.get(
-            `http://localhost:8080/user/gain-access`,
+            `${import.meta.env.VITE_SERVER_URL}/user/gain-access`,
           );
           localStorage.setItem("accessToken", result.data.metadata.AT);
           originalConfig.headers["authorization"] = result.data.metadata.AT;
@@ -59,7 +59,7 @@ const requestAPI = (endpoint: string, body: unknown, method: string) => {
   return instance.request({
     method: method,
     data: body,
-    url: `http://localhost:8080${endpoint}`,
+    url: `${import.meta.env.VITE_SERVER_URL}${endpoint}`,
   });
 };
 

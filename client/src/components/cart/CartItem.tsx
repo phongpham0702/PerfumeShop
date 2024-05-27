@@ -1,12 +1,20 @@
 import { AiOutlineMinus } from "react-icons/ai";
-import { ICartItem } from "../interfaces/CartItem";
+import { ICartItem } from "../../interfaces/CartItem";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import requestAPI from "../helpers/api";
-// import { useState } from "react";
+import requestAPI from "../../helpers/api";
+import { useState } from "react";
+import EditCartModal from "./EditCartModal";
 
 const CartItem = ({ item }: { item: ICartItem }) => {
   const queryClient = useQueryClient();
+
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
   const { mutate } = useMutation({
     mutationFn: async () => {
       try {
@@ -29,10 +37,15 @@ const CartItem = ({ item }: { item: ICartItem }) => {
       });
     },
   });
-  //   const [quantity, setQuantity] = useState<string>(item.quantity.toString());
-  //   const quantityRef = useRef<string>(item.quantity.toString());
+
   return (
     <div className="mx-auto flex w-[100%] items-center justify-between rounded-md p-2">
+      <EditCartModal
+        item={item}
+        modalIsOpen={isModalOpen}
+        closeModal={handleCloseModal}
+      />
+
       <div className="flex gap-6">
         <div className="w-[150px] bg-[#f8f8f8] p-4">
           <img width={150} src={item.productThumbnail} alt="item thumbnail" />
@@ -44,8 +57,16 @@ const CartItem = ({ item }: { item: ICartItem }) => {
             <span>{item.productCapacity}</span>
           </div>
           <p>Quantity: {item.quantity}</p>
-          <p className="mt-10 text-lg font-medium">
+          <p className="mt-2">
+            Unit price:{" "}
             {item.unitPrice.toLocaleString("en-US", {
+              style: "currency",
+              currency: "USD",
+            })}
+          </p>
+          <p className="mt-4 text-lg font-medium">
+            Total:{" "}
+            {(item.unitPrice * item.quantity).toLocaleString("en-US", {
               style: "currency",
               currency: "USD",
             })}
@@ -54,7 +75,10 @@ const CartItem = ({ item }: { item: ICartItem }) => {
       </div>
 
       <div className="flex flex-col gap-2">
-        <button className="rounded-sm border border-[#c1c1c1] px-8 py-1 hover:text-[#ac8f45]">
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="rounded-sm border border-[#c1c1c1] px-8 py-1 hover:text-[#ac8f45]"
+        >
           Edit
         </button>
         <button
