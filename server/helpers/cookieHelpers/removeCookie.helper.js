@@ -1,12 +1,7 @@
-const removeUIDCookie = (response) => {
-    response.clearCookie('_uid_')
-}
-
-const removeRTCookie = (response) => {
-    response.clearCookie('uRT')
+const removeTokenIDCookie = (response) => {
+    response.clearCookie('token_id')
 }
 
 module.exports = {
-    removeRTCookie,
-    removeUIDCookie
+    removeTokenIDCookie
 }

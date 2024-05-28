@@ -1,11 +1,11 @@
-const UserService = require('./user.service')
 const KeyTokenService = require('./keyToken.service')
-const {createTokenPair} = require('../utils/token.util')
-const {LoginFail, AuthFailureError, ForbiddenError} = require('../helpers/error.response')
+const {createAccessToken, createRefreshToken} = require('../utils/token.util')
+const {AuthFailureError, ServerError} = require('../helpers/error.response')
 const bcrypt = require('bcrypt');
 const crypto = require('crypto')
 const { findUserByEmail,findUserById } = require("../models/reposities/user.repo");
-const { removeUIDCookie, removeRTCookie } = require('../helpers/cookieHelpers/removeCookie.helper');
+const { removeTokenIDCookie } = require('../helpers/cookieHelpers/removeCookie.helper');
+const { deleteKeyById } = require('../models/reposities/keystore.repo');
 
 class AuthService{
 
@@ -39,63 +39,63 @@ class AuthService{
         let privateKey = crypto.randomBytes(64).toString('hex') 
 
         //4)
-        let token = await createTokenPair({
+        let tokenData = {
             userId: userInfo._id,
-            Email : userInfo.Email,
-        },publicKey,privateKey)
+            isAdmin : userInfo.isAdmin, 
+        }
 
-        await KeyTokenService.createKeyToken({
+        let accessToken = await createAccessToken(tokenData,publicKey)
+        let refreshToken = await createRefreshToken(tokenData,privateKey)
+
+        let keyStore = await KeyTokenService.createKeyToken({
             userId: userInfo._id,
-            refreshToken: token.refreshToken,
+            refreshToken: refreshToken,
+            accessToken: accessToken,
             publicKey,
             privateKey
         })
+        
+        if(keyStore === null)
+        {
+            throw new ServerError()
+        }
 
         return {
             userInfo:{
-                userId: userInfo._id,
+                userId: userInfo._id.toString(),
                 email: userInfo.Email,
                 name: userInfo.FullName,
             },
-            accessToken: token.accessToken,
-            refreshToken: token.refreshToken
+            keyId: keyStore._id.toString(),
+            accessToken,
+            refreshToken
         }
     }
 
-    static logout = async(userId,res)=> {
+    static logout = async(tokenId,res)=> {
 
-        let delKey = await KeyTokenService.deleteUserKeyById(userId)
-        removeRTCookie(res)
-        removeUIDCookie(res)
+        let delKey = await deleteKeyById(tokenId)
+        removeTokenIDCookie(res)
         return delKey
 
     }
 
-    static handlerRefreshToken = async ({refreshToken, userId, keyStore}) =>{
-
-        if(keyStore.refreshTokenUsed.includes(refreshToken))
-        {
-            await KeyTokenService.deleteUserKeyById(userId) 
-            throw new AuthFailureError('We suspect your account is being impersonated. Please log in again.')
-        }
-
-        if(keyStore.refreshToken !== refreshToken) throw new AuthFailureError('Please login again !')
-        
-        let userInfo = await findUserById(userId)
+    static handlerRefreshToken = async ({refreshData, keyStore}) =>{
+     
+        let userInfo = await findUserById(refreshData.userId)
 
         if(!userInfo) throw new AuthFailureError('Cannot find user')
-
-        let newToken = await createTokenPair({
-            userId: userInfo._id,
-            Email : userInfo.Email,
-        },keyStore.publicKey, keyStore.privateKey)
+        let tokenData = {
+            
+            userId: refreshData.userId,
+            isAdmin : refreshData.isAdmin, 
+            
+        }
+        let newToken = await createAccessToken(tokenData, keyStore.publicKey)
 
         await keyStore.updateOne({
              $set:{
-                 'refreshToken': newToken.refreshToken
-             },
-             $addToSet:{
-                 'refreshTokenUsed': refreshToken
+                 'activeAccessToken': newToken
              }
          })
 
@@ -105,8 +105,7 @@ class AuthService{
                 email: userInfo.Email,
                 name: userInfo.FullName,
             },
-            accessToken: newToken.accessToken,
-            refreshToken: newToken.refreshToken
+            accessToken: newToken,
         }
 
      }

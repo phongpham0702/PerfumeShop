@@ -1,7 +1,6 @@
 const JWT = require('jsonwebtoken')
 const {AuthFailureError, NotFoundError, LockedError} = require('../helpers/error.response')
-const { findUserKeyById } = require('../models/reposities/keystore.repo')
-const { removeUIDCookie, removeRTCookie } = require('../helpers/cookieHelpers/removeCookie.helper')
+const { findKeyById, deleteKeyById } = require('../models/reposities/keystore.repo')
 const converterHelper = require('../helpers/converter.helper')
 
 const HEADER = {
@@ -10,11 +9,11 @@ const HEADER = {
 
 const authentication = async (req,res,next) => {
 
-    let userId = req.signedCookies._uid_
-
-    if(!userId) throw new AuthFailureError()
+    let token_id = req.signedCookies.token_id
     
-    let keyStore = await findUserKeyById(userId)
+    if(!token_id) throw new AuthFailureError()
+    
+    let keyStore = await findKeyById(token_id)
     
     if(!keyStore) throw new NotFoundError()
     
@@ -34,10 +33,11 @@ const authentication = async (req,res,next) => {
             return decode
         })
 
-        if(userId !== decodedToken.userId) throw new AuthFailureError('Invalid user ID')
+        if(keyStore.userId.toString() !== decodedToken.userId) throw new AuthFailureError('Invalid user ID')
 
         req.keyStore = keyStore
         req.userid = converterHelper.toObjectIdMongo(decodedToken.userId)
+        req.tokenid = token_id
         return next()
     } 
     catch (error) 
@@ -50,28 +50,22 @@ const authentication = async (req,res,next) => {
 
 const protectTokenProvider = async (req,res,next) => {
 
-    let refreshToken = req.signedCookies.uRT
+    let token_id = req.signedCookies.token_id
 
-    if(!refreshToken){
-        removeUIDCookie(res)
-        throw new AuthFailureError("Please login again !")
-    }
+    if(!token_id){ throw new AuthFailureError()}
 
-    let userId = req.signedCookies._uid_
+    let currentAccessToken = req.headers[HEADER.AUTHORIZATION]
+
+    if(!currentAccessToken) throw new AuthFailureError()
+
+    let keyStore = await findKeyById(token_id)
     
-    if(!userId){
-        removeRTCookie(res)
-        throw new AuthFailureError("Please login again !")
-    }
-
-    let keyStore = await findUserKeyById(userId)
-    
-    if(!keyStore) throw new AuthFailureError("Please login again !")
+    if(!keyStore) throw new AuthFailureError("Your login session is end")
 
     try 
     {   
         
-        let decodedToken = await JWT.verify(refreshToken, keyStore.privateKey,(err,decode) => {
+        let decodedToken = await JWT.verify(keyStore.refreshToken, keyStore.privateKey,(err,decode) => {
             if(err)
             {   
                 throw err
@@ -79,17 +73,21 @@ const protectTokenProvider = async (req,res,next) => {
 
             return decode
         })
-
-        if(userId !== decodedToken.userId) throw new AuthFailureError()
+        
+        if(currentAccessToken != keyStore.activeAccessToken)
+        {   
+            deleteKeyById(token_id)
+            throw new AuthFailureError()
+        } 
 
         req.keyStore = keyStore
-        req.userid = decodedToken.userId
-        req.refreshToken = refreshToken
+        req.refreshData = decodedToken
+
         return next()
     } 
     catch (error) 
     {   
-        throw new AuthFailureError("Please login again !")   
+        throw new AuthFailureError("Unable to authenticate user. Please login again !")   
     }
 
 

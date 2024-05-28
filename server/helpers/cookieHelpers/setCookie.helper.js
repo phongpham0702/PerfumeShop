@@ -1,27 +1,15 @@
-const setUIDCookie = (uid,response) =>{
-    response.cookie('_uid_', uid,{
+const setTokenIDCookie = (tokenId, response) => {
+    response.cookie("token_id", tokenId, {
         httpOnly: true,
         secure: true,
-        sameSite: 'none',
-        maxAge: 604800000,
-        signed: true
-    })
-}
-
-
-const setRTCookie = (RT,response) => {
-    response.cookie('uRT', RT,{
-        httpOnly: true,
-        secure: true,
-        sameSite: 'none',
+        sameSite:'none',
         maxAge: process.env.REFRESH_TOKEN_TIME,
         signed: true
     })
 }
 
 module.exports = {
-    setUIDCookie,
-    setRTCookie
+    setTokenIDCookie
 }
 
 /* res.cookie('_uid_',result.userInfo.userId, 

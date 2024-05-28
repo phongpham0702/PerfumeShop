@@ -20,6 +20,11 @@ class PipeLineGenerator {
                         'productBrand': 1,
                         'displayPrice': {$min:"$priceScale.price"},
                         'productThumbnail': 1,
+                        'priceInfo': {
+                            $arrayElemAt: ["$priceScale",{
+                                $indexOfArray:["$priceScale.price","$min"]
+                            }
+                        ]}
                     }
                 },
         ]
@@ -82,6 +87,11 @@ class PipeLineGenerator {
                     'productBrand': 1,
                     'displayPrice': 1,
                     'productThumbnail': 1,
+                    'priceInfo': {
+                        $arrayElemAt: ["$priceScale",{
+                            $indexOfArray:["$priceScale.price","$min"]
+                        }
+                    ]}
                 }
             }
         ])
@@ -105,6 +115,11 @@ class PipeLineGenerator {
                     'productBrand': 1,
                     'displayPrice': {$min:"$priceScale.price"},
                     'productThumbnail': 1,
+                    'priceInfo': {
+                        $arrayElemAt: ["$priceScale",{
+                            $indexOfArray:["$priceScale.price","$min"]
+                        }
+                    ]}
                 }
             },
             {

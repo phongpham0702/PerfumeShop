@@ -1,45 +1,32 @@
 const keyTokenModel = require('../models/keytoken.model')
 const {ServerError, AuthFailureError} = require('../helpers/error.response') 
-const {Types} = require('mongoose')
 const JWT = require('jsonwebtoken')
+const { deleteKeyById } = require('../models/reposities/keystore.repo')
 
 class KeyTokenService{
  
-    static createKeyToken = async({userId, refreshToken,publicKey,privateKey}) => {
+    static createKeyToken = async({userId, refreshToken,accessToken,publicKey,privateKey}) => {
+        let futureExpire = Date.now() + parseInt(process.env.REFRESH_TOKEN_TIME)
 
-        try 
-        {
+        let expireAt = new Date(futureExpire)
 
-            let filter = {
-                userId: userId
-            }
-
-            let update = {
+        try {
+            let tokenStore = await keyTokenModel.create({
+                userId,
                 publicKey,
                 privateKey,
-                refreshTokenUsed: [],
-                refreshToken
-            }
-
-            let options = {
-                upsert: true,
-                new: true
-            }
-            let token = await keyTokenModel.findOneAndUpdate(filter,update,options)
-
-            return token ? token.publicKey : null
-
+                refreshToken,
+                activeAccessToken: accessToken,
+                expireAt
+            })
+            
+            return tokenStore ? tokenStore:null
         } 
         catch (error) {
             throw new ServerError(error)
         }
 
     }
-
-    static deleteUserKeyById = async (userId) => {
-        return await keyTokenModel.deleteOne({"userId": new Types.ObjectId(userId)})
-    }
-
 }
 
 module.exports = KeyTokenService

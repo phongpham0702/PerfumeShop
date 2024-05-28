@@ -5,7 +5,6 @@ const keyTokenSchema = new Schema({
         type: Schema.Types.ObjectId,
         required: true,
         ref: 'Users',
-        unique: true
     },
     
     publicKey:{ 
@@ -22,10 +21,15 @@ const keyTokenSchema = new Schema({
         required: true
     },
 
-    refreshTokenUsed:{
-        type: Schema.Types.Array,
-        default: []
+    activeAccessToken:{
+        type: String,
+        required: true
     },
+
+    expireAt:{
+        type: Date,
+        required: true
+    }
 
 },
 {
@@ -34,5 +38,7 @@ const keyTokenSchema = new Schema({
 
 )
 
+//Auto delete docs
+keyTokenSchema.index( { "expireAt": 1 }, { expireAfterSeconds: 0 } )
 
 module.exports = model("Keys", keyTokenSchema);
