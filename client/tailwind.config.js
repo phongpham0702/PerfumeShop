@@ -25,6 +25,11 @@ export default {
 
         rightIn: {
           "0%": { transform: "translateX(50px)" },
+          "100%": { transform: "translateX(-500px)" },
+        },
+
+        iConRightIn: {
+          "0%": { transform: "translateX(50px)" },
           "100%": { transform: "translateX(-50px)" },
         },
 
@@ -70,13 +75,19 @@ export default {
             transform: "translateX(100%)",
           },
         },
+
+        goInRight: {
+          "0%": { transform: "translateX(50px)" },
+          "100%": { transform: "translateX(-50px)" },
+        },
       },
       animation: {
+        rightIn: "rightIn .85s ease-out both",
         goUp: "goUp .45s ease-out both",
         goDown: "goDown .45s ease-out .25s both",
-        rightInF: "rightIn .35s ease-out .1s both",
-        rightInM: "rightIn .35s ease-out .13s both",
-        rightInL: "rightIn .35s ease-out .17s both",
+        rightInF: "iConRightIn .35s ease-out .1s both",
+        rightInM: "iConRightIn .35s ease-out .13s both",
+        rightInL: "iConRightIn .35s ease-out .17s both",
         rightOutF: "rightOut .35s ease-out .1s both",
         rightOutM: "rightOut .35s ease-out .13s both",
         rightOutL: "rightOut .35s ease-out .17s both",

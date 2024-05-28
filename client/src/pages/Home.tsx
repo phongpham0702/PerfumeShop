@@ -8,16 +8,18 @@ const BrandList = React.lazy(() => import("../components/Brands/BrandList"));
 const Home = () => {
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <BrandList />
-      <hr />
-      <BestsellerList />
-      <hr />
-      <NewArrival />
-      <hr />
-      <Video />
-      <hr />
-      <Contact />
-      <hr />
+      <>
+        <BrandList />
+        <hr />
+        <BestsellerList />
+        <hr />
+        <NewArrival />
+        <hr />
+        <Video />
+        <hr />
+        <Contact />
+        <hr />
+      </>
     </Suspense>
   );
 };

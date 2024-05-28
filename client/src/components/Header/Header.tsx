@@ -7,19 +7,28 @@ import {
 } from "react-icons/ai";
 import { NavLink, useNavigate } from "react-router-dom";
 import OffCanvasMenu from "../OffCanvasMenu";
-import { FormEvent, useContext, useEffect, useRef } from "react";
+import { FormEvent, useContext, useEffect, useRef, useState } from "react";
 import MenuContext from "../../contexts/MenuContext";
-import SearchContext from "../../contexts/SearchContext";
+// import SearchContext from "../../contexts/SearchContext";
 
 const Header = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleOpen = () => setIsOpen(true);
+
+  const handleClose = () => setIsOpen(false);
+
+  const [searchVal, setSearchVal] = useState("");
+
+  const handleSearchVal = (val: string) => setSearchVal(val);
+
   const menuContext = useContext(MenuContext);
-  const searchContext = useContext(SearchContext);
   const token = localStorage?.getItem("accessToken");
   const navigate = useNavigate();
   const handleSubmitSearch = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    navigate(`/shop/1?search=${searchContext.searchVal}`);
-    searchContext.handleClose();
+    navigate(`/shop/1?search=${searchVal}`);
+    handleClose();
   };
 
   const formRef = useRef<HTMLFormElement>(null);
@@ -30,13 +39,13 @@ const Header = () => {
         formRef.current &&
         !formRef.current.contains(event.target as HTMLDivElement)
       )
-        searchContext.handleClose();
+        handleClose();
     };
     document.addEventListener("mousedown", handleClickOutSide);
     return () => {
       document.removeEventListener("mousedown", handleClickOutSide);
     };
-  }, [searchContext, formRef]);
+  }, [formRef]);
 
   return (
     <header>
@@ -98,7 +107,7 @@ const Header = () => {
 
         <div className="w-[50%] lg:w-[40%]">
           <ul className="flex items-center justify-end gap-8">
-            {searchContext.isOpen ? (
+            {isOpen ? (
               <form
                 ref={formRef}
                 action=""
@@ -111,9 +120,7 @@ const Header = () => {
                   placeholder="Search..."
                   name="searchVal"
                   // value={searchContext.searchVal}
-                  onChange={(e) =>
-                    searchContext.handleSearchVal(e.target.value)
-                  }
+                  onChange={(e) => handleSearchVal(e.target.value)}
                   required
                 />
                 <button
@@ -126,7 +133,7 @@ const Header = () => {
               </form>
             ) : (
               <li
-                onClick={() => searchContext.handleOpen()}
+                onClick={() => handleOpen()}
                 className="hidden cursor-pointer text-2xl sm:block"
               >
                 <AiOutlineSearch />

@@ -2,6 +2,7 @@ import { Product } from "../interfaces/Product";
 import requestAPI from "../helpers/api";
 import ProductItem from "./Products/ProductItem";
 import { useQuery } from "@tanstack/react-query";
+import SkeletonCard from "../ui/CardSkeleton";
 
 const WishLists = () => {
   const { data, isLoading } = useQuery({
@@ -16,12 +17,9 @@ const WishLists = () => {
     },
   });
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <div className="grid grid-cols-4 p-10">
+      {isLoading && <SkeletonCard cards={4} />}
       {data &&
         Array.isArray(data) &&
         data.map((item: Product) => <ProductItem product={item} />)}

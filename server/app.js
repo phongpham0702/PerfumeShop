@@ -24,9 +24,9 @@ database.connectDB();
 
 app.use(
   cors({
-    origin: ['http://localhost:5173','https://perfume-shop-pd.vercel.app'],
-    methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'HEAD','DELETE'],
-    credentials: true
+    origin: ['https://perfume-shop-pd.vercel.app', 'http://localhost:5173'],
+    methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'HEAD', 'DELETE'],
+    credentials: true,
   })
 );
 
@@ -48,7 +48,6 @@ if (app.get('env') === 'production') {
   app.set('trust proxy', 1); // trust first proxy
   sess.cookie.secure = true; // serve secure cookies
 }
-
 app.use('/', indexRouter);
 app.use('/user', usersRouter); // users have account
 app.use('/guest', usersRouter); // no account users
