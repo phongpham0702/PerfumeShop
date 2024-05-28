@@ -48,7 +48,20 @@ const findCartById = async (cartId) => {
     }
 }
 
+const checkProductInCart = async(userId, productId, modelId) => {
+
+    return await CartModel.findOne({
+        "userID": userId,
+        "cartProduct.productId": productId,
+        "cartProduct.modelId": modelId,
+    },
+    {
+        "cartProduct.$": 1
+    }).lean()
+
+}
 
 module.exports = {
-    findCartById
+    findCartById,
+    checkProductInCart
 }

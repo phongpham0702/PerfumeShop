@@ -2,82 +2,90 @@ const converterHelper = require("../../helpers/converter.helper")
 const pipelineGenerator = require("../../helpers/pipeline.generator")
 const productModel = require("../product")
 
-const getProductById = async (id) =>{
+const getProductById = async(id) => {
 
-    let pipeline = [
-        {
-            '$match':{
-                '_id': converterHelper.toObjectIdMongo(id)
-            }  
+    let pipeline = [{
+        '$match': {
+            '_id': converterHelper.toObjectIdMongo(id)
         }
-    ].concat(pipelineGenerator.generate_productBasic())
+    }].concat(pipelineGenerator.generate_productBasic())
     return await productModel.aggregate(pipeline)
 }
 
-const getProductList = async (id_list) =>{
+const getProductList = async(id_list) => {
 
     id_list = id_list.map((id) => {
         return converterHelper.toObjectIdMongo(id)
     })
 
-    let pipeline = [
-        {
-            '$match':{
-                '_id':{$in: id_list}
-            }  
+    let pipeline = [{
+        '$match': {
+            '_id': { $in: id_list }
         }
-    ].concat(pipelineGenerator.generate_productBasic())
+    }].concat(pipelineGenerator.generate_productBasic())
     return await productModel.aggregate(pipeline)
 }
 
-const getProductInfomation = async (id,select = {
-    '_id': 1, productBrand: 1, productName: 1, priceScale: 1, productThumbnail: 1 
+const getProductInfomation = async(id, select = {
+    '_id': 1,
+    productBrand: 1,
+    productName: 1,
+    priceScale: 1,
+    productThumbnail: 1
 }) => {
     return await productModel.findOne({
         '_id': converterHelper.toObjectIdMongo(id)
-    },select).lean()
+    }, select).lean()
 }
 
-const checkProductIsExist = async (id) =>{
-    let product = await productModel.findOne({"_id": converterHelper.toObjectIdMongo(id)},)
-    .select(['productName'])
-    .lean()
+const checkProductIsExist = async(id) => {
+    let product = await productModel.findOne({ "_id": converterHelper.toObjectIdMongo(id) }, )
+        .select(['productName'])
+        .lean()
 
-    if(product) return true
+    if (product) return true
 
     return false
 }
 
-const checkProductCapacity = async (productId, capacityId) => {
+const checkProductCapacity = async(productId, capacityId) => {
+    
+    let product = await productModel.findOne({
+        "_id": converterHelper.toObjectIdMongo(productId),
+        "priceScale._id": converterHelper.toObjectIdMongo(capacityId)
+    }, {
+        "priceScale.$": 1
+    }).lean()
 
+    return product ? true : false
 }
 
 const findSimilarProducts = async(productDetail, limit = 10) => {
-    let productID= productDetail['_id']
+    let productID = productDetail['_id']
     let gender = [productDetail["productGender"]];
     let mainScent = productDetail.productScent.mainScent.join("|")
 
-    if(gender[0] !== "Unisex") gender.push("Unisex")
-    
+    if (gender[0] !== "Unisex") gender.push("Unisex")
+
     let pipeline = [
 
         {
-            "$match":{
-                "_id":{
+            "$match": {
+                "_id": {
                     $ne: converterHelper.toObjectIdMongo(productID)
                 },
-                "productGender":{
+                "productGender": {
                     $in: gender
                 },
-                "productScent.mainScent":{
+                "productScent.mainScent": {
                     $regex: mainScent,
                     $options: "i",
                 },
             }
         },
 
-        {"$sample":{size : limit}},
-        
+        { "$sample": { size: limit } },
+
     ].concat(pipelineGenerator.generate_productBasic())
 
     let similarProducts = await productModel.aggregate(pipeline);
@@ -95,7 +103,7 @@ module.exports = {
     findSimilarProducts,
     getProductInfomation,
     checkProductCapacity
-} 
+}
 
 
 

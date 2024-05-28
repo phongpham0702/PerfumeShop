@@ -49,11 +49,6 @@ const userSchema = new Schema({
         default: [],
     },
 
-    isVerify:{
-        type:Boolean,
-        default:false,
-    },
-
     isAdmin:{
         type:Boolean,
         default:false,
