@@ -1,15 +1,19 @@
+const additionTime = 86400000
+
 const setTokenIDCookie = (tokenId, response) => {
     response.cookie("token_id", tokenId, {
         httpOnly: true,
         secure: true,
         sameSite:'none',
-        maxAge: process.env.REFRESH_TOKEN_TIME,
+        maxAge: (parseInt(process.env.REFRESH_TOKEN_TIME) + additionTime) ,
         signed: true
     })
 }
 
+
 module.exports = {
-    setTokenIDCookie
+    setTokenIDCookie,
+
 }
 
 /* res.cookie('_uid_',result.userInfo.userId, 

@@ -2,6 +2,7 @@ const JWT = require('jsonwebtoken')
 const {AuthFailureError, NotFoundError, LockedError} = require('../helpers/error.response')
 const { findKeyById, deleteKeyById } = require('../models/reposities/keystore.repo')
 const converterHelper = require('../helpers/converter.helper')
+const { findUserById } = require('../models/reposities/user.repo')
 
 const HEADER = {
     AUTHORIZATION: 'authorization',
@@ -73,12 +74,21 @@ const protectTokenProvider = async (req,res,next) => {
 
             return decode
         })
-        
+
         if(currentAccessToken != keyStore.activeAccessToken)
         {   
-            deleteKeyById(token_id)
             throw new AuthFailureError()
         } 
+
+        const foundUser = await findUserById(decodedToken.userId,
+        {
+            "Password":1
+        })
+
+        if(decodedToken.userPass != foundUser.Password)
+        {
+            throw new AuthFailureError()
+        }
 
         req.keyStore = keyStore
         req.refreshData = decodedToken
@@ -87,6 +97,7 @@ const protectTokenProvider = async (req,res,next) => {
     } 
     catch (error) 
     {   
+        deleteKeyById(token_id)
         throw new AuthFailureError("Unable to authenticate user. Please login again !")   
     }
 

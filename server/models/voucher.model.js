@@ -7,46 +7,75 @@ const voucherSchema = new Schema({
         unique: true
     },
 
+    voucherTitle:{
+        type: Schema.Types.String,
+        required: true,
+    },
+
     voucherType:{
         type:Schema.Types.String,
         required: true,
-        enum:['individual', 'general']
-    },
-
-    discountType:{
-        type: Schema.Types.String,
-        required: true,
-        enum:['percent','amount']
+        enum:['discount_percent', 'discount_amount']
     },
 
     voucherDiscount:{
         type: Schema.Types.Number,
         required: true
     },
-    whiteList:{
-        type:[String],
-        default: []
-    },
-    blackList:{
-        type:[String],
-        default: []
+
+    voucherExp:{
+            type: Schema.Types.Date,
+            required: true
     },
 
-    voucherAmount:{
+
+    /* Voucher conditions */
+
+    quantityLimit:{
         type:Schema.Types.Number,
-        default: 99999, // 99999 -> no limit until expired
         min: 0,
         max: 99999
     },
 
-    voucherExp:{
-        type: Schema.Types.Date,
-        required: true
-    }
+    minPriceTotal:{
+        type: Schema.Types.Number,
+        min: 0
+    },
+
+    maxDiscountTotal:{
+        type: Schema.Types.Number,
+        min: 0
+    },
+
+    usageTarget:{
+        type: Schema.Types.String,
+        default: "all",
+        enum: ["all","system_users"]
+    },
+
+    /* Voucher conditions */
 
 },
 {   
     timestamps: true,
 })
 
+voucherSchema.index( { "voucherExp": 1 }, { expireAfterSeconds: 0 } )
+
 module.exports = model("Vouchers", voucherSchema);
+
+/* "voucherCode":"VTDISCOUNT10",
+
+  "voucherTitle":"Discount 10% - Max 10",
+
+  "voucherType":"discount_percent",
+
+  "voucherDiscount":1,
+
+  "voucherExp":2024-05-30T11:30:45+00:00, */
+
+  /* "voucherCode":"TESTCODE10",
+	"voucherTitle": "Discount 10% - Max 10$",
+  "voucherType": "discount_percent",
+  "voucherDiscount": 0.1,
+  "voucherExp": { "$date": "2024-05-30T12:15:00Z" } */

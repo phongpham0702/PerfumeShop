@@ -2,7 +2,8 @@ const userModel = require("../models/users")
 const {BadRequestError, NotAcceptError} = require('../helpers/error.response')
 const { getProductList, checkProductIsExist } = require("../models/reposities/product.repo")
 const useraddressModel = require("../models/useraddress.model")
-
+const { findUserById } = require("../models/reposities/user.repo")
+const bcrypt = require("bcrypt")
 const addressLimit = 5
 
 class UserService{
@@ -30,6 +31,30 @@ class UserService{
         return {
             userProfile: foundUser
         }
+    }
+
+    changePassword = async(userId, oldPassword, newPassword) => {
+
+        let foundUser = await findUserById(userId,{
+            Password:1
+        })
+
+        let salt = parseInt(process.env.SALT_ROUNDS);
+        let checkPassword = bcrypt.compareSync(oldPassword, foundUser.Password)
+        
+        if(!checkPassword) throw new BadRequestError("Old password is not correct.")
+
+        let hashedPassword = bcrypt.hashSync(newPassword, salt);
+
+        /* const updatePassword = userModel.updateOne({
+            _id: userId
+        },
+        {
+            $set:{
+                "Password"
+            }
+        }) */
+        return hashedPassword
     }
 
     addUserAddressList = async(userId, body) => {

@@ -4,7 +4,7 @@ const {AuthFailureError, ServerError} = require('../helpers/error.response')
 const bcrypt = require('bcrypt');
 const crypto = require('crypto')
 const { findUserByEmail,findUserById } = require("../models/reposities/user.repo");
-const { removeTokenIDCookie } = require('../helpers/cookieHelpers/removeCookie.helper');
+const { removeTokenIDCookie} = require('../helpers/cookieHelpers/removeCookie.helper');
 const { deleteKeyById } = require('../models/reposities/keystore.repo');
 
 class AuthService{
@@ -41,11 +41,13 @@ class AuthService{
         //4)
         let tokenData = {
             userId: userInfo._id,
-            isAdmin : userInfo.isAdmin, 
         }
 
         let accessToken = await createAccessToken(tokenData,publicKey)
-        let refreshToken = await createRefreshToken(tokenData,privateKey)
+        let refreshToken = await createRefreshToken({
+            ...tokenData,
+            userPass: userInfo.Password
+        },privateKey)
 
         let keyStore = await KeyTokenService.createKeyToken({
             userId: userInfo._id,
@@ -75,7 +77,9 @@ class AuthService{
     static logout = async(tokenId,res)=> {
 
         let delKey = await deleteKeyById(tokenId)
+
         removeTokenIDCookie(res)
+
         return delKey
 
     }
@@ -88,7 +92,6 @@ class AuthService{
         let tokenData = {
             
             userId: refreshData.userId,
-            isAdmin : refreshData.isAdmin, 
             
         }
         let newToken = await createAccessToken(tokenData, keyStore.publicKey)

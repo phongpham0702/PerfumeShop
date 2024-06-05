@@ -6,7 +6,7 @@ const { deleteKeyById } = require('../models/reposities/keystore.repo')
 class KeyTokenService{
  
     static createKeyToken = async({userId, refreshToken,accessToken,publicKey,privateKey}) => {
-        let futureExpire = Date.now() + parseInt(process.env.REFRESH_TOKEN_TIME)
+        let futureExpire = Date.now() + parseInt(process.env.REFRESH_TOKEN_TIME) + 86400000;
 
         let expireAt = new Date(futureExpire)
 

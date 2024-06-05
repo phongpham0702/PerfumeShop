@@ -48,16 +48,9 @@ const userSchema = new Schema({
         }],
         default: [],
     },
-
-    isAdmin:{
-        type:Boolean,
-        default:false,
-    }
-
 },
 {
     timestamps: true,
-    _id: false
 })
 
 

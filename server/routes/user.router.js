@@ -10,6 +10,7 @@ const AddToCartValidator = require('../controllers/validators/addCart.validator'
 const UpdateCartValidator = require('../controllers/validators/updateCart.validator');
 const checkOutController = require('../controllers/checkOut.controller');
 const AddAddressValidator = require('../controllers/validators/addAddress.validator');
+const changePasswordValidator = require('../controllers/validators/changePassword.validator');
 
 
 router.route('/gain-access').get(errorHandler(protectTokenProvider), errorHandler(authController.getNewToken))
@@ -27,6 +28,9 @@ router.route('/logout')
 
 router.route('/profile')
 .get(errorHandler(userController.getUerProfile))
+
+router.route("/change-password")
+.post(changePasswordValidator,errorHandler(userController.changePassword))
 
 router.route('/address')
 .post(AddAddressValidator ,errorHandler(userController.addUserAddressList))

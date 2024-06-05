@@ -25,7 +25,7 @@ class BadRequestError extends ErrorResponse{
         status = HTTP_STATUS_CODE.StatusCodes.BAD_REQUEST) 
     {
         super(message,status)
-        
+        this.message = message  
     }
 }
 

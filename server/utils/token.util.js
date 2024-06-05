@@ -4,7 +4,7 @@ const { ServerError } = require('../helpers/error.response');
 
 const createAccessToken = async(data, publicKey) => {
   let accessToken = await JWT.sign(data, publicKey, {
-    expiresIn: '1 days',
+    expiresIn: '2h',
   });
 
   return accessToken

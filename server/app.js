@@ -15,12 +15,13 @@ const productRouter = require('./routes/product.router');
 const brandRouter = require('./routes/brand.router');
 const signUpRouter = require('./routes/signup.router');
 const signInRouter = require('./routes/auth.router');
+const voucherRouter = require("./routes/voucher.router");
 
 const app = express();
 
 database.connectDB();
 
-//init_redis.connect_redis();
+init_redis.connect_redis();
 
 app.use(
   cors({
@@ -48,6 +49,7 @@ if (app.get('env') === 'production') {
   app.set('trust proxy', 1); // trust first proxy
   sess.cookie.secure = true; // serve secure cookies
 }
+
 app.use('/', indexRouter);
 app.use('/user', usersRouter); // users have account
 app.use('/guest', usersRouter); // no account users
@@ -55,6 +57,7 @@ app.use('/products', productRouter);
 app.use('/brands', brandRouter);
 app.use('/sign-up', signUpRouter);
 app.use('/sign-in', signInRouter);
+app.use("/voucher" , voucherRouter);
 app.use('/favicon.ico', (req, res, next) => {
   return res.status(200).end();
 });

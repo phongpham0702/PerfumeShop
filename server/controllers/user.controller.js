@@ -12,6 +12,23 @@ class UserController{
         }).send(res) 
     }
 
+    changePassword = async(req,res,next) => {
+
+        let checkResult = await validationResult(req);
+
+        if(checkResult.errors.length >= 1)
+        {
+            
+            throw new BadRequestError(checkResult.errors[0].msg)
+        }
+
+        let {oldPassword,Password} = req.body
+
+        new responseHelper.SuccessResponse({
+            metadata: await UserService.changePassword(req.userid,oldPassword,Password)
+        }).send(res)
+    }
+
     addUserAddressList = async(req,res,next) => {
         
         let checkResult = await validationResult(req);

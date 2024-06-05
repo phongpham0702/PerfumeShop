@@ -111,7 +111,7 @@ const signUpValidator = [
         'Please fill in your password'
     )
     .isLength({min: 8})
-    .withMessage('Password must contain at least 12 characters.'),
+    .withMessage('Password must contain at least 8 characters.'),
 
     body('rePassword')
     .notEmpty().withMessage('Please confirm your password')

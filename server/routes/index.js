@@ -3,9 +3,11 @@ const router = express.Router();
 const g= require("../dbs/init.redis")
 const fs = require('fs');
 const axios = require('axios');
-const productModel = require("../models/product")
-const gen = require('../helpers/pipeline.generator')
-/* GET home page. */
+const productModel = require("../models/product");
+const voucherModel = require('../models/voucher.model');
+
+
+
 router.get('/', async function (req, res, next) {
   //req.co
   // let c = g.getRedis();
@@ -17,7 +19,16 @@ router.get('/', async function (req, res, next) {
   //console.log(a);
   //let p = await productModel.aggregate(a)
   //console.log(p);
-  req.session.First = "hello"
+  voucherModel.create({
+    "voucherCode":"TESTCODE10",
+    "voucherTitle": "Discount 10% - Max 10$",
+    "voucherType": "discount_percent",
+    "voucherDiscount": 0.1,
+    "voucherExp": new Date("2024-06-08T12:00:00Z"),
+    "quantityLimit": 100,
+    "minPriceTotal": 50,
+    "maxDiscountTotal": 10,
+  })
   return res.status(200).json({ Message: 'Nothing here!' });
 });
 

@@ -3,8 +3,8 @@ const {validationResult} = require('express-validator')
 const AuthService = require("../services/auth.service")
 const responseHelper = require("../helpers/success.response");
 const { AuthFailureError } = require('../helpers/error.response');
-const { setUIDCookie, setRTCookie, setSIDCookie, setTokenIDCookie} = require('../helpers/cookieHelpers/setCookie.helper');
-const encodeHelper = require('../helpers/encode.helper');
+const { setTokenIDCookie} = require('../helpers/cookieHelpers/setCookie.helper');
+
 
 class AuthController{
     
@@ -29,7 +29,7 @@ class AuthController{
         {   
             let result = await AuthService.login(req.body.Email,req.body.Password)
                         
-            setTokenIDCookie(result.keyId, res)
+            setTokenIDCookie(result.keyId, res);
 
             new responseHelper.SuccessResponse({
                 metadata: {
