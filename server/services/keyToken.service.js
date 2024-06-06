@@ -1,7 +1,8 @@
 const keyTokenModel = require('../models/keytoken.model')
-const {ServerError, AuthFailureError} = require('../helpers/error.response') 
+const {ServerError, AuthFailureError, BadRequestError} = require('../helpers/error.response') 
 const JWT = require('jsonwebtoken')
 const { deleteKeyById } = require('../models/reposities/keystore.repo')
+const converterHelper = require('../helpers/converter.helper')
 
 class KeyTokenService{
  

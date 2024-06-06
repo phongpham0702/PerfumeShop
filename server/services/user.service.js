@@ -35,7 +35,8 @@ class UserService{
 
     changePassword = async(userId, oldPassword, newPassword) => {
 
-        let foundUser = await findUserById(userId,{
+        let foundUser = await userModel.findOne({"_id":userId},{
+            _id:1,
             Password:1
         })
 
@@ -46,15 +47,9 @@ class UserService{
 
         let hashedPassword = bcrypt.hashSync(newPassword, salt);
 
-        /* const updatePassword = userModel.updateOne({
-            _id: userId
-        },
-        {
-            $set:{
-                "Password"
-            }
-        }) */
-        return hashedPassword
+        foundUser.Password = hashedPassword
+
+        return await foundUser.save()
     }
 
     addUserAddressList = async(userId, body) => {
