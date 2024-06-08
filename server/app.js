@@ -16,6 +16,7 @@ const brandRouter = require('./routes/brand.router');
 const signUpRouter = require('./routes/signup.router');
 const signInRouter = require('./routes/auth.router');
 const voucherRouter = require("./routes/voucher.router");
+const checkOutRouter = require("./routes/checkout.router")
 
 const app = express();
 
@@ -58,6 +59,7 @@ app.use('/brands', brandRouter);
 app.use('/sign-up', signUpRouter);
 app.use('/sign-in', signInRouter);
 app.use("/voucher" , voucherRouter);
+app.use("/checkout", checkOutRouter)
 app.use('/favicon.ico', (req, res, next) => {
   return res.status(200).end();
 });

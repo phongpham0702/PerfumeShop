@@ -196,6 +196,7 @@ function generateFilter(filterObj)
     if(filterObj.brand)
     {
         let brandName = filterObj.brand.replaceAll("-"," ")
+        brandName = filterObj.brand.replaceAll("%26","&")
         filterBuilder.addBrandFilter(brandName)
     }
 

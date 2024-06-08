@@ -20,6 +20,8 @@ const UpdateCartValidator = [
     body("new_modelId")
     .custom(async (value, {req}) => {
         
+        if(!value) return true;
+        
         try 
         {
             let checkModelValid = await checkProductCapacity(req.body.productId,value)

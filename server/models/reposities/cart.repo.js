@@ -1,4 +1,5 @@
 const converterHelper = require('../../helpers/converter.helper')
+const cartModel = require('../cart.model')
 const CartModel = require('../cart.model')
 
 const findCartById = async (cartId) => {
@@ -61,7 +62,28 @@ const checkProductInCart = async(userId, productId, modelId) => {
 
 }
 
+const getCartIdByUserId = async(userId) => {
+    let userCartId = await cartModel.findOne({
+        userID: converterHelper.toObjectIdMongo(userId)
+    },
+    {
+        _id:1
+    })
+    .lean()
+
+    if(!userCartId){
+        return null
+    }
+
+    return userCartId
+
+}
+
+
+
+
 module.exports = {
     findCartById,
-    checkProductInCart
+    checkProductInCart,
+    getCartIdByUserId
 }

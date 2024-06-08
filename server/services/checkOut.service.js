@@ -15,7 +15,7 @@ class CheckoutService {
     */
 
 
-    static async Review(userId, cartId){
+    static async Review(userId){
         const foundCart = await CartService.getCart(userId)
         let totalPrice = 0
 
@@ -24,10 +24,6 @@ class CheckoutService {
             throw new BadRequestError('Cannot find your cart')
         }
 
-        if(cartId != foundCart.cartId.toString())
-        {
-            throw new BadRequestError('No cart was found')
-        }
         const foundUser = await findUserById(userId,{
                     _id:1,
                     Email:1,
@@ -46,7 +42,7 @@ class CheckoutService {
         }
         
         const order = {
-            cartId,
+            cartId: foundCart.cartId.toString(),
             cartCountProduct: foundCart.cartCountProduct,
             userInfo:{
                 userId: foundUser._id,
