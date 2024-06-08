@@ -1,5 +1,5 @@
 const JWT = require('jsonwebtoken')
-const {AuthFailureError} = require('../helpers/error.response')
+const {AuthFailureError, LockedError} = require('../helpers/error.response')
 const { findKeyById} = require('../models/reposities/keystore.repo')
 const converterHelper = require('../helpers/converter.helper')
 const httpStatusCode = require('../helpers/httpStatusCode/httpStatusCode')
@@ -44,13 +44,15 @@ const isLogin = async (req,res,next) => {
     } 
     catch (error) 
     {   
-        if(error.name === "TokenExpiredError") {
+        console.log(error.name);
+        if(error.name === "TokenExpiredError" || error.name === "JsonWebTokenError") {
             req.checkLoginCode = httpStatusCode.StatusCodes.LOCKED
+            throw new LockedError("Your provided token is not valid")
         }
         else{
             req.checkLoginCode = httpStatusCode.StatusCodes.UNAUTHORIZED   
         }
-        req.userId = null
+        req.userid = null
         return next()
     }
 

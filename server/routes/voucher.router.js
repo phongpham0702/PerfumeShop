@@ -7,6 +7,6 @@ const { isLogin } = require("../utils/isLogin.util");
 
 
 router.route("/check")
-.get(isLogin, errorHandler(voucherController.checkVoucher))
+.get(errorHandler(isLogin), errorHandler(voucherController.checkVoucher))
 
 module.exports = router;

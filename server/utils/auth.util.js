@@ -74,7 +74,6 @@ const protectTokenProvider = async (req,res,next) => {
 
             return decode
         })
-
         if(currentAccessToken != keyStore.activeAccessToken)
         {   
             throw new AuthFailureError()
@@ -84,7 +83,6 @@ const protectTokenProvider = async (req,res,next) => {
         {
             "Password":1
         })
-
         if(decodedToken.userPass != foundUser.Password)
         {
             throw new AuthFailureError()
@@ -96,7 +94,7 @@ const protectTokenProvider = async (req,res,next) => {
         return next()
     } 
     catch (error) 
-    {   
+    {    
         deleteKeyById(token_id)
         throw new AuthFailureError("Unable to authenticate user. Please login again !")   
     }

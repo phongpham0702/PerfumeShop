@@ -2,7 +2,8 @@ const {validationResult} = require('express-validator');
 const { SignUpInValid, BadRequestError } = require('../helpers/error.response');
 const responseHelper = require("../helpers/success.response");
 const UserService = require('../services/user.service');
-const {Types} = require('mongoose')
+const {Types} = require('mongoose');
+const { createRefreshToken } = require('../utils/token.util');
 
 class UserController{
 
@@ -23,9 +24,31 @@ class UserController{
         }
 
         let {oldPassword,Password} = req.body
+        const changePasswordResult = await UserService.changePassword(req.userid,oldPassword,Password)
 
+        /* Update new refresh token to key store */
+        let userKeyStore = req.keyStore
+        let newTokenData = {
+            userId: changePasswordResult._id,
+            userPass: changePasswordResult.Password
+        }
+        
+        let newRefreshToken = await createRefreshToken({
+            ...newTokenData
+        },userKeyStore.privateKey)
+
+        let futureExpire = Date.now() + parseInt(process.env.REFRESH_TOKEN_TIME) + 86400000;
+        let expireAt = new Date(futureExpire)
+
+        userKeyStore.refreshToken = newRefreshToken;
+        userKeyStore.expireAt = expireAt;
+
+        userKeyStore.save();
+        /* Update new refresh token to key store */
         new responseHelper.SuccessResponse({
-            metadata: await UserService.changePassword(req.userid,oldPassword,Password)
+            metadata: {
+                message: "Your password is changed"
+            }
         }).send(res)
     }
 
