@@ -4,6 +4,7 @@ const AuthService = require("../services/auth.service")
 const responseHelper = require("../helpers/success.response");
 const { AuthFailureError } = require('../helpers/error.response');
 const { setTokenIDCookie} = require('../helpers/cookieHelpers/setCookie.helper');
+const { getCartCount } = require('../models/reposities/cart.repo');
 
 
 class AuthController{
@@ -28,9 +29,12 @@ class AuthController{
         else
         {   
             let result = await AuthService.login(req.body.Email,req.body.Password)
-                        
+            let getUserCartCount = await getCartCount(result.userInfo.userId)
             setTokenIDCookie(result.keyId, res);
 
+            //Add cart count to user info
+            result.userInfo.cartCount = getUserCartCount
+            
             new responseHelper.SuccessResponse({
                 metadata: {
                     userInfo: result.userInfo,
