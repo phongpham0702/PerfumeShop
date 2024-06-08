@@ -11,11 +11,20 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import AddAddressModal from "../components/user/AddAddressModal";
 import requestAPI from "../helpers/api";
+import { useQuery } from "@tanstack/react-query";
 
 const UserAccount = () => {
   const [activeTab, setActiveTab] = useState<string>("tab1");
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const { data } = useQuery({
+    queryKey: ["user profile"],
+    queryFn: async () => {
+      return await requestAPI(`/user/profile`, {}, "GET");
+    },
+  });
+
+  const userProfile = data?.data.metadata.userProfile;
 
   const closeModal = () => {
     setIsOpen(false);
@@ -150,13 +159,48 @@ const UserAccount = () => {
       activeTab,
       children: (
         <>
-          <div>
-            <button
-              onClick={() => setIsOpen(true)}
-              className="border border-[#1a1306] px-6 py-2"
-            >
-              Add new address
-            </button>
+          <div className="">
+            <div className="mb-4 flex justify-end">
+              <button
+                onClick={() => setIsOpen(true)}
+                className="rounded-sm border  bg-[#f8b500] px-6 py-2"
+              >
+                + Add new address
+              </button>
+            </div>
+
+            <div>
+              {userProfile?.Addresses.map((item) => (
+                <div className="flex justify-between p-4">
+                  <div>
+                    <div className="flex gap-4">
+                      <p className="font-semibold">{item.receiverName}</p> |
+                      <p>{item.receiverPhoneNumber}</p> |
+                      <p>Nation: {item.Nation}</p>
+                    </div>
+                    <p>City/Province: {item.City}</p>
+                    <p>District: {item.District}</p>
+                    <p>Ward/Commune: {item.Ward}</p>
+                    <p>Detail: {item.addressDetail}</p>
+                  </div>
+
+                  <div className="flex flex-col gap-2">
+                    <button
+                      className="border border-[#1a1306] px-6 py-1"
+                      onClick={() => {}}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="border border-[#1a1306] px-6 py-1"
+                      onClick={() => {}}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </>
       ),

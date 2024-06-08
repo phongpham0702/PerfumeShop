@@ -5,6 +5,7 @@ import useGetCart from "../hooks/Cart/useGetCart";
 
 const Cart = () => {
   const { data, isLoading } = useGetCart();
+  localStorage.setItem("cartData", JSON.stringify(data?.cartData));
 
   const totalPrice = Array.isArray(data?.cartData)
     ? data.cartData

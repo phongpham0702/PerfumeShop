@@ -1,70 +1,21 @@
-import React, { useEffect, useState } from "react";
 import { FilterCategory } from "../../interfaces/Category";
-import { useSearchParams } from "react-router-dom";
 
-type FilterSideBarProps = {
-  categories: FilterCategory[];
-  onFilterChange: (
-    selectedFilters: React.ChangeEvent<HTMLInputElement>,
-  ) => void;
+type FilterBarProps = {
+  category: FilterCategory[];
+  handleCheckboxChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  searchVal: string;
 };
-const FilterBar = ({ categories, onFilterChange }: FilterSideBarProps) => {
-  const [searchParams] = useSearchParams();
-  const [categoryState, setCategoryState] = useState(
-    categories.map((category) => ({ ...category, showMore: false })),
-  );
-  const [searchVal, setSearchVal] = useState<string>("");
-  interface SelectedFilters {
-    [paramName: string]: string[];
-  }
 
-  useEffect(() => {
-    const selectedFilters: SelectedFilters = {};
-    const searchParamsArray = Array.from(searchParams.entries());
-    for (const [paramName, paramValues] of searchParamsArray) {
-      selectedFilters[paramName] = Array.isArray(paramValues)
-        ? paramValues
-        : [paramValues];
-    }
-
-    setCategoryState((prevStates) =>
-      prevStates.map((category) => {
-        const matchingFilters = selectedFilters[category.id] || [];
-        return {
-          ...category,
-          items: category.items.map((item) => ({
-            ...item,
-            isChecked: matchingFilters.includes(item.name),
-          })),
-        };
-      }),
-    );
-  }, [searchParams]);
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newSearchVal = event.target.value.toLowerCase();
-    setSearchVal(newSearchVal);
-
-    const updatedCategories = categories.map((category) => {
-      if (category.id === "brand") {
-        return {
-          ...category,
-          items: newSearchVal
-            ? category.items.filter((item) =>
-                item.name.toLowerCase().includes(newSearchVal),
-              )
-            : category.items.map((item) => ({ ...item, isChecked: false })), // Reset isChecked for all brands on clear
-        };
-      }
-      return category;
-    });
-
-    setCategoryState(updatedCategories);
-  };
-
+const FilterBar = ({
+  category,
+  handleCheckboxChange,
+  handleInputChange,
+  searchVal,
+}: FilterBarProps) => {
   return (
     <div className="ml-2 xl:ml-0">
-      {categoryState.map((category) => (
+      {category.map((category) => (
         <div className="mb-4" key={category.id}>
           <h3 className="mb-3 font-semibold capitalize">{category.id}</h3>
           {category.id === "brand" ? (
@@ -96,8 +47,8 @@ const FilterBar = ({ categories, onFilterChange }: FilterSideBarProps) => {
                   <div className="relative block cursor-pointer">
                     <input
                       checked={item.isChecked}
-                      onChange={onFilterChange}
-                      value={item.name}
+                      onChange={handleCheckboxChange}
+                      value={item.name.replaceAll("&", "%26")}
                       name={category.name}
                       className="peer absolute h-0 w-0 cursor-pointer opacity-0"
                       type="radio"

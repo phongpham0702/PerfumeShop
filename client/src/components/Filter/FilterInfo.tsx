@@ -38,9 +38,18 @@ const FilterInfo = ({ productNum }: propsType) => {
   return (
     <div className="flex w-full items-center justify-between">
       <div className="mx-2 my-6 flex w-full items-center  gap-4 2xl:mx-0">
+        <div className="hidden h-[60px] w-[35%] cursor-pointer items-center justify-center rounded-sm border border-[#333] px-2 py-4 font-semibold sm:w-[unset] sm:px-4 xl:flex ">
+          <span className="mr-1">
+            <AiTwotoneFilter />
+          </span>
+          <span>
+            Filter{" "}
+            {searchParams.size !== 0 ? "(" + searchParams.size + ")" : ""}{" "}
+          </span>
+        </div>
         <div
           onClick={() => menuContext.handleOpen("filter")}
-          className="flex h-[60px] w-[35%] cursor-pointer items-center justify-center rounded-sm border border-[#333] px-2 py-4 font-semibold sm:w-[unset] sm:px-4"
+          className="flex h-[60px] w-[35%] cursor-pointer items-center justify-center rounded-sm border border-[#333] px-2 py-4 font-semibold sm:w-[unset] sm:px-4 xl:hidden"
         >
           <span className="mr-1">
             <AiTwotoneFilter />

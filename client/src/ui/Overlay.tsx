@@ -2,7 +2,7 @@ type propsType = {
   isShow: boolean;
   children: React.ReactNode;
   handleClose?: () => void;
-  bg: string;
+  bg?: string;
 };
 
 const Overlay = ({ isShow, children, bg }: propsType) => {

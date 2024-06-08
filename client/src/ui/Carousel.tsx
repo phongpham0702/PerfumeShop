@@ -11,6 +11,8 @@ const Carousel = ({ children }: propsType) => {
     dots: true,
     infinite: true,
     speed: 200,
+    autoplay: true,
+    autoplaySpeed: 2000,
     slidesToShow: 5,
     slidesToScroll: 1,
     initialSlide: 0,
@@ -80,7 +82,7 @@ const Carousel = ({ children }: propsType) => {
   return (
     <Slider
       ref={slider}
-      className="mx-auto h-[400px] w-[100%] overflow-y-hidden px-[15px] sm:h-[500px]"
+      className="mx-auto h-[400px] w-[100%] overflow-hidden px-[15px] sm:h-[500px]"
       {...settings}
     >
       {children}

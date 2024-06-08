@@ -28,6 +28,9 @@ const Login = ({ onLoginSuccess }: { onLoginSuccess: () => void }) => {
           setPassword("");
 
           localStorage.setItem("accessToken", data.metadata.AT);
+          localStorage.setItem("cartCount", data.metadata.cartCount);
+          localStorage.setItem("wishlistCount", data.metadata.wishlistCount);
+
           toast.success("Login successful");
           navigate("/");
         } else {
