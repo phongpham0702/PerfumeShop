@@ -2,12 +2,13 @@ const converterHelper = require('../../helpers/converter.helper')
 const cartModel = require('../cart.model')
 const CartModel = require('../cart.model')
 
-const findCartById = async (cartId) => {
-    let userCart = await CartModel.findOne({
-        
-        '_id': converterHelper.toObjectIdMongo(cartId)
+const findCartById = async ({userId = null , cartId = null}) => {
+
+    const queryFilter = userId? 
+    {"userID": converterHelper.toObjectIdMongo(userId)}:
+    {"_id": converterHelper.toObjectIdMongo(cartId)}
     
-    },
+    let userCart = await CartModel.findOne(queryFilter,
     {
         userID:1, 
         cartProduct:1,
@@ -18,7 +19,6 @@ const findCartById = async (cartId) => {
         path:'cartProduct.productId',
         select:['productName','productBrand','productThumbnail','priceScale']  
     })
-    .exec()
     .lean()
 
     if(!userCart){
@@ -62,28 +62,72 @@ const checkProductInCart = async(userId, productId, modelId) => {
 
 }
 
-const getCartIdByUserId = async(userId) => {
-    let userCartId = await cartModel.findOne({
-        userID: converterHelper.toObjectIdMongo(userId)
-    },
+const getMiniCartById = async({userId = null , cartId = null}) => {
+
+    const queryFilter = userId? 
+    {"userID": converterHelper.toObjectIdMongo(userId)}:
+    {"_id": converterHelper.toObjectIdMongo(cartId)}
+    
+    let userCart = await CartModel.findOne(queryFilter,
     {
-        _id:1
+        userID:1, 
+        cartProduct:1,
+        cartCountProduct:1
+    })
+    .populate(
+    {
+        path:'cartProduct.productId',
+        select:['priceScale']  
     })
     .lean()
 
-    if(!userCartId){
+    if(!userCart){
         return null
     }
 
-    return userCartId
+    let cartData = userCart.cartProduct.map((i) => {
+        let itemModel = i.productId.priceScale.find((m)=> {
+            return m._id.toString() == i.modelId.toString()
+        })
+        return {
+
+            productId: i.productId._id.toString(),
+            modelId: i.modelId.toString(),
+            productCapacity: itemModel.capacity,
+            unitPrice: itemModel.price,
+            quantity: i.quantity
+        }
+    })
+
+    return {
+        cartId: userCart._id,
+        cartCountProduct: userCart.cartCountProduct,
+        cartData
+    }
 
 }
 
+const getCartCount = async(userId) => {
+    
+    let userCartCount = await CartModel.findOne({
+        "userID": converterHelper.toObjectIdMongo(userId)
+    },
+    {
+        cartCountProduct:1
+    })
+    .lean()
 
+    if(!userCartCount){
+        return 0
+    }
+
+    return  userCartCount.cartCountProduct
+}
 
 
 module.exports = {
     findCartById,
     checkProductInCart,
-    getCartIdByUserId
+    getMiniCartById,
+    getCartCount
 }

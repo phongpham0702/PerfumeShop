@@ -16,7 +16,7 @@ class CheckoutService {
 
 
     static async Review(userId){
-        const foundCart = await CartService.getCart(userId)
+        const foundCart = await findCartById({userId})
         let totalPrice = 0
 
         if(!foundCart)
@@ -56,6 +56,11 @@ class CheckoutService {
         }
 
         return order
+    }
+
+    static async UserPurchase(userInfo, cart, voucherCode)
+    {
+
     }
 
 }

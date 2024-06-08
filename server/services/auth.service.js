@@ -19,7 +19,9 @@ class AuthService{
         */
         
         //1)
-        let userInfo = await findUserByEmail(email)
+        let userInfo = await findUserByEmail(email,{
+            '_id':1,'Email': 1, 'FullName':1,'Password': 1,'WishList':1
+        })
         
         if(!userInfo )
         {
@@ -67,6 +69,7 @@ class AuthService{
                 userId: userInfo._id.toString(),
                 email: userInfo.Email,
                 name: userInfo.FullName,
+                wishlistCount: userInfo.WishList.length
             },
             keyId: keyStore._id.toString(),
             accessToken,
