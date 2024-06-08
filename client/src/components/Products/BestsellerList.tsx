@@ -3,7 +3,7 @@ import { Product } from "../../interfaces/Product";
 import ProductItem from "./ProductItem";
 import Carousel from "../../ui/Carousel";
 import { useQuery } from "@tanstack/react-query";
-import SkeletonCard from "../../ui/CardSkeleton";
+import CardSkeleton from "../../ui/CardSkeleton";
 
 type bestSellerDataType = {
   gender: string;
@@ -79,14 +79,19 @@ const BestsellerList = () => {
         </div>
       </div>
 
-      <Carousel>
-        {isLoading && <SkeletonCard cards={5} />}
-        {products.map((product) => (
-          <div key={product._id} className="">
-            <ProductItem product={product} />
-          </div>
-        ))}
-      </Carousel>
+      {isLoading ? (
+        <div className="flex justify-center gap-6">
+          <CardSkeleton cards={5} />
+        </div>
+      ) : (
+        <Carousel>
+          {products.map((product) => (
+            <div key={product._id} className="">
+              <ProductItem product={product} />
+            </div>
+          ))}
+        </Carousel>
+      )}
     </div>
   );
 };

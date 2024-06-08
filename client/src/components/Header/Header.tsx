@@ -6,9 +6,10 @@ import {
   AiOutlineMenuFold,
 } from "react-icons/ai";
 import { NavLink, useNavigate } from "react-router-dom";
-import OffCanvasMenu from "../OffCanvasMenu";
+import OffCanvasMenu from "../OffCanvas/OffCanvasMenu";
 import { FormEvent, useContext, useEffect, useRef, useState } from "react";
 import MenuContext from "../../contexts/MenuContext";
+import OffCanvasMenuItem from "../OffCanvas/OffCanvasMenuItem";
 // import SearchContext from "../../contexts/SearchContext";
 
 const Header = () => {
@@ -165,7 +166,7 @@ const Header = () => {
             </li>
             <li
               onClick={() => {
-                menuContext.handleOpen();
+                menuContext.handleOpen("menu");
               }}
               className="block cursor-pointer text-3xl sm:text-2xl lg:hidden"
             >
@@ -175,7 +176,15 @@ const Header = () => {
         </div>
       </div>
 
-      <OffCanvasMenu />
+      <OffCanvasMenu id="menu">
+        <div className="flex flex-col gap-4">
+          <OffCanvasMenuItem url="/">Home</OffCanvasMenuItem>
+          <OffCanvasMenuItem url="/about">About</OffCanvasMenuItem>
+          <OffCanvasMenuItem url="/brands">Brands</OffCanvasMenuItem>
+          <OffCanvasMenuItem url="/shop">Shop</OffCanvasMenuItem>
+          <OffCanvasMenuItem url="/blog">Blog</OffCanvasMenuItem>
+        </div>
+      </OffCanvasMenu>
     </header>
   );
 };

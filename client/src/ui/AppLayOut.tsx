@@ -9,10 +9,10 @@ const AppLayOut = () => {
     <>
       <MenuProvider>
         <Header />
+        <main className="overflow-x-hidden font-sans">
+          <Outlet />
+        </main>
       </MenuProvider>
-      <main className="relative font-sans">
-        <Outlet />
-      </main>
       <Subscribe />
       <Footer />
     </>

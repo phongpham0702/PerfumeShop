@@ -16,6 +16,7 @@ type ModalProps = {
 };
 
 const AddAddressModal = ({ modalIsOpen, closeModal }: ModalProps) => {
+  
   return (
     <Modal
       overlayClassName={"fixed inset-0 bg-black bg-opacity-50"}

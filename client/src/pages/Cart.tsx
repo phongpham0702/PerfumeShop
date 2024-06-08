@@ -21,8 +21,8 @@ const Cart = () => {
 
   return (
     <div>
-      <div className="mx-auto my-10 flex w-[80%] items-start gap-10 ">
-        <div className="w-[75%]">
+      <div className="mx-auto my-10 grid w-full grid-cols-10 items-start px-2 sm:px-6 xl:gap-10 xl:px-20">
+        <div className="col-span-10 lg:col-span-7 lg:col-end-7">
           <hr />
           {isLoading && <ListSkeleton cards={3} />}
           {Array.isArray(data?.cartData) &&
@@ -34,7 +34,7 @@ const Cart = () => {
           <hr />
         </div>
 
-        <div className="mb-2 w-[25%] rounded-sm border border-[#9c9c9c] p-3">
+        <div className="col-span-10 mb-2 mt-6 rounded-sm border border-[#9c9c9c] p-3 sm:col-span-6 sm:col-start-3 lg:col-span-3 lg:col-end-11">
           <h2 className="mb-4 text-center text-xl font-medium uppercase tracking-wide">
             Order Information
           </h2>

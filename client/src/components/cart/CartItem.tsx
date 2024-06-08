@@ -1,4 +1,3 @@
-import { AiOutlineMinus } from "react-icons/ai";
 import { ICartItem } from "../../interfaces/CartItem";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
@@ -39,7 +38,7 @@ const CartItem = ({ item }: { item: ICartItem }) => {
   });
 
   return (
-    <div className="mx-auto flex w-[100%] items-center justify-between rounded-md p-2">
+    <div className="mx-auto flex w-[100%] flex-wrap items-center justify-between rounded-md p-2 sm:flex-nowrap">
       <EditCartModal
         item={item}
         modalIsOpen={isModalOpen}
@@ -47,23 +46,30 @@ const CartItem = ({ item }: { item: ICartItem }) => {
       />
 
       <div className="flex gap-6">
-        <div className="w-[150px] bg-[#f8f8f8] p-4">
-          <img width={150} src={item.productThumbnail} alt="item thumbnail" />
+        <div className="flex w-[150px] items-center bg-[#f8f8f8] py-4">
+          <img
+            className="min-h-[150px] w-full min-w-[150px]"
+            src={item.productThumbnail}
+            alt="item thumbnail"
+          />
         </div>
-        <div className="">
-          <p>{item.productBrand}</p>
+        <div>
           <div className="flex items-center gap-2 text-lg font-medium">
-            <span>{item.productName}</span> <AiOutlineMinus />{" "}
-            <span>{item.productCapacity}</span>
+            <span className="">{item.productName}</span>
           </div>
-          <p>Quantity: {item.quantity}</p>
-          <p className="mt-2">
-            Unit price:{" "}
-            {item.unitPrice.toLocaleString("en-US", {
-              style: "currency",
-              currency: "USD",
-            })}
-          </p>
+
+          <div className="mt-2 flex flex-col gap-1">
+            <span>Capacity: {item.productCapacity}</span>
+            <p>Quantity: {item.quantity}</p>
+            <p>
+              Unit price:{" "}
+              {item.unitPrice.toLocaleString("en-US", {
+                style: "currency",
+                currency: "USD",
+              })}
+            </p>
+          </div>
+
           <p className="mt-4 text-lg font-medium">
             Total:{" "}
             {(item.unitPrice * item.quantity).toLocaleString("en-US", {
@@ -74,7 +80,7 @@ const CartItem = ({ item }: { item: ICartItem }) => {
         </div>
       </div>
 
-      <div className="flex flex-col gap-2">
+      <div className="mr-4 mt-4 flex w-full justify-end gap-2 sm:w-auto sm:flex-col">
         <button
           onClick={() => setIsModalOpen(true)}
           className="rounded-sm border border-[#c1c1c1] px-8 py-1 hover:text-[#ac8f45]"

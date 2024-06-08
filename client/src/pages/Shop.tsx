@@ -8,6 +8,7 @@ import FilterBar from "../components/Filter/FilterBar";
 import { categories } from "../dummy_data/categoryData";
 import { useState } from "react";
 import FilterInfo from "../components/Filter/FilterInfo";
+import OffCanvasMenu from "../components/OffCanvas/OffCanvasMenu";
 
 const Shop = () => {
   const navigate = useNavigate();
@@ -46,12 +47,22 @@ const Shop = () => {
       </div>
       <FilterInfo productNum={productNum} />
       <div className="flex justify-between">
-        <FilterBar
-          onFilterChange={handleCheckboxChange}
-          categories={categories}
-        />
+        <div className="hidden xl:block">
+          <FilterBar
+            onFilterChange={handleCheckboxChange}
+            categories={categories}
+          />
+        </div>
         <Outlet context={{ handleProductNumChange: handleChange }} />
       </div>
+      <OffCanvasMenu id="filter">
+        <div className="flex justify-center">
+          <FilterBar
+            onFilterChange={handleCheckboxChange}
+            categories={categories}
+          />
+        </div>
+      </OffCanvasMenu>
     </div>
   );
 };

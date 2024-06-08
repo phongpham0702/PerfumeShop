@@ -1,6 +1,6 @@
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-const SkeletonCard = ({ cards }: { cards: number }) => {
+const CardSkeleton = ({ cards }: { cards: number }) => {
   return Array(cards)
     .fill(0)
     .map((_, index) => (
@@ -16,4 +16,4 @@ const SkeletonCard = ({ cards }: { cards: number }) => {
       </div>
     ));
 };
-export default SkeletonCard;
+export default CardSkeleton;

@@ -11,6 +11,7 @@ import useHover from "../../hooks/useHover";
 import requestAPI from "../../helpers/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+import useAddToCart from "../../hooks/Cart/useAddToCart";
 
 type propsType = {
   product: Product | SimilarProduct | BestsellerProduct;
@@ -45,11 +46,11 @@ const ProductItem = ({ product }: propsType) => {
     pDetailRef.current?.classList.remove("animate-fadeOut");
   }, []);
 
-  // const addToCartMutate = useAddToCart({
-  //   _id: product._id,
-  //   capacity: product.displayPrice,
-  //   quantity: 1,
-  // });
+  const addToCartMutate = useAddToCart({
+    _id: product._id,
+    capacity: product.priceInfo._id,
+    quantity: 1,
+  });
 
   const queryClient = useQueryClient();
   const curList = localStorage.getItem("wishlist_items");
@@ -235,6 +236,7 @@ const ProductItem = ({ product }: propsType) => {
         </div>
 
         <button
+          onClick={() => addToCartMutate()}
           ref={addToCartBtnRef}
           className={`absolute left-0 top-[237px] flex w-full items-center justify-center gap-2 bg-[#000] p-2 font-semibold text-[#fff] transition-all duration-500 hover:bg-[#f50963] sm:top-[312px] ${
             isHovered

@@ -10,12 +10,12 @@ import { BiLockAlt } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import AddAddressModal from "../components/user/AddAddressModal";
+import requestAPI from "../helpers/api";
 
 const UserAccount = () => {
   const [activeTab, setActiveTab] = useState<string>("tab1");
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
-  console.log(isOpen);
 
   const closeModal = () => {
     setIsOpen(false);
@@ -78,7 +78,8 @@ const UserAccount = () => {
       id: "tab5",
       title: (
         <div
-          onClick={() => {
+          onClick={async () => {
+            await requestAPI("/user/logout", {}, "GET");
             localStorage.removeItem("accessToken");
             navigate("/login");
             toast.success("Logout successfully");

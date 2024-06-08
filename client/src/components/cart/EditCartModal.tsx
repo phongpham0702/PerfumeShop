@@ -1,21 +1,12 @@
-import Modal from "react-modal";
+import { Modal } from "react-responsive-modal";
+import "react-responsive-modal/styles.css";
 import { ICartItem } from "../../interfaces/CartItem";
 import { FaMinus, FaPlus } from "react-icons/fa6";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import requestAPI from "../../helpers/api";
 import toast from "react-hot-toast";
-Modal.setAppElement("#root");
 
-const customStyles = {
-  content: {
-    width: "800px",
-    height: "400px",
-    top: "10%",
-    transition: "all 2s",
-    animation: "rightIn .5s both",
-  },
-};
 type ModalProps = {
   modalIsOpen: boolean;
   closeModal: () => void;
@@ -25,7 +16,6 @@ type ModalProps = {
 const EditCartModal = ({ modalIsOpen, item, closeModal }: ModalProps) => {
   const [quantity, setQuantity] = useState<number>(item?.quantity);
   const [capacity, setCapacity] = useState<string>(item?.modelId);
-  console.log(item);
 
   const queryClient = useQueryClient();
   const { mutate } = useMutation({
@@ -35,7 +25,8 @@ const EditCartModal = ({ modalIsOpen, item, closeModal }: ModalProps) => {
           `/user/cart`,
           {
             productId: item.productId,
-            modelId: capacity,
+            modelId: item.modelId,
+            new_modelId: capacity !== item.modelId ? capacity : "",
             quantity: quantity,
           },
           "put",
@@ -52,23 +43,24 @@ const EditCartModal = ({ modalIsOpen, item, closeModal }: ModalProps) => {
   });
 
   return (
-    <Modal
-      overlayClassName={"fixed inset-0 bg-black bg-opacity-50"}
-      isOpen={modalIsOpen}
-      onRequestClose={closeModal}
-      style={customStyles}
-    >
-      <div className="relative flex">
-        <div className="w-[300px]">
-          <img src={item?.productThumbnail} alt="image" />
-        </div>
-        <div className="flex w-[50%] select-none flex-col gap-6">
+    <Modal open={modalIsOpen} onClose={closeModal} center>
+      <div className="relative flex gap-4 py-6 pb-4 sm:px-20 sm:pl-6">
+        <div
+          className={`w-[150px] sm:h-[250px] sm:w-[300px]`}
+          style={{
+            backgroundImage: `url(${item?.productThumbnail})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        />
+        <div className="flex min-w-[50%] select-none flex-col gap-6 pr-10">
           <p className="text-xl font-medium">{item?.productName}</p>
           <div className="flex select-none gap-4">
             {item?.priceScale.map((priceScale) => (
               <div
+                key={priceScale._id}
                 onClick={() => setCapacity(priceScale._id)}
-                className={`w-[80px] cursor-pointer rounded-md border border-[#333] py-1 text-center hover:bg-gray-300 ${
+                className={`w-[80px] cursor-pointer rounded-sm border border-[#333] py-1 text-center hover:bg-gray-300 ${
                   capacity === priceScale._id &&
                   "bg-[#333] text-white hover:bg-[#444]"
                 }`}
@@ -77,12 +69,14 @@ const EditCartModal = ({ modalIsOpen, item, closeModal }: ModalProps) => {
               </div>
             ))}
           </div>
+
           <div className="flex w-full cursor-pointer items-center justify-between border border-[#777] px-4 py-2">
             <FaMinus onClick={() => setQuantity((prev) => prev - 1)} />
             <span className="select-none">{quantity}</span>
             <FaPlus onClick={() => setQuantity((prev) => prev + 1)} />
           </div>
-          <div className="absolute bottom-0 flex gap-4">
+
+          <div className="mt-6 flex gap-4 sm:mb-6">
             <button
               onClick={closeModal}
               className="select-none border border-[#333] px-6 py-2"
@@ -91,7 +85,7 @@ const EditCartModal = ({ modalIsOpen, item, closeModal }: ModalProps) => {
             </button>
             <button
               onClick={() => mutate()}
-              className="select-none bg-[#333] px-6 py-2 text-white"
+              className=" transform select-none bg-[#333] px-6 py-2 text-white"
             >
               Update
             </button>

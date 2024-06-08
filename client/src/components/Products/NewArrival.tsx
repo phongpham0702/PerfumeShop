@@ -2,6 +2,7 @@ import ProductItem from "./ProductItem";
 import Carousel from "../../ui/Carousel";
 import { useQuery } from "@tanstack/react-query";
 import { BestsellerProduct } from "../../interfaces/Product";
+import CardSkeleton from "../../ui/CardSkeleton";
 
 const NewArrival = () => {
   async function fetchData() {
@@ -28,13 +29,19 @@ const NewArrival = () => {
           The stylish and organized cosmetic products
         </p>
       </div>
-      <Carousel>
-        {products.map((product: BestsellerProduct) => (
-          <div key={product._id}>
-            <ProductItem product={product} />
-          </div>
-        ))}
-      </Carousel>
+      {isLoading ? (
+        <div className="flex justify-center gap-6">
+          <CardSkeleton cards={5} />
+        </div>
+      ) : (
+        <Carousel>
+          {products.map((product: BestsellerProduct) => (
+            <div key={product._id}>
+              <ProductItem product={product} />
+            </div>
+          ))}
+        </Carousel>
+      )}
     </div>
   );
 };
