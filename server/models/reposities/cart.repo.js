@@ -100,6 +100,7 @@ const getMiniCartById = async({userId = null , cartId = null}) => {
     })
 
     return {
+        cartOwner: userCart.userID,
         cartId: userCart._id,
         cartCountProduct: userCart.cartCountProduct,
         cartData

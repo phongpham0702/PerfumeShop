@@ -3,6 +3,7 @@ const { BadRequestError } = require('../helpers/error.response');
 const CartService = require("./cart.service");
 const voucherModel = require("../models/voucher.model");
 const { findUserById } = require("../models/reposities/user.repo");
+const cartModel = require("../models/cart.model");
 
 class CheckoutService {
 
@@ -58,8 +59,11 @@ class CheckoutService {
         return order
     }
 
-    static async UserPurchase(userInfo, cart, voucherCode)
+    static async UserPurchase(userInfo, cart, additionInfo ={receiverInfo ,voucherCode, orderPayment})
     {
+        const orderPayment = additionInfo.orderPayment
+        let cartData = cart
+        console.log(cart);
 
     }
 

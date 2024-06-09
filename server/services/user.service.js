@@ -4,6 +4,7 @@ const { getProductList, checkProductIsExist } = require("../models/reposities/pr
 const useraddressModel = require("../models/useraddress.model")
 const { findUserById } = require("../models/reposities/user.repo")
 const bcrypt = require("bcrypt")
+const { deleteAddressById, updateAddress } = require("../models/reposities/useraddresses.repo")
 const addressLimit = 5
 
 class UserService{
@@ -18,7 +19,8 @@ class UserService{
             "FullName",
             "DoB",
             "PhoneNumber",
-            "Addresses"
+            "Addresses",
+            "defaultAddress"
         ])
         .populate(
         {
@@ -58,7 +60,8 @@ class UserService{
             _id: userId
         },
         {   
-            Addresses:1
+            Addresses:1,
+            defaultAddress:1
         })
 
         if(!foundUser)
@@ -83,6 +86,9 @@ class UserService{
         })
         
         foundUser.Addresses.push(newAddress._id)
+        
+        if(!foundUser.defaultAddress) foundUser.defaultAddress = newAddress._id
+
         await foundUser.save()
 
         return {
@@ -97,6 +103,104 @@ class UserService{
                 addressDetail: newAddress.addressDetail
             }
         }
+    }
+
+    deleteUserAddress = async(userID, addressID) =>{
+        let foundUser = await userModel.findOne({
+            _id: userID
+        },
+        {   
+            Addresses:1,
+            defaultAddress:1
+        })
+
+        if(!foundUser)
+        {
+            throw new BadRequestError()
+        }
+
+        if(foundUser.Addresses.length <= 0)
+        {
+            throw new NotAcceptError(`You don't have any addresses`)
+        }
+        
+        foundUser.Addresses = foundUser.Addresses.filter((address)=> {
+            if(address.toString() !== addressID)
+            {   
+                return true
+            }
+            else
+            {
+                return false
+            }
+
+        });
+
+        if(foundUser.defaultAddress.toString() === addressID)
+        {
+            foundUser.defaultAddress= foundUser.Addresses.length <= 0 ? "" : foundUser.Addresses[0]
+        }
+
+        let deleteResult = await deleteAddressById(addressID)
+
+        await foundUser.save()
+        return {
+            deleteResult,
+            currentDefaultAddress: foundUser.defaultAddress
+        };
+    }
+
+    editUserAddress = async(userID, addressID, addressNewData = {}) => {
+        const foundUserAddress = await userModel.findOne({
+            _id: userID,
+            Addresses : addressID
+        },{_id:1}).lean()
+        
+        if(!foundUserAddress) throw new BadRequestError("Cannot find this address ID in your list")
+        
+        let updateSet = {
+            receiverName: addressNewData.receiverName? addressNewData.receiverName:"",
+            receiverPhoneNumber: addressNewData.receiverPhone ? addressNewData.receiverPhone:"",
+            Nation: addressNewData.nation ? addressNewData.nation:"",
+            City: addressNewData.city ? addressNewData.city:"",
+            Ward: addressNewData.ward ? addressNewData.ward:"",
+            District: addressNewData.district ? addressNewData.district:"",
+            addressDetail: addressNewData.detail ? addressNewData.detail:""
+        }
+        let updatedAddress = await updateAddress(addressID, updateSet)
+        return {
+            updatedAddress: updatedAddress? updatedAddress:null
+        }
+    }
+
+    setDefaultAddress = async(userID,defaultAddressID) => {
+        let foundUser = await userModel.findOne({
+            _id: userID
+        },
+        {   
+            Addresses:1,
+            defaultAddress:1
+        })
+        if(!foundUser)
+        {
+            throw new BadRequestError()
+        }
+
+        if(foundUser.defaultAddress === defaultAddressID) return {
+            newDefaultAddressID: defaultAddressID
+        }
+
+        let foundAddress = foundUser.Addresses.find(address =>{
+            return address.toString() === defaultAddressID
+        })
+        if(!foundAddress) throw new BadRequestError("Cannot find this address ID in your list")
+        
+        foundUser.defaultAddress = foundAddress.toString()
+        await foundUser.save()
+        return {
+            newDefaultAddressID: foundAddress.toString()
+        }
+
     }
 
     getUserWishList = async(userID) =>{

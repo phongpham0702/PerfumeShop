@@ -9,7 +9,7 @@ const cartController = require('../controllers/cart.controller');
 const AddToCartValidator = require('../controllers/validators/addCart.validator');
 const UpdateCartValidator = require('../controllers/validators/updateCart.validator');
 const checkOutController = require('../controllers/checkOut.controller');
-const AddAddressValidator = require('../controllers/validators/addAddress.validator');
+const inputAddressValidator = require('../controllers/validators/inputAddress.validator');
 const changePasswordValidator = require('../controllers/validators/changePassword.validator');
 
 
@@ -33,7 +33,12 @@ router.route("/change-password")
 .post(changePasswordValidator,errorHandler(userController.changePassword))
 
 router.route('/address')
-.post(AddAddressValidator ,errorHandler(userController.addUserAddressList))
+.post(inputAddressValidator ,errorHandler(userController.addUserAddressList))
+.delete(errorHandler(userController.deleteUserAddress))
+.put(inputAddressValidator, errorHandler(userController.editUserAddress))
+
+router.route('/address/default')
+.get(errorHandler(userController.setDefaultAddress))
 
 router.route('/wishlist')
 .get(errorHandler(userController.getWishList))

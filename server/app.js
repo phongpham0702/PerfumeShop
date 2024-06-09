@@ -22,7 +22,7 @@ const app = express();
 
 database.connectDB();
 
-init_redis.connect_redis();
+//init_redis.connect_redis();
 
 app.use(
   cors({
