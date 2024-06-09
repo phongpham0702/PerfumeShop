@@ -74,7 +74,7 @@ class CheckoutController{
     
         //1) Check user info
         //2)Check user cart
-        const {receiverEmail, receiverPhone, receiverAddress, cartId,voucherCode} = req.body
+        const {receiverEmail, receiverPhone, receiverAddress, cartId,voucherCode, orderPayment} = req.body
 
         const receiverInfo = {
             receiverEmail, 
@@ -98,8 +98,9 @@ class CheckoutController{
             
             const userCart = await getMiniCartById({cartId})
             if(!userCart) throw new BadRequestError("Cannot find user cart")
-            
-            await CheckoutService.UserPurchase(receiverInfo, userCart,voucherCode)
+            if(userCart.cartOwner != userInfo._id)
+            console.log(userCart);
+            await CheckoutService.UserPurchase(userInfo,  userCart, {receiverInfo, voucherCode, orderPayment})
 
         }
 

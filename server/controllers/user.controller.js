@@ -4,6 +4,7 @@ const responseHelper = require("../helpers/success.response");
 const UserService = require('../services/user.service');
 const {Types} = require('mongoose');
 const { createRefreshToken } = require('../utils/token.util');
+const converterHelper = require('../helpers/converter.helper');
 
 class UserController{
 
@@ -69,6 +70,49 @@ class UserController{
         }
 
         
+    }
+
+    deleteUserAddress = async(req,res,next) => {
+        const deleteAddressID = req.body.deleteID 
+        let deleteResult = await UserService.deleteUserAddress(req.userid,deleteAddressID)
+
+        new responseHelper.SuccessResponse({
+            metadata: {
+                ...deleteResult
+            } 
+        }).send(res)
+    }
+
+    editUserAddress = async(req,res,next) => {
+
+        let checkResult = await validationResult(req);
+        
+        if(checkResult.errors.length >= 1)
+        {
+
+            throw new BadRequestError()
+        }
+        else
+        {    
+            const addressID = converterHelper.toObjectIdMongo(req.body.addressID)
+            let {receiverName,receiverPhone,nation,city,district,ward,detail} = req.body
+            let dataPack = {receiverName,receiverPhone,nation,city,district,ward,detail}
+            new responseHelper.SuccessResponse({
+                metadata: await UserService.editUserAddress(req.userid,addressID,dataPack)
+            }).send(res)
+        }  
+    }
+
+    setDefaultAddress = async(req,res,next) => {
+
+        const newDefaultID = req.query.default
+        
+        if(!newDefaultID) throw new BadRequestError("Provide your new address ID")
+
+        new responseHelper.SuccessResponse({
+            metadata: await UserService.setDefaultAddress(req.userid, newDefaultID)
+        }).send(res)
+
     }
 
     getWishList = async(req,res,next) => {

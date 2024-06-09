@@ -63,10 +63,14 @@ class CartService {
             return { cartData: [] };
         }
 
+
+
         let cartData = userCart.cartProduct.map((i) => {
+
             let itemModel = i.productId.priceScale.find((m) => {
                 return m._id.toString() == i.modelId.toString();
             });
+
             return {
                 productId: i.productId._id.toString(),
                 modelId: i.modelId.toString(),
@@ -77,13 +81,13 @@ class CartService {
                 unitPrice: itemModel.price,
                 quantity: i.quantity,
                 priceScale: i.productId.priceScale,
-            };
+            }; 
         });
 
         return {
             cartId: userCart._id,
             cartCountProduct: userCart.cartCountProduct,
-            cartData,
+            cartData: cartData,
         };
     };
 

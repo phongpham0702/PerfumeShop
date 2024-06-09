@@ -48,6 +48,11 @@ const userSchema = new Schema({
         }],
         default: [],
     },
+
+    defaultAddress:{
+        type: Schema.Types.String,
+        default:""
+    }
 },
 {
     timestamps: true,
