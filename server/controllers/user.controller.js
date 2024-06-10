@@ -1,5 +1,5 @@
 const {validationResult} = require('express-validator');
-const { SignUpInValid, BadRequestError } = require('../helpers/error.response');
+const { BadRequestError } = require('../helpers/error.response');
 const responseHelper = require("../helpers/success.response");
 const UserService = require('../services/user.service');
 const {Types} = require('mongoose');
@@ -52,6 +52,18 @@ class UserController{
             }
         }).send(res)
     }
+
+    getUserAddressById = async(req,res,next) => {
+
+        const addressId = req.query.addressID? converterHelper.toObjectIdMongo(req.query.addressID): null
+
+        if(!addressId) throw new BadRequestError("Provide address id you need to find")
+
+        new responseHelper.SuccessResponse({
+            metadata: await UserService.getUserAddressById(req.userid,addressId)
+        }).send(res) 
+
+    }   
 
     addUserAddressList = async(req,res,next) => {
         

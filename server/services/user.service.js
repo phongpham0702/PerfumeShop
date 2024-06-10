@@ -54,6 +54,22 @@ class UserService{
         return await foundUser.save()
     }
 
+    getUserAddressById = async(userId, addressId) => {
+        const foundUserAddress = await userModel.findOne({
+            "_id": userId,
+            "Addresses": addressId
+        },{"Addresses.$":1})
+        .populate({
+            path:"Addresses",
+            select:"receiverName receiverPhoneNumber Nation City District Ward addressDetail"
+        })
+        .lean()
+        .exec()
+        return {
+            userAddress: foundUserAddress.Addresses[0]   
+        }   
+    }
+
     addUserAddressList = async(userId, body) => {
 
         let foundUser = await userModel.findOne({
