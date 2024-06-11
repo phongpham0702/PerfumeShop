@@ -28,8 +28,11 @@ const Login = ({ onLoginSuccess }: { onLoginSuccess: () => void }) => {
           setPassword("");
 
           localStorage.setItem("accessToken", data.metadata.AT);
-          localStorage.setItem("cartCount", data.metadata.cartCount);
-          localStorage.setItem("wishlistCount", data.metadata.wishlistCount);
+          localStorage.setItem("cartCount", data.metadata.userInfo.cartCount);
+          localStorage.setItem(
+            "wishlistCount",
+            data.metadata.userInfo.wishlistCount,
+          );
 
           toast.success("Login successful");
           navigate("/");

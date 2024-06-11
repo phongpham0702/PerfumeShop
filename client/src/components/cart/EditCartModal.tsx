@@ -20,25 +20,33 @@ const EditCartModal = ({ modalIsOpen, item, closeModal }: ModalProps) => {
   const queryClient = useQueryClient();
   const { mutate } = useMutation({
     mutationFn: async () => {
-      try {
-        await requestAPI(
-          `/user/cart`,
-          {
-            productId: item.productId,
-            modelId: item.modelId,
-            new_modelId: capacity !== item.modelId ? capacity : "",
-            quantity: quantity,
-          },
-          "put",
-        );
-        toast.success("Item updated successfully");
-        closeModal();
-      } catch (error) {
-        toast.error("Something went wrong");
-      }
+      await requestAPI(
+        `/user/cart`,
+        {
+          productId: item.productId,
+          modelId: item.modelId,
+          new_modelId: capacity !== item.modelId ? capacity : "",
+          quantity: quantity,
+        },
+        "put",
+      );
+      toast.success("Item updated successfully");
+      closeModal();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["cart"] });
+      localStorage.setItem(
+        "cartCount",
+        quantity -
+          item.quantity +
+          JSON.parse(localStorage.getItem("cartCount") || "0"),
+      );
+      window.dispatchEvent(new Event("storage"));
+    },
+
+    onError: (error) => {
+      console.log(error);
+      toast.error("Something went wrong");
     },
   });
 

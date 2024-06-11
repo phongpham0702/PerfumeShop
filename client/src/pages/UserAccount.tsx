@@ -12,6 +12,9 @@ import toast from "react-hot-toast";
 import AddAddressModal from "../components/user/AddAddressModal";
 import requestAPI from "../helpers/api";
 import { useQuery } from "@tanstack/react-query";
+import { IAddress } from "../interfaces/User";
+import { confirmAlert } from "react-confirm-alert";
+import "react-confirm-alert/src/react-confirm-alert.css";
 
 const UserAccount = () => {
   const [activeTab, setActiveTab] = useState<string>("tab1");
@@ -28,6 +31,26 @@ const UserAccount = () => {
 
   const closeModal = () => {
     setIsOpen(false);
+  };
+
+  const deleteAddress = async (id: string) => {
+    confirmAlert({
+      title: "Confirm to delete",
+      message: "Are you sure to do this.",
+      buttons: [
+        {
+          label: "Yes",
+          onClick: async () => {
+            await requestAPI("/user/address/", { deleteID: id }, "DELETE");
+            toast.success("Delete address successfully");
+          },
+        },
+        {
+          label: "No",
+          onClick: () => {},
+        },
+      ],
+    });
   };
 
   const navs = [
@@ -170,7 +193,7 @@ const UserAccount = () => {
             </div>
 
             <div>
-              {userProfile?.Addresses.map((item) => (
+              {userProfile?.Addresses.map((item: IAddress) => (
                 <div className="flex justify-between p-4">
                   <div>
                     <div className="flex gap-4">
@@ -193,7 +216,7 @@ const UserAccount = () => {
                     </button>
                     <button
                       className="border border-[#1a1306] px-6 py-1"
-                      onClick={() => {}}
+                      onClick={() => deleteAddress(item._id)}
                     >
                       Delete
                     </button>
@@ -229,6 +252,7 @@ const UserAccount = () => {
     <div className="mx-auto flex w-[90%] gap-4 font-inter">
       <TabHR navs={navs} contents={contents} />
       <AddAddressModal modalIsOpen={isOpen} closeModal={closeModal} />
+      {/* <AddAddressModal modalIsOpen={isOpen} closeModal={closeModal} /> */}
     </div>
   );
 };

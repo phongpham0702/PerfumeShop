@@ -59,7 +59,7 @@ const FilterInfo = ({ productNum }: propsType) => {
             {searchParams.size !== 0 ? "(" + searchParams.size + ")" : ""}{" "}
           </span>
         </div>
-        <div className="w-[65%] sm:w-[unset]">
+        <div className="relative w-[65%] sm:w-[unset]">
           <Dropdown items={dropDownList} />
         </div>
         <button

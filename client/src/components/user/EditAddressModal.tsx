@@ -7,7 +7,7 @@ type ModalProps = {
   closeModal: () => void;
 };
 
-const AddAddressModal = ({ modalIsOpen, closeModal }: ModalProps) => {
+const EditAddressModal = ({ modalIsOpen, closeModal }: ModalProps) => {
   const handleAddNewAddress = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -101,7 +101,7 @@ const AddAddressModal = ({ modalIsOpen, closeModal }: ModalProps) => {
                 type="submit"
                 className="w-[150px] select-none bg-[#333] px-6 py-2 text-white"
               >
-                Add
+                Update
               </button>
             </div>
           </form>
@@ -111,4 +111,4 @@ const AddAddressModal = ({ modalIsOpen, closeModal }: ModalProps) => {
   );
 };
 
-export default AddAddressModal;
+export default EditAddressModal;

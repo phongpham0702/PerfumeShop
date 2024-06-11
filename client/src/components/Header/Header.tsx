@@ -20,7 +20,14 @@ const Header = () => {
   const handleClose = () => setIsOpen(false);
 
   const [searchVal, setSearchVal] = useState("");
-
+  const [wishlistCount, setWishlistCount] = useState(
+    localStorage.getItem("wishlistCount"),
+  );
+  const [cartCount, setCartCount] = useState(localStorage.getItem("cartCount"));
+  window.addEventListener("storage", () => {
+    setWishlistCount(localStorage.getItem("wishlistCount"));
+    setCartCount(localStorage.getItem("cartCount"));
+  });
   const handleSearchVal = (val: string) => setSearchVal(val);
 
   const menuContext = useContext(MenuContext);
@@ -47,6 +54,8 @@ const Header = () => {
       document.removeEventListener("mousedown", handleClickOutSide);
     };
   }, [formRef]);
+
+  // console.log(localStorage.getItem("wishlist_items"));
 
   return (
     <header>
@@ -135,12 +144,12 @@ const Header = () => {
             ) : (
               <li
                 onClick={() => handleOpen()}
-                className="hidden cursor-pointer text-2xl sm:block"
+                className="hidden cursor-pointer text-3xl sm:block"
               >
                 <AiOutlineSearch />
               </li>
             )}
-            <li className="hidden cursor-pointer text-2xl sm:block">
+            <li className="hidden cursor-pointer text-3xl sm:block">
               <NavLink
                 className="aria-[current=page]:font-medium aria-[current=page]:text-[#f8b500]"
                 to={token ? "/account" : "/login"}
@@ -148,20 +157,26 @@ const Header = () => {
                 <AiOutlineUser />
               </NavLink>
             </li>
-            <li className="hidden cursor-pointer text-2xl sm:block">
+            <li className="relative hidden cursor-pointer text-3xl sm:block">
               <NavLink
                 className="aria-[current=page]:font-medium aria-[current=page]:text-[#f8b500]"
                 to="/wishlist"
               >
                 <AiOutlineHeart />
+                <span className="absolute right-[-12px] top-[-6px] rounded-[50%] border-[3px] border-[#f0f2ee] bg-[#f50963] px-[6px] text-[12px] text-sm font-bold leading-[17px] text-white">
+                  {wishlistCount}
+                </span>
               </NavLink>
             </li>
-            <li className="hidden cursor-pointer text-2xl sm:block">
+            <li className="relative hidden cursor-pointer text-3xl sm:block">
               <NavLink
                 className="aria-[current=page]:font-medium aria-[current=page]:text-[#f8b500]"
                 to="/cart"
               >
                 <AiOutlineShoppingCart />
+                <span className="absolute right-[-12px] top-[-6px] rounded-[50%] border-[3px] border-[#f0f2ee] bg-[#f50963] px-[6px] text-[12px] text-sm font-bold leading-[17px] text-white">
+                  {cartCount}
+                </span>
               </NavLink>
             </li>
             <li

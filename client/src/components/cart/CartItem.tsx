@@ -34,6 +34,13 @@ const CartItem = ({ item }: { item: ICartItem }) => {
       queryClient.invalidateQueries({
         queryKey: ["cart"],
       });
+      localStorage.setItem(
+        "cartCount",
+        JSON.stringify(
+          JSON.parse(localStorage.getItem("cartCount") || "0") - item.quantity,
+        ),
+      );
+      window.dispatchEvent(new Event("storage"));
     },
   });
 

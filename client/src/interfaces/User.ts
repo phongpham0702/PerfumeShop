@@ -1,9 +1,10 @@
 export interface IAddress {
+  _id: string;
   receiverName: string;
-  receiverPhone: string;
-  nation: string;
-  city: string;
-  district: string;
-  ward: string;
-  detail: string;
+  receiverPhoneNumber: string;
+  Nation: string;
+  City: string;
+  District: string;
+  Ward: string;
+  addressDetail: string;
 }

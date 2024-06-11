@@ -69,6 +69,11 @@ const ProductItem = ({ product }: propsType) => {
           "wishlist_items",
           JSON.stringify([...listParsed, product]),
         );
+        localStorage.setItem(
+          "wishlistCount",
+          JSON.stringify(listParsed.length + 1),
+        );
+        window.dispatchEvent(new Event("storage"));
       } else localStorage.setItem("wishlist_items", JSON.stringify([product]));
     }
 
@@ -91,6 +96,11 @@ const ProductItem = ({ product }: propsType) => {
             listParsed.filter((item: Product) => item._id !== product._id),
           ),
         );
+        localStorage.setItem(
+          "wishlistCount",
+          JSON.stringify(listParsed.length - 1),
+        );
+        window.dispatchEvent(new Event("storage"));
       }
     }
     return data;

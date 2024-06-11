@@ -12,6 +12,8 @@ const WishLists = () => {
       const items = res.data.metadata.wishListData.items;
       if (Array.isArray(items)) {
         localStorage.setItem("wishlist_items", JSON.stringify(items));
+        localStorage.setItem("wishlistCount", JSON.stringify(items.length));
+        window.dispatchEvent(new Event("storage"));
       }
       return items;
     },
