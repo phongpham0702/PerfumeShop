@@ -33,6 +33,7 @@ router.route("/change-password")
 .post(changePasswordValidator,errorHandler(userController.changePassword))
 
 router.route('/address')
+.get(errorHandler(userController.getUserAddressById))
 .post(inputAddressValidator ,errorHandler(userController.addUserAddressList))
 .delete(errorHandler(userController.deleteUserAddress))
 .put(inputAddressValidator, errorHandler(userController.editUserAddress))
