@@ -1,26 +1,6 @@
 const stripeAPI = require('stripe');
 
-let stripeGateway = stripeAPI(process.env.STRIPE_API_KEY);
-
-const exchangeRate = async (from, to) => {
-    return await fetch(`https://open.er-api.com/v6/latest/${from.toUpperCase()}`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-    })
-        .then(async (response) => {
-            const result = await response.json();
-            if (result.result == 'success') {
-                let rate = result.rates[to.toUpperCase()];
-                // console.log(rate)
-                return rate;
-            }
-
-            return 0;
-        })
-        .catch((err) => {
-            return 0;
-        });
-};
+const stripeGateway = stripeAPI(process.env.STRIPE_API_KEY);
 
 // Params: options
 // {
@@ -103,4 +83,4 @@ async function testPaypal() {
     console.log(result);
 }
 
-module.exports = { exchangeRate, createStripeSession, createPaypalSession };
+module.exports = { createStripeSession };

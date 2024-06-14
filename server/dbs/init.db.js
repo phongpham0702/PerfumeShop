@@ -42,14 +42,20 @@ class Database{
   connectDB = async ()=>{
     try 
     {
-      await mongoose.connect(process.env.DB_URI,{
+      this.client = await mongoose.connect(process.env.DB_URI,{
         //connectTimeoutMS: 10000
       })
     } catch (error) 
     {
       console.error(error);
+      process.exit(1);
     }
   }
+
+  getMongoClient = ()=>{
+    return this.client;
+  }
+
 }
 
 module.exports = Database.getInstance();

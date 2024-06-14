@@ -98,13 +98,14 @@ class CheckoutController{
             
             const userCart = await getMiniCartById({cartId})
             if(!userCart) throw new BadRequestError("Cannot find user cart")
-            if(userCart.cartOwner != userInfo._id)
-            console.log(userCart);
-            await CheckoutService.UserPurchase(userInfo,  userCart, {receiverInfo, voucherCode, orderPayment})
+            
+            if(userCart.cartOwner.toString() != userInfo._id.toString()) throw new BadRequestError("This is not your cart")
+            if(userCart.cartData.length <= 0 ) throw new BadRequestError("Your cart is empty")
+
+            await CheckoutService.CheckOut(userInfo, userCart, orderPayment ,{receiverInfo, voucherCode})
 
         }
 
-        // Check voucher
         new responseHelper.OK({
             metadata: ""
         }).send(res)

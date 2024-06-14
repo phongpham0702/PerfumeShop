@@ -1,9 +1,11 @@
 const { findCartById } = require("../models/reposities/cart.repo")
 const { BadRequestError } = require('../helpers/error.response');
 const CartService = require("./cart.service");
-const voucherModel = require("../models/voucher.model");
 const { findUserById } = require("../models/reposities/user.repo");
-const cartModel = require("../models/cart.model");
+const VoucherService = require("./voucher.service");
+const OrderService = require("./orders.service");
+
+const PAYMENT_METHOD = ["cod-payment","online-payment"]
 
 class CheckoutService {
 
@@ -59,11 +61,40 @@ class CheckoutService {
         return order
     }
 
-    static async UserPurchase(userInfo, cart, additionInfo ={receiverInfo ,voucherCode, orderPayment})
-    {
-        const orderPayment = additionInfo.orderPayment
-        let cartData = cart
-        console.log(cart);
+    static async CheckOut(userInfo, 
+        userCart, 
+        paymentMethod,
+        additionInfo ={receiverInfo ,voucherCode})
+    {   
+
+        //check payment method
+        if(!PAYMENT_METHOD.includes(paymentMethod)) throw new BadRequestError("Payment method is not supported")
+
+        //calculate cart total 
+        let cartTotal = 0
+        for(let item of userCart.cartData)
+        {
+            cartTotal += item.quantity * item.unitPrice
+        }
+
+        //check voucher
+        let checkVoucherResult = null
+        if(additionInfo.voucherCode !== "" && additionInfo.voucherCode !== null){
+            checkVoucherResult = await VoucherService.checkVoucher(userInfo._id.toString(), cartTotal, additionInfo.voucherCode);
+        }
+
+        if(checkVoucherResult && !checkVoucherResult.checkResult.isValid){
+            throw new BadRequestError(checkVoucherResult.checkResult.checkMessage);
+        }    
+        
+        OrderService.CreateOrder({
+            ownerId: userInfo._id,
+            receiverData: additionInfo.receiverInfo,
+            userCartData: userCart,
+            voucherData: checkVoucherResult,
+            orderTotal: cartTotal
+        })
+
 
     }
 

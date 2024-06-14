@@ -146,8 +146,12 @@ class CartService {
     ) => {
         let query = {
             "userID": userId,
-            "cartProduct.productId": converterHelper.toObjectIdMongo(productId),
-            "cartProduct.modelId": converterHelper.toObjectIdMongo(modelId),
+            "cartProduct": {
+                "$elemMatch": {
+                "productId": converterHelper.toObjectIdMongo(productId),
+                "modelId": converterHelper.toObjectIdMongo(modelId)
+            }
+            }
         };
         let updateSet = {
             $inc: {
@@ -184,8 +188,12 @@ class CartService {
 
         let query = {
             "userID": userId,
-            "cartProduct.productId": converterHelper.toObjectIdMongo(productId),
-            "cartProduct.modelId": converterHelper.toObjectIdMongo(old_modelId),
+            "cartProduct": {
+                "$elemMatch": {
+                "productId": converterHelper.toObjectIdMongo(productId),
+                "modelId": converterHelper.toObjectIdMongo(old_modelId)
+            }
+            }
         };
         let updateSet = {
             "cartProduct.$.modelId": converterHelper.toObjectIdMongo(new_modelId),

@@ -8,10 +8,8 @@ const checkOutValidator = require("../controllers/validators/checkOut.validator"
 
 router.use(errorHandler(isLogin))
 
-router.route("/review")
+router.route("/")
 .get(errorHandler(checkOutController.reviewOrder))
-
-router.route("/purchase")
 .post(checkOutValidator, errorHandler(checkOutController.checkOut))
 
 router.route("/access-payment")

@@ -55,7 +55,5 @@ router.route('/cart')
 router.route('/clear-cart')
 .get(errorHandler(cartController.deleteAllItems))
 
-router.route('/review')
-.post(errorHandler(checkOutController.reviewOrder))
 
 module.exports = router;
