@@ -1,10 +1,11 @@
 const { findCartById } = require("../models/reposities/cart.repo")
 const { BadRequestError } = require('../helpers/error.response');
 const CartService = require("./cart.service");
-const { findUserById } = require("../models/reposities/user.repo");
+const { findUserById, getUserCheckOutInfo } = require("../models/reposities/user.repo");
 const VoucherService = require("./voucher.service");
 const OrderService = require("./orders.service");
-const databaseInstance = require("../dbs/init.db")
+const databaseInstance = require("../dbs/init.db");
+const productModel = require("../models/product");
 
 //constant
 const PAYMENT_METHOD = ["cod-payment","online-payment"]
@@ -29,13 +30,8 @@ class CheckoutService {
             throw new BadRequestError('Cannot find your cart')
         }
 
-        const foundUser = await findUserById(userId,{
-                    _id:1,
-                    Email:1,
-                    FullName:1,
-                    PhoneNumber:1
-        })
-
+        const foundUser = await getUserCheckOutInfo(userId);
+        
         if(!foundUser)
         {
             throw new BadRequestError('Cannot find your information')
@@ -54,7 +50,8 @@ class CheckoutService {
                 fullName: foundUser.FullName,
                 email: foundUser.Email,
                 phoneNumber: foundUser.PhoneNumber,
-                addressList: []
+                addressList: foundUser.Addresses,
+                defaultAddress: foundUser.defaultAddress
             },
             cartData: foundCart.cartData,
             totalPrice,
@@ -74,39 +71,63 @@ class CheckoutService {
 
         //calculate cart total 
         let cartTotal = 0
-        for(let item of userCart.cartData)
+        let cartProductIdList = [] //product in user cart
+        for(let item in userCart.cartData)
         {
             cartTotal += item.quantity * item.unitPrice
+            cartProductIdList.push(item.productId)
         }
 
         const transactionSession = await databaseInstance.getMongoClient().startSession();
         try 
         {
+            
+            transactionSession.startTransaction();
+           
           //check voucher
             let checkVoucherResult = null
             if(additionInfo.voucherCode !== "" && additionInfo.voucherCode !== null){
-                checkVoucherResult = await VoucherService.checkVoucher(userInfo._id.toString(), cartTotal, additionInfo.voucherCode);
+                checkVoucherResult = await VoucherService.checkVoucher(userInfo._id.toString(), cartTotal, additionInfo.voucherCode,transactionSession);
             }
-
+            
             if(checkVoucherResult && !checkVoucherResult.checkResult.isValid){
                 throw new BadRequestError(checkVoucherResult.checkResult.checkMessage);
             }    
             
-            //check quantity here
-
+            //check product quantity 
+            const productInList = await productModel.find({_id:{ $in: cartProductIdList }},
+            {
+                productName:1,
+                productQuantity:1,
+                sold:1
+            },
+            {
+                session:transactionSession
+            })
+            console.log(productInList);
+            for (const key in productInList) {
+                console.log(key);
+            }
             
+
             OrderService.CreateOrder({
                 ownerId: userInfo._id,
                 receiverData: additionInfo.receiverInfo,
                 userCartData: userCart,
                 voucherData: checkVoucherResult,
                 orderTotal: cartTotal
-        })  
+            })  
+            
+            await transactionSession.commitTransaction();
+            console.log('Order created successfully');
         } 
         catch (error) {
-            
+            await transactionSession.abortTransaction();
+            console.error('Error creating order:', error.message);
         }
-
+        finally{
+            transactionSession.endSession();
+        }
 
     }
 

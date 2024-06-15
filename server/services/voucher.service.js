@@ -18,20 +18,22 @@ const checkVoucherStatusMessage = {
 }
 
 class VoucherService{
-
-    static checkVoucher = async(userId, orderTotalPrice,voucherCode) => {
-         
+    
+    static checkVoucher = async(userId, orderTotalPrice,voucherCode, session = null) => {
+        
         const foundVoucher = await voucherModel.findOne({
             "voucherCode": voucherCode
-        }).lean()
-
+        },
+        {},
+        {session: session || undefined }).lean()
+        
         if(!foundVoucher)
         {
             throw new BadRequestError("Voucher code is not valid")
         }
 
         const nowTime = new Date(Date.now())
-        
+
         if(nowTime >= foundVoucher.voucherExp)
         {
             return {

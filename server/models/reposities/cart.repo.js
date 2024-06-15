@@ -50,7 +50,7 @@ const findCartById = async ({userId = null , cartId = null}) => {
 }
 
 const checkProductInCart = async(userId, productId, modelId) => {
-
+    
     return await CartModel.findOne({
         "userID": userId,
         "cartProduct": {
