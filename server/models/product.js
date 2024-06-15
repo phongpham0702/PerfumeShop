@@ -23,6 +23,11 @@ const productSchema = new Schema({
     priceScale: [{
         capacity: String,
         price: Number,
+        inStock:{
+            type:Number,
+            default:0,
+            min:0
+        }
     }],
     productFeatures:{
         release: String,
@@ -40,11 +45,6 @@ const productSchema = new Schema({
         night: Number,
     },
     
-    productQuantity:{
-        type:Number,
-        default: 0,
-        min: 0
-    },
     sold:{
         type:Number,
         default: 0,

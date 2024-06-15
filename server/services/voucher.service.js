@@ -19,13 +19,11 @@ const checkVoucherStatusMessage = {
 
 class VoucherService{
     
-    static checkVoucher = async(userId, orderTotalPrice,voucherCode, session = null) => {
+    static checkVoucher = async(userId, orderTotalPrice,voucherCode) => {
         
         const foundVoucher = await voucherModel.findOne({
             "voucherCode": voucherCode
-        },
-        {},
-        {session: session || undefined }).lean()
+        }).lean()
         
         if(!foundVoucher)
         {

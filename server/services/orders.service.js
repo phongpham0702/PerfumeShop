@@ -50,7 +50,7 @@ class OrderService {
         const orderCartData = userCartData.cartData.map(({productCapacity,...rest}) => rest)
         orderData.orderProducts = orderCartData
         //order
-        console.log(orderCartData);
+        //console.log(orderCartData);
         console.log(`Order total: ${orderTotal}`);
         console.log(`Discount amount: ${discountAmount}`);
         console.log(`Total: ${orderTotal-discountAmount}`);
