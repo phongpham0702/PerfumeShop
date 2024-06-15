@@ -18,9 +18,8 @@ class OrderService {
         orderTotal
     })
     {   
-        
-        //const transactionSession = await databaseInstance.getMongoClient().startSession()
-        //console.log(transactionSession);
+
+
         let isApplyVoucher = voucherData? voucherData:null
         let orderData = {
             ownerType: ownerId? "system_user":"guest",
@@ -50,7 +49,7 @@ class OrderService {
         
         const orderCartData = userCartData.cartData.map(({productCapacity,...rest}) => rest)
         orderData.orderProducts = orderCartData
-        order
+        //order
         console.log(orderCartData);
         console.log(`Order total: ${orderTotal}`);
         console.log(`Discount amount: ${discountAmount}`);

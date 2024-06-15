@@ -44,7 +44,7 @@ const isLogin = async (req,res,next) => {
     } 
     catch (error) 
     {   
-        console.log(error.name);
+        console.log(error.name + "-" +error.message);
         if(error.name === "TokenExpiredError" || error.name === "JsonWebTokenError") {
             req.checkLoginCode = httpStatusCode.StatusCodes.LOCKED
             throw new LockedError("Your provided token is not valid")
