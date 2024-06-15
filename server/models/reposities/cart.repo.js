@@ -53,8 +53,12 @@ const checkProductInCart = async(userId, productId, modelId) => {
 
     return await CartModel.findOne({
         "userID": userId,
-        "cartProduct.productId": productId,
-        "cartProduct.modelId": modelId,
+        "cartProduct": {
+            "$elemMatch": {
+            "productId": productId,
+            "modelId": modelId
+        }
+         }
     },
     {
         "cartProduct.$": 1

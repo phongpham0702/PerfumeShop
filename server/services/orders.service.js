@@ -2,6 +2,7 @@ const orderModel = require("../models/order.model");
 const { BadRequestError } = require('../helpers/error.response');
 const databaseInstance = require("../dbs/init.db")
 
+//constant
 const VOUCHER_PERCENT_TYPE = "discount_percent"
 const VOUCHER_AMOUNT_TYPE = "discount_amount"
 
@@ -45,9 +46,11 @@ class OrderService {
             voucherData.voucherInfo.maxDiscountPrice: discountAmount
         }
 
-        const total = orderTotal-discountAmount
+        const total = orderTotal - discountAmount;
         
         const orderCartData = userCartData.cartData.map(({productCapacity,...rest}) => rest)
+        orderData.orderProducts = orderCartData
+        order
         console.log(orderCartData);
         console.log(`Order total: ${orderTotal}`);
         console.log(`Discount amount: ${discountAmount}`);

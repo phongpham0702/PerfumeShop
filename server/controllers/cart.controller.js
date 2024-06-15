@@ -65,7 +65,7 @@ class CartController {
             "old_quantity": old_quantity,
             "new_quantity": quantity,
         }
-        if (!new_modelId) 
+        if (!new_modelId || new_modelId === "") 
         {
             updateResult = await CartService.updateQuantity(
                 req.userid,

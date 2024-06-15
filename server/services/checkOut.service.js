@@ -4,7 +4,9 @@ const CartService = require("./cart.service");
 const { findUserById } = require("../models/reposities/user.repo");
 const VoucherService = require("./voucher.service");
 const OrderService = require("./orders.service");
+const databaseInstance = require("../dbs/init.db")
 
+//constant
 const PAYMENT_METHOD = ["cod-payment","online-payment"]
 
 class CheckoutService {
@@ -77,23 +79,33 @@ class CheckoutService {
             cartTotal += item.quantity * item.unitPrice
         }
 
-        //check voucher
-        let checkVoucherResult = null
-        if(additionInfo.voucherCode !== "" && additionInfo.voucherCode !== null){
-            checkVoucherResult = await VoucherService.checkVoucher(userInfo._id.toString(), cartTotal, additionInfo.voucherCode);
-        }
+        const transactionSession = await databaseInstance.getMongoClient().startSession();
+        try 
+        {
+          //check voucher
+            let checkVoucherResult = null
+            if(additionInfo.voucherCode !== "" && additionInfo.voucherCode !== null){
+                checkVoucherResult = await VoucherService.checkVoucher(userInfo._id.toString(), cartTotal, additionInfo.voucherCode);
+            }
 
-        if(checkVoucherResult && !checkVoucherResult.checkResult.isValid){
-            throw new BadRequestError(checkVoucherResult.checkResult.checkMessage);
-        }    
-        
-        OrderService.CreateOrder({
-            ownerId: userInfo._id,
-            receiverData: additionInfo.receiverInfo,
-            userCartData: userCart,
-            voucherData: checkVoucherResult,
-            orderTotal: cartTotal
-        })
+            if(checkVoucherResult && !checkVoucherResult.checkResult.isValid){
+                throw new BadRequestError(checkVoucherResult.checkResult.checkMessage);
+            }    
+            
+            //check quantity here
+
+            
+            OrderService.CreateOrder({
+                ownerId: userInfo._id,
+                receiverData: additionInfo.receiverInfo,
+                userCartData: userCart,
+                voucherData: checkVoucherResult,
+                orderTotal: cartTotal
+        })  
+        } 
+        catch (error) {
+            
+        }
 
 
     }
