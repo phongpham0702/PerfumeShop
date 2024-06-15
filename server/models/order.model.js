@@ -4,7 +4,7 @@ const orderSchema = new Schema({
     ownerType:{
         type: String,
         required: true,
-        enum:["sysmtem_user","guest"]
+        enum:["system_user","guest"]
     },
     ownerId:{
         type: Schema.Types.ObjectId,
@@ -30,6 +30,7 @@ const orderSchema = new Schema({
             productId:{
                 type: Schema.Types.ObjectId,
                 required: true,
+                ref:'Products'
             },
             modelId:{
                 type: Schema.Types.ObjectId,
@@ -67,7 +68,14 @@ const orderSchema = new Schema({
 
     orderTotal:{
         type:Number,
-        required: true
+        required: true,
+        min: 0
+    },
+    
+    total:{
+        type:Number,
+        required: true,
+        min: 0
     },
 
     orderStatus:{
