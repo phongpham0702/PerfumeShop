@@ -4,7 +4,6 @@ const { BadRequestError, ServerError } = require("../../helpers/error.response")
 
 const UpdateCartValidator = [
 
-
     body('quantity')
     .notEmpty().withMessage('Missing quantity')
     .isNumeric().withMessage("Quantity is not valid")
@@ -24,6 +23,7 @@ const UpdateCartValidator = [
         
         try 
         {
+            console.log(value);
             let checkModelValid = await checkProductCapacity(req.body.productId,value)
             
             if(!checkModelValid)
@@ -35,8 +35,16 @@ const UpdateCartValidator = [
         catch (error) {
             throw new ServerError()
         }
-    })
+    }),
 
+    body()
+    .custom(async (value) => {
+
+        let {new_modelId, quantity} = value 
+
+        console.log(quantity);
+
+    })
 ]
 
 

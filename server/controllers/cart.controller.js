@@ -16,7 +16,12 @@ class CartController {
         let checkResult = await validationResult(req);
 
         if (checkResult.errors.length > 0) {
-            throw new BadRequestError('Adding product to cart failed.');
+            if(checkResult.errors[0].path === "quantity"){
+                throw new BadRequestError( checkResult.errors[0].msg);
+            }
+            else{
+                throw new BadRequestError('Adding product to cart failed.')
+            }
         } else {
             let { productData, quantity } = req.body;
             let result = await CartService.addToCart(req.userid, {
@@ -44,6 +49,7 @@ class CartController {
         let checkResult = await validationResult(req);
         
         if (checkResult.errors.length > 0) {
+            console.log(checkResult.errors);
             throw new BadRequestError('Updating product failed.');
         }
 
