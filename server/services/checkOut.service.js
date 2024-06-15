@@ -1,5 +1,5 @@
 const { findCartById } = require("../models/reposities/cart.repo")
-const { BadRequestError } = require('../helpers/error.response');
+const { BadRequestError, ServerError } = require('../helpers/error.response');
 const CartService = require("./cart.service");
 const { findUserById, getUserCheckOutInfo } = require("../models/reposities/user.repo");
 const VoucherService = require("./voucher.service");
@@ -72,42 +72,54 @@ class CheckoutService {
         //calculate cart total 
         let cartTotal = 0
         let cartProductIdList = [] //product in user cart
-        for(let item in userCart.cartData)
+        for(let item of userCart.cartData)
         {
+            console.log(item);
+            if(item.quantity > item.inStock)
+            {
+                throw new BadRequestError(`Product ${item.productName} only have ${item.inStock} left in stock.`)
+            } 
             cartTotal += item.quantity * item.unitPrice
             cartProductIdList.push(item.productId)
         }
 
+        //check voucher
+        let checkVoucherResult = null
+        if(additionInfo.voucherCode !== "" && additionInfo.voucherCode !== null){
+            checkVoucherResult = await VoucherService.checkVoucher(userInfo._id.toString(), cartTotal, additionInfo.voucherCode);
+        }
+        
+        if(checkVoucherResult && !checkVoucherResult.checkResult.isValid){
+            throw new BadRequestError(checkVoucherResult.checkResult.checkMessage);
+        }   
+
+        //check product quantity
+
+
+
         const transactionSession = await databaseInstance.getMongoClient().startSession();
+
+        
         try 
         {
-            
+
             transactionSession.startTransaction();
            
-          //check voucher
-            let checkVoucherResult = null
-            if(additionInfo.voucherCode !== "" && additionInfo.voucherCode !== null){
-                checkVoucherResult = await VoucherService.checkVoucher(userInfo._id.toString(), cartTotal, additionInfo.voucherCode,transactionSession);
-            }
+   
+            // //check product quantity 
+            // const productInList = await productModel.find({_id:{ $in: cartProductIdList }},
+            // {
+            //     productName:1,
+            //     productQuantity:1,
+            //     sold:1
+            // },
+            // {
+            //     session:transactionSession
+            // })
             
-            if(checkVoucherResult && !checkVoucherResult.checkResult.isValid){
-                throw new BadRequestError(checkVoucherResult.checkResult.checkMessage);
-            }    
-            
-            //check product quantity 
-            const productInList = await productModel.find({_id:{ $in: cartProductIdList }},
-            {
-                productName:1,
-                productQuantity:1,
-                sold:1
-            },
-            {
-                session:transactionSession
-            })
-            console.log(productInList);
-            for (const key in productInList) {
-                console.log(key);
-            }
+            // for (const key in productInList) {
+            //     //console.log(key);
+            // }
             
 
             OrderService.CreateOrder({
