@@ -266,7 +266,12 @@ const ProductItem = ({ product }: propsType) => {
         <p className="w-full overflow-hidden text-ellipsis whitespace-nowrap text-center">
           {product.productName}
         </p>
-        <p className="mt-3">${product.displayPrice}</p>
+        <p className="mt-3">
+          {product.displayPrice.toLocaleString("en-su", {
+            style: "currency",
+            currency: "USD",
+          })}
+        </p>
       </div>
     </div>
   );

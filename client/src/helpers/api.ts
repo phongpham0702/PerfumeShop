@@ -1,6 +1,11 @@
 import axios from "axios";
 
-const requestAPI = (endpoint: string, body: unknown, method: string) => {
+const requestAPI = (
+  endpoint: string,
+  body: object,
+  method: string,
+  params?: unknown,
+) => {
   const headers = {
     Accept: "application/json",
     "Content-Type": "application/json",
@@ -28,8 +33,6 @@ const requestAPI = (endpoint: string, body: unknown, method: string) => {
 
   instance.interceptors.response.use(
     (res) => {
-      console.log(res);
-
       return res;
     },
     async (err) => {
@@ -63,6 +66,7 @@ const requestAPI = (endpoint: string, body: unknown, method: string) => {
     method: method,
     data: body,
     url: `${import.meta.env.VITE_SERVER_URL}${endpoint}`,
+    params: params,
   });
 };
 

@@ -3,8 +3,8 @@ import { FilterCategory } from "../../interfaces/Category";
 type FilterBarProps = {
   category: FilterCategory[];
   handleCheckboxChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  handleInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  searchVal: string;
+  handleInputChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  searchVal?: string;
 };
 
 const FilterBar = ({

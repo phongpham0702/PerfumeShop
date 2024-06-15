@@ -2,6 +2,7 @@ import { ICartItem } from "../interfaces/CartItem";
 import CartItem from "../components/cart/CartItem";
 import ListSkeleton from "../ui/ListSkeleton";
 import useGetCart from "../hooks/Cart/useGetCart";
+import { Link } from "react-router-dom";
 
 const Cart = () => {
   const { data, isLoading } = useGetCart();
@@ -53,9 +54,11 @@ const Cart = () => {
             <span>{totalPrice}</span>
           </div>
 
-          <button className="duration-750 w-full rounded-sm bg-black p-3 tracking-wider text-white transition-colors hover:bg-[#f50963]">
-            CHECKOUT
-          </button>
+          <Link to="/checkout">
+            <button className="duration-750 w-full rounded-sm bg-black p-3 tracking-wider text-white transition-colors hover:bg-[#f50963]">
+              CHECKOUT
+            </button>
+          </Link>
         </div>
       </div>
     </div>

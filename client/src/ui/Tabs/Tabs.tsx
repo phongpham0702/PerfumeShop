@@ -23,7 +23,7 @@ type propsType = {
 const Tabs = ({ navs, contents }: propsType) => {
   return (
     <div>
-      <div className="mb-4 flex justify-start gap-[100px] text-xl text-[#656565]">
+      <div className="mb-4 flex justify-start gap-[60px] text-xl text-[#656565]">
         {navs.map((nav) => (
           <div key={nav.id}>
             <TabNavItem nav={nav} />

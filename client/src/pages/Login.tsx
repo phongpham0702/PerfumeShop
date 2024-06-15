@@ -7,10 +7,11 @@ import { Link, useNavigate } from "react-router-dom";
 const Login = ({ onLoginSuccess }: { onLoginSuccess: () => void }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    setIsLoading(true);
     axios
       .post(
         `${import.meta.env.VITE_SERVER_URL}/sign-in`,
@@ -33,7 +34,8 @@ const Login = ({ onLoginSuccess }: { onLoginSuccess: () => void }) => {
             "wishlistCount",
             data.metadata.userInfo.wishlistCount,
           );
-
+          window.dispatchEvent(new Event("storage"));
+          setIsLoading(false);
           toast.success("Login successful");
           navigate("/");
         } else {
@@ -89,6 +91,7 @@ const Login = ({ onLoginSuccess }: { onLoginSuccess: () => void }) => {
         <Link to="/forgot">Forgot password</Link>
       </div>
       <button
+        disabled={isLoading}
         type="submit"
         className=" w-[80%] bg-[#f50963] p-3 text-lg font-bold text-white transition-all duration-300 hover:bg-[#181717]"
       >

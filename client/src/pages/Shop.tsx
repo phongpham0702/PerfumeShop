@@ -5,16 +5,18 @@ import {
   useSearchParams,
 } from "react-router-dom";
 import FilterBar from "../components/Filter/FilterBar";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import FilterInfo from "../components/Filter/FilterInfo";
 import { categories } from "../dummy_data/categoryData";
 import { FilterCategory } from "../interfaces/Category";
 import OffCanvasMenu from "../components/OffCanvas/OffCanvasMenu";
+import MenuContext from "../contexts/MenuContext";
 interface SelectedFilters {
   [paramName: string]: string[];
 }
 const Shop = () => {
   const navigate = useNavigate();
+  const menuContext = useContext(MenuContext);
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchVal, setSearchVal] = useState<string>("");
   const [productNum, setProductNum] = useState<number | 0>(0);
@@ -37,7 +39,6 @@ const Shop = () => {
         ? paramValues
         : [paramValues];
     }
-    console.log(selectedFilters);
     setCategoryState((prevStates: FilterCategory[]) =>
       prevStates.map((category) => {
         const matchingFilters = selectedFilters[category.id] || [];
@@ -59,6 +60,7 @@ const Shop = () => {
     } else {
       newSearchParams.delete(event.target.name);
     }
+    menuContext.handleClose();
     setSearchParams(newSearchParams);
     navigate(`/shop/1?${newSearchParams.toString()}`);
   };

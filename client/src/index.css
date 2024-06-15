@@ -74,3 +74,8 @@ input::-webkit-inner-spin-button {
     transform: translateX(40%);
   }
 }
+
+.react-responsive-modal-modal {
+  margin: 0 !important;
+  vertical-align: middle !important;
+}

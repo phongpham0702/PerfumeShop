@@ -20,7 +20,7 @@ const WishLists = () => {
   });
 
   return (
-    <div className="flex flex-wrap justify-center gap-4 p-10">
+    <div className="flex flex-wrap justify-start gap-4 p-10">
       {isLoading && <SkeletonCard cards={4} />}
       {data &&
         Array.isArray(data) &&

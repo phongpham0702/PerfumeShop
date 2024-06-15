@@ -1,20 +1,28 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import Tabs from "../../ui/Tabs/Tabs";
-import { BsGenderFemale, BsGenderMale } from "react-icons/bs";
+import { BsGenderFemale, BsGenderMale, BsHeart } from "react-icons/bs";
 import ProductItem from "./ProductItem";
 import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
 import {
   ProductDetail as PDetail,
+  Product,
   SimilarProduct,
 } from "../../interfaces/Product";
 import useAddToCart from "../../hooks/Cart/useAddToCart";
 import useGetPDetail from "../../hooks/product/useGetPDetail";
+import useHover from "../../hooks/useHover";
+import toast from "react-hot-toast";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import requestAPI from "../../helpers/api";
+import { ScaleLoader } from "react-spinners";
+import Overlay from "../../ui/Overlay";
 
 const ProductDetail = () => {
   const [isShowMore, setIsShowMore] = useState<boolean>(false);
 
   const [priceByCapacity, setPriceByCapacity] = useState<number | null>(null);
+
   const [quantity, setQuantity] = useState<number>(1);
 
   const [activeTab, setActiveTab] = useState<string>("tab1");
@@ -33,6 +41,9 @@ const ProductDetail = () => {
 
   useEffect(() => {
     setCapacity(product?.priceScale.sort((a, b) => a.price - b.price)[0]._id);
+    setInStock(
+      product?.priceScale.sort((a, b) => a.price - b.price)[0].inStock,
+    );
     window.scrollTo(0, 0);
     if (descriptionRef.current) {
       setIsShowMore(descriptionRef.current?.clientHeight > 800);
@@ -44,7 +55,7 @@ const ProductDetail = () => {
   const navs = [
     { id: "tab1", title: <p>Sent</p>, activeTab, setActiveTab },
     { id: "tab2", title: <p>Feature</p>, activeTab, setActiveTab },
-    { id: "tab3", title: <p>Recommend</p>, activeTab, setActiveTab },
+    { id: "tab3", title: <p>Suggest</p>, activeTab, setActiveTab },
   ];
 
   const contents = [
@@ -227,13 +238,20 @@ const ProductDetail = () => {
     },
   ];
 
+  const [inStock, setInStock] = useState<number | 0>(0);
+
+  console.log(inStock);
+
   const handleCapacityChange = (
     event: React.ChangeEvent<HTMLSelectElement>,
   ) => {
     product?.priceScale.forEach((item) => {
+      console.log(item);
+
       if (item.capacity === event.target.value) {
         setCapacity(item._id);
         setPriceByCapacity(item.price);
+        setInStock(item.inStock);
       }
     });
   };
@@ -258,7 +276,127 @@ const ProductDetail = () => {
       </span>
     );
 
-  if (isLoading) return <div>Loading...</div>;
+  const heartIconRef = useRef<HTMLDivElement>(null);
+  const isWishListHover = useHover(heartIconRef);
+
+  const wishListRef = useRef<HTMLDivElement>(null);
+
+  const isFavorite = useRef<boolean>(false);
+  useEffect(() => {
+    heartIconRef.current?.classList.remove("animate-rightOutL");
+    wishListRef.current?.classList.remove("animate-fadeOut");
+  }, []);
+
+  const queryClient = useQueryClient();
+  const curList = localStorage.getItem("wishlist_items");
+
+  const addToWishList = async () => {
+    const res = await requestAPI(
+      "/user/wishlist",
+      { PID: product._id },
+      "post",
+    );
+    const data = await res.data;
+    if (data.status === 200) {
+      if (curList) {
+        const listParsed = JSON.parse(curList);
+        localStorage.setItem(
+          "wishlist_items",
+          JSON.stringify([...listParsed, product]),
+        );
+        localStorage.setItem(
+          "wishlistCount",
+          JSON.stringify(listParsed.length + 1),
+        );
+        window.dispatchEvent(new Event("storage"));
+      } else localStorage.setItem("wishlist_items", JSON.stringify([product]));
+    }
+
+    return data;
+  };
+
+  const removeFromWishList = async () => {
+    const res = await requestAPI(
+      "/user/wishlist",
+      { PID: product._id },
+      "delete",
+    );
+    const data = await res.data;
+    if (data.status === 200) {
+      if (curList) {
+        const listParsed = JSON.parse(curList);
+        localStorage.setItem(
+          "wishlist_items",
+          JSON.stringify(
+            listParsed.filter((item: Product) => item._id !== product._id),
+          ),
+        );
+        localStorage.setItem(
+          "wishlistCount",
+          JSON.stringify(listParsed.length - 1),
+        );
+        window.dispatchEvent(new Event("storage"));
+      }
+    }
+    return data;
+  };
+
+  const { mutate: favoriteMutate } = useMutation({
+    mutationFn: async () => {
+      try {
+        if (curList) {
+          const listParsed = JSON.parse(curList);
+          const index = listParsed.findIndex(
+            (item: Product) => item._id === product._id,
+          );
+          if (index !== -1) {
+            await removeFromWishList();
+            toast.success("Removed from wishlist");
+          } else {
+            await addToWishList();
+            toast.success("Added to wishlist");
+          }
+        }
+      } catch (error) {
+        toast.error("Something went wrong");
+      }
+    },
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["wishlist"],
+      });
+
+      isFavorite.current = !isFavorite.current;
+    },
+  });
+
+  const wishlists = localStorage.getItem("wishlist_items");
+  if (wishlists) {
+    const listParsed = JSON.parse(wishlists);
+    const index = listParsed.findIndex(
+      (item: Product) => item?._id === product?._id,
+    );
+    if (index !== -1) isFavorite.current = true;
+  }
+
+  if (isLoading)
+    return (
+      <Overlay bg="bg-[#f6f3f360]" isShow={isLoading}>
+        <ScaleLoader
+          color="#f8b500"
+          height={80}
+          margin={4}
+          speedMultiplier={1}
+          width={10}
+          cssOverride={{
+            top: "50%",
+            transform: "translateX(100%)",
+            position: "absolute",
+          }}
+        />
+      </Overlay>
+    );
   return (
     <>
       <div className="mx-auto my-10 w-[94%] xl:w-[90%]">
@@ -276,11 +414,24 @@ const ProductDetail = () => {
             <p className="mb-4 text-3xl text-[#000]">{product?.productName}</p>
             <p className="mb-4">{displayGender}</p>
             <p className="mb-4 text-2xl text-[#000]">
-              ${" "}
               {priceByCapacity
-                ? priceByCapacity
+                ? priceByCapacity.toLocaleString("en-su", {
+                    style: "currency",
+                    currency: "USD",
+                  })
+                : product?.priceScale
+                    .sort((a, b) => a.price - b.price)[0]
+                    .price.toLocaleString("en-su", {
+                      style: "currency",
+                      currency: "USD",
+                    })}
+            </p>
+            <p className="mb-4  text-[#000]">
+              In Stock:{" "}
+              {inStock
+                ? inStock
                 : product?.priceScale.sort((a, b) => a.price - b.price)[0]
-                    .price}
+                    .inStock}
             </p>
             <div className="flex gap-4">
               <p className="mb-2 w-[50%] sm:w-[200px]">Capacity</p>
@@ -324,14 +475,40 @@ const ProductDetail = () => {
 
             <div className="flex gap-4">
               <button
+                disabled={inStock === 0}
                 onClick={() => mutate()}
-                className="w-[50%] bg-[#333] px-6 py-3 text-lg font-medium tracking-wide text-[#fff] lg:uppercase xl:px-16"
+                className={`w-[30%] bg-[#333] px-6 py-3 text-lg font-medium tracking-wide text-[#fff] lg:uppercase xl:px-6 ${
+                  inStock === 0 && "cursor-not-allowed bg-[#8d8c8c]"
+                }`}
               >
                 Add to cart
               </button>
-              <button className="w-[50%] bg-[#f50963] px-6 py-3 text-lg font-medium tracking-wide text-[#fff] lg:uppercase xl:px-16">
-                Buy now
-              </button>
+
+              <div className="relative">
+                <div
+                  onClick={() => favoriteMutate()}
+                  className={`peer cursor-pointer  border border-[#8d8c8c] p-[1rem] font-bold shadow-lg hover:bg-[#f50963] hover:text-[#fff] hover:transition-all hover:duration-500  ${
+                    isFavorite.current ? "bg-[#f50963] text-white" : "bg-[#fff]"
+                  }`}
+                  ref={heartIconRef}
+                >
+                  <BsHeart className="text-xl" />
+                </div>
+
+                <div
+                  ref={wishListRef}
+                  className={`absolute right-[90px] top-[8px] z-[-10] flex w-[118px] items-center justify-center opacity-0 peer-hover:z-10 peer-hover:transition-all ${
+                    isWishListHover
+                      ? "animate-rightIn peer-hover:animate-fadeIn"
+                      : "animate-rightOut"
+                  }`}
+                >
+                  <span className="bg-[#000] px-[4px] py-[2px] text-sm text-[#fff]">
+                    Add To Wishlist
+                  </span>
+                  <span className="h-0 w-0 border-b-[8px] border-l-[8px] border-t-[8px] border-b-transparent border-l-[#000] border-t-transparent"></span>
+                </div>
+              </div>
             </div>
           </div>
         </div>

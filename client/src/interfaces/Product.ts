@@ -9,6 +9,7 @@ export interface Product {
     capacity: string;
     price: number;
     _id: string;
+    inStock: number;
   };
 }
 export interface BestsellerProduct {
@@ -22,6 +23,7 @@ export interface BestsellerProduct {
     capacity: string;
     price: number;
     _id: string;
+    inStock: number;
   };
 }
 export interface SimilarProduct {
@@ -35,6 +37,7 @@ export interface SimilarProduct {
     capacity: string;
     price: number;
     _id: string;
+    inStock: number;
   };
 }
 
@@ -47,6 +50,7 @@ export interface ProductDetail {
     capacity: string;
     price: number;
     _id: string;
+    inStock: number;
   }[];
   productFeatures: {
     release: string;

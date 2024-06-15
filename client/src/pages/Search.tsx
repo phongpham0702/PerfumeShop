@@ -47,8 +47,8 @@ const Search = () => {
       <FilterInfo productNum={productNum} />
       <div className="flex justify-between">
         <FilterBar
-          onFilterChange={handleCheckboxChange}
-          categories={categories}
+          handleCheckboxChange={handleCheckboxChange}
+          category={categories}
         />
         <Outlet context={{ handleProductNumChange: handleChange }} />
       </div>

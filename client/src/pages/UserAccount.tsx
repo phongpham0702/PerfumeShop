@@ -11,20 +11,21 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import AddAddressModal from "../components/user/AddAddressModal";
 import requestAPI from "../helpers/api";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { IAddress } from "../interfaces/User";
-import { confirmAlert } from "react-confirm-alert";
-import "react-confirm-alert/src/react-confirm-alert.css";
+import EditAddressModal from "../components/user/EditAddressModal";
+import ConfirmModal from "../components/ConfirmModal";
 
 const UserAccount = () => {
   const [activeTab, setActiveTab] = useState<string>("tab1");
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const [editState, setEditState] = useState({ isOpen: false, id: "" });
+  const [isOpenConfirm, setIsOpenConfirm] = useState<boolean>(false);
+  const [deleteID, setDeleteID] = useState<string>("");
   const { data } = useQuery({
     queryKey: ["user profile"],
-    queryFn: async () => {
-      return await requestAPI(`/user/profile`, {}, "GET");
-    },
+    queryFn: () => requestAPI(`/user/profile`, {}, "GET"),
   });
 
   const userProfile = data?.data.metadata.userProfile;
@@ -32,26 +33,20 @@ const UserAccount = () => {
   const closeModal = () => {
     setIsOpen(false);
   };
-
-  const deleteAddress = async (id: string) => {
-    confirmAlert({
-      title: "Confirm to delete",
-      message: "Are you sure to do this.",
-      buttons: [
-        {
-          label: "Yes",
-          onClick: async () => {
-            await requestAPI("/user/address/", { deleteID: id }, "DELETE");
-            toast.success("Delete address successfully");
-          },
-        },
-        {
-          label: "No",
-          onClick: () => {},
-        },
-      ],
-    });
+  const closeEditModal = () => {
+    setEditState((prev) => ({ ...prev, isOpen: false }));
   };
+
+  const queryClient = useQueryClient();
+  const { mutate: mutateDelete } = useMutation({
+    mutationFn: () =>
+      requestAPI("/user/address/", { deleteID: deleteID }, "DELETE"),
+    onSuccess: () => {
+      setIsOpenConfirm(false);
+      queryClient.invalidateQueries({ queryKey: ["user profile"] });
+      toast.success("Delete address successfully");
+    },
+  });
 
   const navs = [
     {
@@ -113,6 +108,9 @@ const UserAccount = () => {
           onClick={async () => {
             await requestAPI("/user/logout", {}, "GET");
             localStorage.removeItem("accessToken");
+            localStorage.removeItem("cartCount");
+            localStorage.removeItem("wishlistCount");
+            window.dispatchEvent(new Event("storage"));
             navigate("/login");
             toast.success("Logout successfully");
           }}
@@ -194,7 +192,7 @@ const UserAccount = () => {
 
             <div>
               {userProfile?.Addresses.map((item: IAddress) => (
-                <div className="flex justify-between p-4">
+                <div key={item._id} className="flex justify-between p-4">
                   <div>
                     <div className="flex gap-4">
                       <p className="font-semibold">{item.receiverName}</p> |
@@ -210,13 +208,18 @@ const UserAccount = () => {
                   <div className="flex flex-col gap-2">
                     <button
                       className="border border-[#1a1306] px-6 py-1"
-                      onClick={() => {}}
+                      onClick={() =>
+                        setEditState({ isOpen: true, id: item._id || "" })
+                      }
                     >
                       Edit
                     </button>
                     <button
                       className="border border-[#1a1306] px-6 py-1"
-                      onClick={() => deleteAddress(item._id)}
+                      onClick={() => {
+                        setIsOpenConfirm(true);
+                        setDeleteID(item._id || "");
+                      }}
                     >
                       Delete
                     </button>
@@ -241,7 +244,7 @@ const UserAccount = () => {
       id: "tab5",
       activeTab,
       children: (
-        <div onClick={() => {}}>
+        <div>
           <p>Logout</p>
         </div>
       ),
@@ -252,7 +255,16 @@ const UserAccount = () => {
     <div className="mx-auto flex w-[90%] gap-4 font-inter">
       <TabHR navs={navs} contents={contents} />
       <AddAddressModal modalIsOpen={isOpen} closeModal={closeModal} />
-      {/* <AddAddressModal modalIsOpen={isOpen} closeModal={closeModal} /> */}
+      <EditAddressModal
+        modalIsOpen={editState.isOpen}
+        closeModal={closeEditModal}
+        addressId={editState.id}
+      />
+      <ConfirmModal
+        modalIsOpen={isOpenConfirm}
+        closeModal={() => setIsOpenConfirm(false)}
+        onOk={mutateDelete}
+      />
     </div>
   );
 };

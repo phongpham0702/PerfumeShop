@@ -25,7 +25,7 @@ const EditCartModal = ({ modalIsOpen, item, closeModal }: ModalProps) => {
         {
           productId: item.productId,
           modelId: item.modelId,
-          new_modelId: capacity !== item.modelId ? capacity : "",
+          new_modelId: capacity !== item.modelId ? capacity : null,
           quantity: quantity,
         },
         "put",
@@ -52,16 +52,16 @@ const EditCartModal = ({ modalIsOpen, item, closeModal }: ModalProps) => {
 
   return (
     <Modal open={modalIsOpen} onClose={closeModal} center>
-      <div className="relative flex gap-4 py-6 pb-4 sm:px-20 sm:pl-6">
+      <div className=" flex gap-4 py-6 pb-4 sm:px-20 sm:pl-6">
         <div
-          className={`w-[150px] sm:h-[250px] sm:w-[300px]`}
+          className={`h-[200px] w-[100px] sm:h-[250px] sm:w-[300px]`}
           style={{
             backgroundImage: `url(${item?.productThumbnail})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
         />
-        <div className="flex min-w-[50%] select-none flex-col gap-6 pr-10">
+        <div className="flex min-w-[50%] select-none flex-col gap-6 sm:pr-10">
           <p className="text-xl font-medium">{item?.productName}</p>
           <div className="flex select-none gap-4">
             {item?.priceScale.map((priceScale) => (
@@ -78,13 +78,12 @@ const EditCartModal = ({ modalIsOpen, item, closeModal }: ModalProps) => {
             ))}
           </div>
 
-          <div className="flex w-full cursor-pointer items-center justify-between border border-[#777] px-4 py-2">
+          <div className="flex w-[90%] cursor-pointer items-center justify-between border border-[#777] px-4 py-2 sm:w-full">
             <FaMinus onClick={() => setQuantity((prev) => prev - 1)} />
             <span className="select-none">{quantity}</span>
             <FaPlus onClick={() => setQuantity((prev) => prev + 1)} />
           </div>
-
-          <div className="mt-6 flex gap-4 sm:mb-6">
+          <div className="mt-6 flex gap-2 sm:mb-6">
             <button
               onClick={closeModal}
               className="select-none border border-[#333] px-6 py-2"

@@ -18,7 +18,6 @@ const NewArrival = () => {
     queryFn: fetchData,
   });
 
-  if (isLoading) return <div>Loading...</div>;
   return (
     <div className="mb-10 mt-14 w-full">
       <div className="mx-auto flex w-[85%] flex-col items-center">
