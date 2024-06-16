@@ -48,18 +48,6 @@ const checkProductIsExist = async(id) => {
     return false
 }
 
-const checkProductCapacity = async(productId, capacityId) => {
-    
-    let product = await productModel.findOne({
-        "_id": converterHelper.toObjectIdMongo(productId),
-        "priceScale._id": converterHelper.toObjectIdMongo(capacityId)
-    }, {
-        "priceScale.$": 1
-    }).lean()
-
-    return product ? true : false
-}
-
 const findSimilarProducts = async(productDetail, limit = 10) => {
     let productID = productDetail['_id']
     let gender = [productDetail["productGender"]];
@@ -94,6 +82,20 @@ const findSimilarProducts = async(productDetail, limit = 10) => {
 
 }
 
+getProductModel = async(productId,modelId) => {
+
+    const foundProduct = await productModel.findOne({
+        "_id": converterHelper.toObjectIdMongo(productId),
+        "priceScale._id": converterHelper.toObjectIdMongo(modelId)
+    },
+    {   
+        "productName":1,
+        "priceScale.$":1
+    }).lean()
+
+    return foundProduct;
+
+}
 
 
 module.exports = {
@@ -102,7 +104,7 @@ module.exports = {
     checkProductIsExist,
     findSimilarProducts,
     getProductInfomation,
-    checkProductCapacity
+    getProductModel
 }
 
 

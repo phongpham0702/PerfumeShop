@@ -1,10 +1,9 @@
 const CartService = require('../services/cart.service');
-const CartModel = require('../models/cart.model');
 const responseHelper = require('../helpers/success.response');
 const { validationResult } = require('express-validator');
 const { BadRequestError, ServerError } = require('../helpers/error.response');
 const { checkProductInCart } = require('../models/reposities/cart.repo');
-
+const {getProductModel} = require("../models/reposities/product.repo")
 class CartController {
     getUserCart = async(req, res, next) => {
         new responseHelper.SuccessResponse({
@@ -49,16 +48,24 @@ class CartController {
         let checkResult = await validationResult(req);
         
         if (checkResult.errors.length > 0) {
-            console.log(checkResult.errors);
-            throw new BadRequestError('Updating product failed.');
+            throw new BadRequestError('Update product failed.');
         }
 
-        let { productId, modelId, new_modelId, quantity } = req.body;
+        const { productId, modelId, new_modelId, quantity } = req.body;
 
         let productInCart = await checkProductInCart(req.userid,productId,modelId);
         
         if (!productInCart) {
             throw new BadRequestError('Cannot find this product in cart.');
+        }
+        
+        const productModel = new_modelId?await getProductModel(productId,new_modelId):await getProductModel(productId,modelId)
+        
+        if(!productModel){
+            throw new BadRequestError("Cannot find this product model.")
+        }
+        if(productModel.priceScale[0].inStock < quantity){
+            throw new BadRequestError(`Product ${productModel.productName} ${productModel.priceScale[0].capacity} only have ${productModel.priceScale[0].inStock} left in stock`)
         }
 
         let old_quantity = productInCart.cartProduct[0].quantity;
