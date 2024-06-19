@@ -3,7 +3,6 @@ const pipelineGenerator = require("../../helpers/pipeline.generator")
 const productModel = require("../product")
 
 const getProductById = async(id) => {
-
     let pipeline = [{
         '$match': {
             '_id': converterHelper.toObjectIdMongo(id)

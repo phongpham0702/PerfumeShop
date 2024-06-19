@@ -58,7 +58,6 @@ const orderSchema = new Schema({
 
     applyVoucherTitle:{
         type:Schema.Types.String,
-        required:true
     },
 
     discount:{
@@ -66,7 +65,7 @@ const orderSchema = new Schema({
         default: 0
     },
 
-    orderTotal:{
+    subTotal:{
         type:Number,
         required: true,
         min: 0
