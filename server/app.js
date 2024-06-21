@@ -11,6 +11,7 @@ const init_redis = require('./dbs/init.redis');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/user.router');
+const guestRouter = require("./routes/guest.router")
 const productRouter = require('./routes/product.router');
 const brandRouter = require('./routes/brand.router');
 const signUpRouter = require('./routes/signup.router');
@@ -53,7 +54,7 @@ if (app.get('env') === 'production') {
 
 app.use('/', indexRouter);
 app.use('/user', usersRouter); // users have account
-app.use('/guest', usersRouter); // no account users
+app.use('/guest', guestRouter); // no account users
 app.use('/products', productRouter);
 app.use('/brands', brandRouter);
 app.use('/sign-up', signUpRouter);
