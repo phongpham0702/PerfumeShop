@@ -3,6 +3,9 @@ const { BadRequestError, ServerError } = require('../helpers/error.response');
 const responseHelper = require("../helpers/success.response");
 const GuestService = require('../services/guest.service');
 const {encrypt} = require("../utils/encrypt.util");
+
+const CART_EXIST_TIME = 1;                                                                            
+
 class GuestController {
     
     AddToCart = async(req,res,next) => {
@@ -24,21 +27,21 @@ class GuestController {
                                                                                                                                                                                                                                                                                 
             if(!userCart) throw new ServerError();
             let newCartHash = encrypt(JSON.stringify(userCart))
-
+            console.log(userCart);
             res.cookie("cart-hash",newCartHash,{
                 httpOnly:true,
                 secure: true,
-                sameSite:"none",
+                sameSite:"Lax",
                 signed:true
             })
-            console.log(newCartHash);
+            
             new responseHelper.SuccessResponse({
                 metadata:{
                     "cartCountProduct": userCart.cartProductCount,
                     "addedItem": {
                         "productId": productData.productId,
-                        "modelId": product,
-                        "quantity": 2
+                        "modelId": productData.modelId,
+                        "quantity": quantity
                     }
                 }
             }).send(res);

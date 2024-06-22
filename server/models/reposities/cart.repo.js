@@ -81,7 +81,7 @@ const getMiniCartById = async({userId = null , cartId = null}) => {
     .populate(
     {
         path:'cartProduct.productId',
-        select:["productName","priceScale"]  
+        select:["productName","priceScale","productThumbnail"]  
     })
     .lean()
 
@@ -101,7 +101,9 @@ const getMiniCartById = async({userId = null , cartId = null}) => {
             unitPrice: itemModel.price,
             inStock: itemModel.inStock,
             quantity: i.quantity,
-            productName: i.productId.productName
+            productName: i.productId.productName,
+            modelCapacity: itemModel.capacity,
+            productThumbnail: i.productId.productThumbnail
         }
     })
 

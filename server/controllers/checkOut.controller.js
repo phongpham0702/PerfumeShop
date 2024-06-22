@@ -84,7 +84,7 @@ class CheckoutController{
             receiverPhone, 
             receiverAddress
         }
-
+        let userCart = null;
         let checkOutOrder = null;
 
         if(!req.userid)
@@ -101,13 +101,15 @@ class CheckoutController{
             })
             if(!userInfo) throw new BadRequestError("Cannot find user information")
             
-            const userCart = await getMiniCartById({cartId})
+            userCart = await getMiniCartById({cartId})
+            
             if(!userCart) throw new BadRequestError("Cannot find user cart")
             
             if(userCart.cartOwner.toString() != userInfo._id.toString()) throw new BadRequestError("This is not your cart")
             if(userCart.cartData.length <= 0 ) throw new BadRequestError("Your cart is empty")
 
-            checkOutOrder = await CheckoutService.CheckOut(userInfo, userCart, orderPayment ,{receiverInfo, voucherCode})
+            checkOutOrder = await CheckoutService.CheckOut(userInfo, userCart, orderPayment ,{receiverInfo, voucherCode});
+
             if(checkOutOrder) await CartService.deleteAllItems(userInfo._id);
         }
 
@@ -124,8 +126,9 @@ class CheckoutController{
             new responseHelper.CREATED({
                 metadata:{
                     orderId: _id,
-                    orderProducts: orderProducts.map(({_id, ...rest}) => rest),
-                    ...metaDataBody
+                    orderProducts: userCart.cartData.map(({inStock, ...rest} )=> rest),
+                    ...metaDataBody,
+                   
                 }
             }).send(res)
         }

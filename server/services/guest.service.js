@@ -20,16 +20,19 @@ class GuestService{
         return newCart;
     }
 
-    static AddToCart = async (cartHash,productId, modelId, quantity) => {
-        
-        let userCart = cartHash ? decrypt(cartHash) : this.CreateNewCart(productId,modelId,quantity)
-
+    static AddToCart = async (cartHash,productId, modelId, quantity) => {       
         if(!cartHash)
         {
             let newCart = this.CreateNewCart(productId,modelId,quantity);
             return newCart;
         }
-        return "abc"
+        else
+        {
+            let userCart = decrypt(cartHash)
+            console.log(userCart);
+            return "abc";
+        }
+       
         /* let isContainsProduct = false
         for (const item in newCart.cartBody) {
 

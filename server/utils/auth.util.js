@@ -12,7 +12,7 @@ const authentication = async (req,res,next) => {
 
     let token_id = req.signedCookies.token_id
     
-    if(!token_id) throw new AuthFailureError()
+    if(!token_id) throw new AuthFailureError("no token id")
     
     let keyStore = await findKeyById(token_id)
     
@@ -20,7 +20,7 @@ const authentication = async (req,res,next) => {
     
     let accessToken = req.headers[HEADER.AUTHORIZATION]
 
-    if(!accessToken) throw new AuthFailureError()
+    if(!accessToken) throw new AuthFailureError("no access token")
 
     try 
     {   
