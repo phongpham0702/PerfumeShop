@@ -1,20 +1,18 @@
-const additionTime = 86400000
+const additionTime = 86400000;
 
 const setTokenIDCookie = (tokenId, response) => {
-    response.cookie("token_id", tokenId, {
-        httpOnly: true,
-        secure: true,
-        sameSite:"Lax",
-        maxAge: (parseInt(process.env.REFRESH_TOKEN_TIME) + additionTime) ,
-        signed: true
-    })
-}
-
+  response.cookie('token_id', tokenId, {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'Lax',
+    maxAge: parseInt(process.env.REFRESH_TOKEN_TIME) + additionTime,
+    signed: true,
+  });
+};
 
 module.exports = {
-    setTokenIDCookie,
-
-}
+  setTokenIDCookie,
+};
 
 /* res.cookie('_uid_',result.userInfo.userId, 
 { 

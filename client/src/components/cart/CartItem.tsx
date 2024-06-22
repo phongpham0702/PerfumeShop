@@ -40,7 +40,8 @@ const CartItem = ({ item }: { item: ICartItem }) => {
       localStorage.setItem(
         "cartCount",
         JSON.stringify(
-          JSON.parse(localStorage.getItem("cartCount") || "0") - item.quantity,
+          JSON.parse(localStorage.getItem("cartCount") || "0") -
+            (item.quantity || 0),
         ),
       );
       window.dispatchEvent(new Event("storage"));
@@ -74,7 +75,7 @@ const CartItem = ({ item }: { item: ICartItem }) => {
               <p>Quantity: {item.quantity}</p>
               <p>
                 Unit price:{" "}
-                {item.unitPrice.toLocaleString("en-US", {
+                {item?.unitPrice?.toLocaleString("en-US", {
                   style: "currency",
                   currency: "USD",
                 })}
@@ -83,10 +84,13 @@ const CartItem = ({ item }: { item: ICartItem }) => {
 
             <p className="mt-4 text-lg font-medium">
               Total:{" "}
-              {(item.unitPrice * item.quantity).toLocaleString("en-US", {
-                style: "currency",
-                currency: "USD",
-              })}
+              {((item?.unitPrice || 0) * (item?.quantity || 0)).toLocaleString(
+                "en-US",
+                {
+                  style: "currency",
+                  currency: "USD",
+                },
+              )}
             </p>
           </div>
         </div>

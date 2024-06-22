@@ -9,6 +9,7 @@ const Login = ({ onLoginSuccess }: { onLoginSuccess: () => void }) => {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -27,7 +28,6 @@ const Login = ({ onLoginSuccess }: { onLoginSuccess: () => void }) => {
           onLoginSuccess();
           setEmail("");
           setPassword("");
-
           localStorage.setItem("accessToken", data.metadata.AT);
           localStorage.setItem("cartCount", data.metadata.userInfo.cartCount);
           localStorage.setItem(
@@ -37,6 +37,7 @@ const Login = ({ onLoginSuccess }: { onLoginSuccess: () => void }) => {
           window.dispatchEvent(new Event("storage"));
           setIsLoading(false);
           toast.success("Login successful");
+
           navigate("/");
         } else {
           alert(data.message);
@@ -44,9 +45,9 @@ const Login = ({ onLoginSuccess }: { onLoginSuccess: () => void }) => {
       })
       .catch((error) => {
         console.log(error);
-
         toast.error("Invalid credentials");
       });
+    setIsLoading(false);
   };
 
   return (
@@ -96,7 +97,7 @@ const Login = ({ onLoginSuccess }: { onLoginSuccess: () => void }) => {
       <button
         disabled={isLoading}
         type="submit"
-        className=" w-[98%] bg-[#f50963] p-3 text-lg font-bold text-white transition-all duration-300 hover:bg-[#181717] sm:w-[80%]"
+        className=" w-[98%] bg-[#f50963] p-3 text-base font-bold text-white transition-all duration-300 hover:bg-[#181717] sm:w-[80%] sm:text-lg"
       >
         Sign In
       </button>

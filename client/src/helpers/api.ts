@@ -31,7 +31,7 @@ const requestAPI = (
     },
     async (err) => {
       const originalConfig = err.config;
-      console.log("AccessToken expired");
+      // console.log("AccessToken expired");
       console.log(err);
       if (err.response.status === 401) {
         localStorage.removeItem("accessToken");

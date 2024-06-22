@@ -6,6 +6,8 @@ import { ICartItem } from "../interfaces/CartItem";
 import { GoArrowLeft } from "react-icons/go";
 import { ICheckResult, IVoucherInfo } from "../interfaces/Voucher";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import ConfirmModal from "../components/ConfirmModal";
 
 const CheckOut = () => {
   const { data } = useQuery({
@@ -14,9 +16,11 @@ const CheckOut = () => {
   });
 
   const totalPrice = data?.data?.metadata.totalPrice;
-  // const totalPrice = 10;
   const userInfo = data?.data?.metadata.userInfo;
   const cartData = data?.data?.metadata.cartData;
+  const cartId = data?.data?.metadata.cartId;
+
+  const [isOpenConfirm, setIsOpenConfirm] = useState<boolean>(false);
   const [receiverName, setReceiverName] = useState<string>("");
   const [receiverPhone, setReceiverPhone] = useState<string>("");
   const [nation, setNation] = useState<string>("");
@@ -24,19 +28,19 @@ const CheckOut = () => {
   const [district, setDistrict] = useState<string>("");
   const [ward, setWard] = useState<string>("");
   const [detail, setDetail] = useState<string>("");
-  const [discountCode, setDiscountCode] = useState<string | null>(null);
+  const [discountCode, setDiscountCode] = useState<string | "">("");
   const [checkDiscountResult, setCheckDiscountResult] = useState<{
     checkResult: ICheckResult;
     voucherInfo: IVoucherInfo;
   }>();
+  const navigate = useNavigate();
+  const [paymentMethod, setPaymentMethod] = useState<string>("cod-payment");
 
   const {
     voucherValue = 0,
     maxDiscountPrice = 0,
     voucherType = "",
   } = checkDiscountResult?.voucherInfo || {};
-
-  console.log({ voucherValue });
 
   const discountVal =
     voucherType === "discount_percent"
@@ -46,7 +50,6 @@ const CheckOut = () => {
       : voucherValue > maxDiscountPrice
         ? maxDiscountPrice
         : voucherValue;
-  console.log(discountVal);
 
   const addressObj = userInfo?.addressList;
 
@@ -72,6 +75,33 @@ const CheckOut = () => {
       });
       toast.success("Voucher applied successfully");
       setCheckDiscountResult(data?.data?.metadata);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      toast.error(error?.response?.data.message);
+    }
+  };
+
+  const handleCompleteOrder = async () => {
+    try {
+      const data = await requestAPI(
+        "/checkout",
+        {
+          receiverName,
+          cartId,
+          receiverEmail: userInfo?.email,
+          receiverPhone,
+          receiverAddress: `${detail}, ${ward}, ${district}, ${city}, ${nation}`,
+          voucherCode: discountCode,
+          orderPayment: paymentMethod,
+        },
+        "POST",
+      );
+      toast.success("Order completed successfully");
+      localStorage.removeItem("cartCount");
+      console.log(data);
+
+      navigate("/order-success", { state: { invoice: data?.data?.metadata } });
+      setIsOpenConfirm(false);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       toast.error(error?.response?.data.message);
@@ -168,10 +198,12 @@ const CheckOut = () => {
           <div className="pl-6">
             <div className="mt-4 flex items-center gap-4 ">
               <input
+                defaultChecked
                 type="radio"
                 name="orderPayment"
                 value="cod-payment"
                 id="cod-payment"
+                onChange={(e) => setPaymentMethod(e.target.value)}
               />
               <label
                 htmlFor="cod-payment"
@@ -192,6 +224,7 @@ const CheckOut = () => {
                 name="orderPayment"
                 value="online-payment"
                 id="online-payment"
+                onChange={(e) => setPaymentMethod(e.target.value)}
               />
               <label
                 htmlFor="online-payment"
@@ -227,7 +260,7 @@ const CheckOut = () => {
 
                   <p>
                     Unit price:{" "}
-                    {item.unitPrice.toLocaleString("en-US", {
+                    {item?.unitPrice?.toLocaleString("en-US", {
                       style: "currency",
                       currency: "USD",
                     })}
@@ -238,7 +271,9 @@ const CheckOut = () => {
                   <p>Quantity: {item.quantity}</p>
                   <p>
                     Total:{" "}
-                    {(item.unitPrice * item.quantity).toLocaleString("en-US", {
+                    {(
+                      (item.unitPrice || 0) * (item.quantity || 0)
+                    ).toLocaleString("en-US", {
                       style: "currency",
                       currency: "USD",
                     })}
@@ -306,14 +341,25 @@ const CheckOut = () => {
 
       {/*  Btn */}
       <div className="fixed bottom-0 left-0 right-0 flex h-[100px] items-center justify-center gap-4 bg-[#ddd]">
-        <button className="flex h-fit items-center gap-2 border border-[#333] px-8 py-3">
+        <button
+          onClick={() => navigate("/cart")}
+          className="flex h-fit items-center gap-2 border border-[#333] px-8 py-3"
+        >
           <GoArrowLeft />
           <span>BACK TO CART</span>
         </button>
-        <button className="h-fit border border-[#000] bg-[#000] px-8 py-3 text-white">
+        <button
+          onClick={() => setIsOpenConfirm(true)}
+          className="h-fit border border-[#000] bg-[#000] px-8 py-3 text-white"
+        >
           COMPLETE ORDER
         </button>
       </div>
+      <ConfirmModal
+        closeModal={() => setIsOpenConfirm(false)}
+        modalIsOpen={isOpenConfirm}
+        onOk={handleCompleteOrder}
+      />
     </div>
   );
 };

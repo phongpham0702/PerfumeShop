@@ -12,7 +12,7 @@ const Cart = () => {
     ? data.cartData
         .reduce(
           (acc: number, item: ICartItem) =>
-            acc + item.unitPrice * item.quantity,
+            acc + (item?.unitPrice || 0) * (item.quantity || 0),
           0,
         )
         .toLocaleString("en-US", {
