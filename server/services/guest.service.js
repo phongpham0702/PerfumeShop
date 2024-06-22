@@ -1,5 +1,5 @@
 const { randomBytes } = require("crypto")
-const { encrypt, decrypt } = require("../utils/encrypt.util")
+const { decrypt } = require("../utils/encrypt.util")
 const {v4: uuidv4} = require("uuid")
 
 class GuestService{

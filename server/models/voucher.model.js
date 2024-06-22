@@ -39,7 +39,8 @@ const voucherSchema = new Schema({
 
     minPriceTotal:{
         type: Schema.Types.Number,
-        min: 0
+        min: 0,
+        default: 0
     },
 
     maxDiscountTotal:{
@@ -64,18 +65,20 @@ voucherSchema.index( { "voucherExp": 1 }, { expireAfterSeconds: 0 } )
 
 module.exports = model("Vouchers", voucherSchema);
 
-/* "voucherCode":"VTDISCOUNT10",
+/* "voucherCode":"TESTCODE10",
+"voucherTitle": "Discount 10% - Max 10$",
+"voucherType": "discount_percent",
+"voucherDiscount": 0.1,
+"voucherExp": { "$date": "2024-05-30T12:15:00Z" } */
 
-  "voucherTitle":"Discount 10% - Max 10",
-
-  "voucherType":"discount_percent",
-
-  "voucherDiscount":1,
-
-  "voucherExp":2024-05-30T11:30:45+00:00, */
-
-  /* "voucherCode":"TESTCODE10",
-	"voucherTitle": "Discount 10% - Max 10$",
-  "voucherType": "discount_percent",
-  "voucherDiscount": 0.1,
-  "voucherExp": { "$date": "2024-05-30T12:15:00Z" } */
+//   "voucherCode": "TESTCODE50",
+//   "voucherTitle": "Discount 50% - Max 100$",
+//   "voucherType": "discount_percent",
+//   "voucherDiscount": 0.5,
+//   "voucherExp": {
+//     "$date": "2024-08-30T12:15:00.000Z"
+//   },
+// 	"quantityLimit": 100,
+// 	"minPriceTOtal": 200,
+// 	"maxDiscountTotal": 100,
+// 	"usageTarget":"system_users"

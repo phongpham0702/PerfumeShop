@@ -10,12 +10,19 @@ class VoucherController{
 
         if(!orderTotal) throw new BadRequestError()
         let checkVoucherResult = await VoucherService.checkVoucher(req.userid,orderTotal,voucherCode)
-        new responseHelper.SuccessResponse({
-            metadata: {
-                ...checkVoucherResult
-            }
-        }).send(res)
 
+        if(!checkVoucherResult.checkResult.isValid)
+        {
+            throw new BadRequestError(checkVoucherResult.checkResult.checkMessage)
+        }
+        else{
+                new responseHelper.SuccessResponse({
+                    metadata: {
+                        ...checkVoucherResult
+                    }
+            }).send(res)
+
+        }
     }
 
 }
