@@ -1,10 +1,7 @@
 const CartModel = require('../models/cart.model');
-const ProductModel = require('../models/product');
+
 const { BadRequestError, NotFoundError } = require('../helpers/error.response');
-const {
-    getProductInfomation,
-    checkProductCapacity,
-} = require('../models/reposities/product.repo');
+
 const converterHelper = require('../helpers/converter.helper');
 
 /*

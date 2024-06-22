@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const g= require("../dbs/init.redis")
 const fs = require('fs');
-const axios = require('axios');
 const productModel = require("../models/product");
 const voucherModel = require('../models/voucher.model');
 

@@ -32,7 +32,7 @@ const OffCanvasMenu = ({
           <NavLink onClick={handleClose} to="/">
             <img
               className="mb-4 w-[120px]"
-              src="http://localhost:5173/images/luxe-logo.svg"
+              src="https://storage.googleapis.com/luxeperfume/images/logo.png"
               alt="logo"
             />
           </NavLink>

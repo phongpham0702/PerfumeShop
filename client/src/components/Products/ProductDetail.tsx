@@ -240,14 +240,10 @@ const ProductDetail = () => {
 
   const [inStock, setInStock] = useState<number | 0>(0);
 
-  console.log(inStock);
-
   const handleCapacityChange = (
     event: React.ChangeEvent<HTMLSelectElement>,
   ) => {
     product?.priceScale.forEach((item) => {
-      console.log(item);
-
       if (item.capacity === event.target.value) {
         setCapacity(item._id);
         setPriceByCapacity(item.price);
@@ -477,7 +473,7 @@ const ProductDetail = () => {
               <button
                 disabled={inStock === 0}
                 onClick={() => mutate()}
-                className={`w-[30%] bg-[#333] px-6 py-3 text-lg font-medium tracking-wide text-[#fff] lg:uppercase xl:px-6 ${
+                className={`w-[40%] bg-[#333] px-2 py-3 text-lg font-medium tracking-wide text-[#fff] lg:uppercase xl:px-6 ${
                   inStock === 0 && "cursor-not-allowed bg-[#8d8c8c]"
                 }`}
               >

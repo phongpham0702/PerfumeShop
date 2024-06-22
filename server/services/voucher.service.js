@@ -19,11 +19,11 @@ const checkVoucherStatusMessage = {
 
 class VoucherService{
     
-    static checkVoucher = async(userId, orderTotalPrice,voucherCode) => {
+    static checkVoucher = async(userId, orderTotalPrice,voucherCode ,isCheckOutPhase = false) => {
         
         const foundVoucher = await voucherModel.findOne({
             "voucherCode": voucherCode
-        }).lean()
+        },{"createdAt":0 , "updatedAt":0,"__v":0})
         
         if(!foundVoucher)
         {
@@ -76,21 +76,34 @@ class VoucherService{
             }
         }
 
-
-        return{
-            checkResult:{
-                    checkCode: checkVoucherStatusCode.VALID,
-                    checkMessage: checkVoucherStatusMessage.VALID,
-                    isValid: true
-            },
-            voucherInfo:{
-                "voucherTitle": foundVoucher.voucherTitle,
-                "voucherType": foundVoucher.voucherType,
-                "voucherValue": foundVoucher.voucherDiscount,
-                "minOrderTotal": foundVoucher.minPriceTotal,
-                "maxDiscountPrice": foundVoucher.maxDiscountTotal
+        if(isCheckOutPhase)
+        {
+            return{
+                checkResult:{
+                        checkCode: checkVoucherStatusCode.VALID,
+                        checkMessage: checkVoucherStatusMessage.VALID,
+                        isValid: true
+                },
+                voucherInfo: foundVoucher
             }
-        } 
+        }
+        else{
+             return{
+                checkResult:{
+                        checkCode: checkVoucherStatusCode.VALID,
+                        checkMessage: checkVoucherStatusMessage.VALID,
+                        isValid: true
+                },
+                voucherInfo:{
+                    "voucherTitle": foundVoucher.voucherTitle,
+                    "voucherType": foundVoucher.voucherType,
+                    "voucherValue": foundVoucher.voucherDiscount,
+                    "minOrderTotal": foundVoucher.minPriceTotal,
+                    "maxDiscountPrice": foundVoucher.maxDiscountTotal
+                }
+            }    
+        }
+       
         
     }
 

@@ -1,6 +1,9 @@
 const {body} = require("express-validator");
 const emailFormatRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const orderPayment = ["cod-payment","online-payment"]
+
+
+const SUPPORTED_PAYMENT_METHOD = ["cod-payment","online-payment"]
+
 const checkOutValidator = [
 
     body("receiverName")
@@ -21,13 +24,13 @@ const checkOutValidator = [
     .notEmpty().withMessage("Missing orderPayment")
     .custom((value) => {
 
-        if(orderPayment.includes(value))
+        if(SUPPORTED_PAYMENT_METHOD.includes(value))
         {
             return true;
         }
         else
         {
-            return Promise.reject('Payment not support.');
+            return Promise.reject('Payment method is not supported.');
         }
     })
 

@@ -112,7 +112,7 @@ const Header = () => {
         </div>
 
         <div className="w-[50%] lg:w-[40%]">
-          <ul className="flex items-center justify-end gap-8">
+          <ul className="flex items-center justify-end gap-4 sm:gap-8">
             {isOpen && (
               <form
                 ref={formRef}
@@ -164,7 +164,7 @@ const Header = () => {
                 </span>
               </NavLink>
             </li>
-            <li className="relative hidden cursor-pointer text-3xl sm:block">
+            <li className="relative cursor-pointer text-3xl sm:block">
               <NavLink
                 className="aria-[current=page]:font-medium aria-[current=page]:text-[#f8b500]"
                 to="/cart"
@@ -183,7 +183,7 @@ const Header = () => {
               onClick={() => {
                 menuContext.handleOpen("menu");
               }}
-              className="block cursor-pointer text-3xl sm:text-2xl lg:hidden"
+              className="ml-4 block cursor-pointer text-3xl sm:text-2xl lg:hidden"
             >
               <AiOutlineMenuFold />
             </li>
@@ -200,7 +200,7 @@ const Header = () => {
           <OffCanvasMenuItem url="/blog">Blog</OffCanvasMenuItem>
           <OffCanvasMenuItem url="/cart">Cart</OffCanvasMenuItem>
           <OffCanvasMenuItem url="/wishlist">Wishlist</OffCanvasMenuItem>
-          <OffCanvasMenuItem url="/profile">Profile</OffCanvasMenuItem>
+          <OffCanvasMenuItem url="/account">Profile</OffCanvasMenuItem>
         </div>
       </OffCanvasMenu>
     </header>

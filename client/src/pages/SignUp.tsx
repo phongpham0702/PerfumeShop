@@ -61,13 +61,15 @@ const SignUp = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="mx-auto mt-10 flex w-[600px] flex-col items-center gap-6 rounded-sm p-4 font-space shadow-2xl"
+      className="mx-auto mt-10 flex w-[96%] flex-col items-center gap-6 rounded-sm p-4 font-space shadow-2xl sm:w-[600px]"
     >
-      <h1 className="my-4 mb-0 text-4xl font-bold">Register Now!</h1>
-      <p className="text-lg text-[#767373]">
+      <h1 className="my-4 mb-0 text-3xl font-bold sm:text-4xl">
+        Register Now!
+      </h1>
+      <p className="text-center text-[#767373] sm:text-lg">
         You can signup with you social account below
       </p>
-      <div className="mx-auto flex w-[80%] items-center gap-2 rounded-sm border border-[#d5cfcf] p-2 px-4 text-lg">
+      <div className="mx-auto flex w-[98%] items-center gap-2 rounded-sm border border-[#d5cfcf] p-2 px-4 text-sm sm:w-[80%] sm:text-lg">
         <AiOutlineUser />
         <input
           className="w-full p-2 outline-none"
@@ -79,7 +81,7 @@ const SignUp = () => {
           required
         />
       </div>
-      <div className="mx-auto flex w-[80%] items-center gap-2 rounded-sm border border-[#d5cfcf] p-2 px-4 text-lg">
+      <div className="mx-auto flex w-[98%] items-center gap-2 rounded-sm border border-[#d5cfcf] p-2 px-4 text-sm sm:w-[80%] sm:text-lg">
         <AiOutlineMail />
         <input
           className="w-full p-2 outline-none"
@@ -91,7 +93,7 @@ const SignUp = () => {
           required
         />
       </div>
-      <div className="gap2 mx-auto flex w-[80%] items-center rounded-sm border border-[#d5cfcf] p-2 px-4 text-lg">
+      <div className="gap2 mx-auto flex w-[98%] items-center rounded-sm border border-[#d5cfcf] p-2 px-4 text-sm sm:w-[80%] sm:text-lg">
         <AiOutlinePhone />
         <input
           className="w-full p-2 outline-none"
@@ -102,7 +104,7 @@ const SignUp = () => {
           required
         />
       </div>
-      <div className="mx-auto flex w-[80%] items-center gap-2 rounded-sm border border-[#d5cfcf] p-2 px-4 text-lg">
+      <div className="mx-auto flex w-[98%] items-center gap-2 rounded-sm border border-[#d5cfcf] p-2 px-4 text-sm sm:w-[80%] sm:text-lg">
         <AiOutlineCalendar />
         <input
           className="w-full p-2 outline-none"
@@ -114,7 +116,7 @@ const SignUp = () => {
         />
       </div>
 
-      <div className="mx-auto flex w-[80%] items-center gap-2 rounded-sm border border-[#d5cfcf] p-2 px-4 text-lg">
+      <div className="mx-auto flex w-[98%] items-center gap-2 rounded-sm border border-[#d5cfcf] p-2 px-4 text-sm sm:w-[80%] sm:text-lg">
         <AiTwotoneLock />
         <input
           className="w-full p-2 outline-none"
@@ -127,7 +129,7 @@ const SignUp = () => {
         />
       </div>
 
-      <div className="gap2 mx-auto flex w-[80%] items-center rounded-sm border border-[#d5cfcf] p-2 px-4 text-lg">
+      <div className="gap2 mx-auto flex w-[98%] items-center rounded-sm border border-[#d5cfcf] p-2 px-4 text-sm sm:w-[80%] sm:text-lg">
         <AiTwotoneLock />
         <input
           className="w-full p-2 outline-none"
@@ -142,7 +144,7 @@ const SignUp = () => {
 
       <button
         type="submit"
-        className=" mt-2 w-[80%] bg-[#f50963] p-3 text-lg font-bold text-white transition-all duration-300 hover:bg-[#181717]"
+        className=" mt-2 w-[98%] bg-[#f50963] p-3 text-sm font-bold text-white transition-all duration-300 hover:bg-[#181717] sm:w-[80%] sm:text-lg"
       >
         Sign Up
       </button>

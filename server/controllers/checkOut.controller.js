@@ -3,8 +3,10 @@ const {validationResult} = require('express-validator')
 const { findCartById, getMiniCartById } = require("../models/reposities/cart.repo");
 const CheckoutService = require("../services/checkOut.service");
 const { findUserById } = require("../models/reposities/user.repo");
-const { BadRequestError } = require("../helpers/error.response");
+const { BadRequestError, ServerError } = require("../helpers/error.response");
 const stripeAPI = require('stripe');
+const CartService = require("../services/cart.service");
+const converterHelper = require("../helpers/converter.helper");
 let stripeGateway = stripeAPI(process.env.STRIPE_SECRET_KEY);
 
 const createStripeSession = async (options) => {
@@ -74,13 +76,16 @@ class CheckoutController{
     
         //1) Check user info
         //2)Check user cart
-        const {receiverEmail, receiverPhone, receiverAddress, cartId,voucherCode, orderPayment} = req.body
+        const {receiverName, receiverEmail, receiverPhone, receiverAddress, cartId,voucherCode, orderPayment} = req.body
 
         const receiverInfo = {
+            receiverName,
             receiverEmail, 
             receiverPhone, 
             receiverAddress
         }
+
+        let checkOutOrder = null;
 
         if(!req.userid)
         {
@@ -102,13 +107,32 @@ class CheckoutController{
             if(userCart.cartOwner.toString() != userInfo._id.toString()) throw new BadRequestError("This is not your cart")
             if(userCart.cartData.length <= 0 ) throw new BadRequestError("Your cart is empty")
 
-            await CheckoutService.CheckOut(userInfo, userCart, orderPayment ,{receiverInfo, voucherCode})
-
+            checkOutOrder = await CheckoutService.CheckOut(userInfo, userCart, orderPayment ,{receiverInfo, voucherCode})
+            if(checkOutOrder) await CartService.deleteAllItems(userInfo._id);
         }
 
-        new responseHelper.OK({
-            metadata: ""
-        }).send(res)
+        if(checkOutOrder)
+        {   
+            let {ownerType,
+                createdAt, 
+                updatedAt, 
+                orderStatus, 
+                __v, 
+                _id, 
+                orderProducts ,
+                ...metaDataBody } = checkOutOrder
+            new responseHelper.CREATED({
+                metadata:{
+                    orderId: _id,
+                    orderProducts: orderProducts.map(({_id, ...rest}) => rest),
+                    ...metaDataBody
+                }
+            }).send(res)
+        }
+        else
+        {
+            throw new ServerError("Creating order error");
+        }
     }
 
     test_payment = async()=>{

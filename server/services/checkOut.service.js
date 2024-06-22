@@ -1,25 +1,12 @@
 const { findCartById } = require("../models/reposities/cart.repo")
 const { BadRequestError, ServerError } = require('../helpers/error.response');
-const CartService = require("./cart.service");
-const { findUserById, getUserCheckOutInfo } = require("../models/reposities/user.repo");
+const { getUserCheckOutInfo } = require("../models/reposities/user.repo");
 const VoucherService = require("./voucher.service");
 const OrderService = require("./orders.service");
 const databaseInstance = require("../dbs/init.db");
-const productModel = require("../models/product");
 
-//constant
-const PAYMENT_METHOD = ["cod-payment","online-payment"]
 
 class CheckoutService {
-
-    /* 
-        payload:{
-            userId,
-            cartId,
-            voucherId: []
-        }
-    */
-
 
     static async Review(userId){
         const foundCart = await findCartById({userId})
@@ -66,76 +53,54 @@ class CheckoutService {
         additionInfo ={receiverInfo ,voucherCode})
     {   
 
-        //check payment method
-        if(!PAYMENT_METHOD.includes(paymentMethod)) throw new BadRequestError("Payment method is not supported")
-
-        //calculate cart total 
+        //calculate cart total & check in-stock quantity
         let cartTotal = 0
-        let cartProductIdList = [] //product in user cart
         for(let item of userCart.cartData)
         {
-            console.log(item);
             if(item.quantity > item.inStock)
             {
-                throw new BadRequestError(`Product ${item.productName} only have ${item.inStock} left in stock.`)
+                throw new BadRequestError(`Product ${item.productName} ${item.productCapacity} only have ${item.inStock} left in stock.`)
             } 
             cartTotal += item.quantity * item.unitPrice
-            cartProductIdList.push(item.productId)
         }
 
         //check voucher
         let checkVoucherResult = null
-        if(additionInfo.voucherCode !== "" && additionInfo.voucherCode !== null){
-            checkVoucherResult = await VoucherService.checkVoucher(userInfo._id.toString(), cartTotal, additionInfo.voucherCode);
+        if(additionInfo.voucherCode !== "" && additionInfo.voucherCode){
+            checkVoucherResult = await VoucherService.checkVoucher(userInfo._id.toString(), cartTotal, additionInfo.voucherCode, true);
         }
         
         if(checkVoucherResult && !checkVoucherResult.checkResult.isValid){
             throw new BadRequestError(checkVoucherResult.checkResult.checkMessage);
         }   
 
-        //check product quantity
-
-
-
+        //create order
         const transactionSession = await databaseInstance.getMongoClient().startSession();
 
-        
         try 
         {
 
             transactionSession.startTransaction();
            
-   
-            // //check product quantity 
-            // const productInList = await productModel.find({_id:{ $in: cartProductIdList }},
-            // {
-            //     productName:1,
-            //     productQuantity:1,
-            //     sold:1
-            // },
-            // {
-            //     session:transactionSession
-            // })
-            
-            // for (const key in productInList) {
-            //     //console.log(key);
-            // }
-            
-
-            OrderService.CreateOrder({
+            //Create order
+            const order = await OrderService.CreateOrder({
                 ownerId: userInfo._id,
                 receiverData: additionInfo.receiverInfo,
                 userCartData: userCart,
                 voucherData: checkVoucherResult,
-                orderTotal: cartTotal
-            })  
-            
+                subTotal: cartTotal,
+                payment: paymentMethod
+            }, transactionSession)  
             await transactionSession.commitTransaction();
-            console.log('Order created successfully');
+            console.log(`Order ${order[0]._id.toString()} created successfully`);
+
+            return order[0].toObject();
         } 
         catch (error) {
             await transactionSession.abortTransaction();
             console.error('Error creating order:', error.message);
+
+            return null;
         }
         finally{
             transactionSession.endSession();

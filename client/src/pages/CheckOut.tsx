@@ -5,6 +5,7 @@ import { IAddress } from "../interfaces/User";
 import { ICartItem } from "../interfaces/CartItem";
 import { GoArrowLeft } from "react-icons/go";
 import { ICheckResult, IVoucherInfo } from "../interfaces/Voucher";
+import toast from "react-hot-toast";
 
 const CheckOut = () => {
   const { data } = useQuery({
@@ -13,6 +14,7 @@ const CheckOut = () => {
   });
 
   const totalPrice = data?.data?.metadata.totalPrice;
+  // const totalPrice = 10;
   const userInfo = data?.data?.metadata.userInfo;
   const cartData = data?.data?.metadata.cartData;
   const [receiverName, setReceiverName] = useState<string>("");
@@ -28,19 +30,29 @@ const CheckOut = () => {
     voucherInfo: IVoucherInfo;
   }>();
 
-  const voucherVal = checkDiscountResult?.voucherInfo.voucherValue || 0;
+  const {
+    voucherValue = 0,
+    maxDiscountPrice = 0,
+    voucherType = "",
+  } = checkDiscountResult?.voucherInfo || {};
+
+  console.log({ voucherValue });
+
   const discountVal =
-    Math.round(totalPrice * voucherVal) >
-    (checkDiscountResult?.voucherInfo?.maxDiscountPrice || 0)
-      ? checkDiscountResult?.voucherInfo.maxDiscountPrice
-      : Math.round(totalPrice * voucherVal) || 0;
-  //   console.log(val);
+    voucherType === "discount_percent"
+      ? Math.round(totalPrice * voucherValue) > maxDiscountPrice
+        ? maxDiscountPrice
+        : Math.round(totalPrice * voucherValue)
+      : voucherValue > maxDiscountPrice
+        ? maxDiscountPrice
+        : voucherValue;
+  console.log(discountVal);
 
   const addressObj = userInfo?.addressList;
 
-  const defaultAddress = addressObj?.find((item: IAddress) => {
-    return item._id === userInfo?.defaultAddress;
-  });
+  const defaultAddress = addressObj?.find(
+    (item: IAddress) => item._id === userInfo?.defaultAddress,
+  );
 
   useEffect(() => {
     setReceiverName(defaultAddress?.receiverName || "");
@@ -53,21 +65,27 @@ const CheckOut = () => {
   }, [defaultAddress]);
 
   const checkVoucher = async () => {
-    const data = await requestAPI("/voucher/check", {}, "GET", {
-      orderTotal: totalPrice,
-      voucherCode: discountCode,
-    });
-    setCheckDiscountResult(data?.data?.metadata);
+    try {
+      const data = await requestAPI("/voucher/check", {}, "GET", {
+        orderTotal: totalPrice,
+        voucherCode: discountCode,
+      });
+      toast.success("Voucher applied successfully");
+      setCheckDiscountResult(data?.data?.metadata);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      toast.error(error?.response?.data.message);
+    }
   };
 
   return (
-    <div className="grid grid-cols-10 px-16">
-      <div className="col-span-5">
+    <div className="mt-4 grid grid-cols-10 px-4 md:px-8 lg:px-16">
+      <div className="col-span-10 mb-8 md:col-span-5">
         <p className="mt-4 pl-6 text-start text-2xl font-bold">
           Delivery Information
         </p>
-        <div className="flex w-[650px] select-none flex-col items-center gap-6">
-          <div className="flex w-[650px] justify-center">
+        <div className="mx-auto flex w-[95%] select-none flex-col items-center gap-6 lg:mx-0 xl:w-[650px]">
+          <div className="flex w-[95%] justify-center xl:w-[650px]">
             <form className="mx-auto mt-10 flex flex-wrap items-center gap-4 rounded-sm font-space">
               <div className="mx-auto flex w-[97%] items-center gap-2 rounded-sm border border-[#d5cfcf] p-2 px-4 text-lg">
                 <input
@@ -187,7 +205,7 @@ const CheckOut = () => {
         </div>
       </div>
 
-      <div className="col-span-5 bg-[#f8f8f8]">
+      <div className="col-span-10 bg-[#f8f8f8] md:col-span-5">
         <p className="mt-4 pl-6 text-start text-2xl font-bold">Order Summary</p>
         <div className="mt-6 flex flex-col gap-4">
           {cartData?.map((item: ICartItem) => (
