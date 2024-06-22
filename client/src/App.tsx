@@ -18,9 +18,10 @@ import { Toaster } from "react-hot-toast";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ReactNode, useEffect, useState } from "react";
-import Brands from "./components/Brands/BrandList";
+import Brands from "./pages/Brands";
 import WishList from "./pages/WishList";
 import { SkeletonTheme } from "react-loading-skeleton";
+import CheckOut from "./pages/CheckOut";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -65,6 +66,7 @@ function App() {
               <Route element={<Shop />}>
                 <Route path="/shop/:page" element={<ProductList />} />
               </Route>
+              <Route path="checkout" element={<CheckOut />} />
               <Route path="product/detail/:pid" element={<ProductDetail />} />
               <Route path="blog" element={<Blog />} />
               <Route

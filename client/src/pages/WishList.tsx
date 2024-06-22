@@ -1,11 +1,7 @@
 import WishLists from "../components/WishLists";
 
 const WishList = () => {
-  return (
-    <div>
-      <WishLists />
-    </div>
-  );
+  return <WishLists />;
 };
 
 export default WishList;

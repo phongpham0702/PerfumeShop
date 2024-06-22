@@ -12,13 +12,15 @@ const WishLists = () => {
       const items = res.data.metadata.wishListData.items;
       if (Array.isArray(items)) {
         localStorage.setItem("wishlist_items", JSON.stringify(items));
+        localStorage.setItem("wishlistCount", JSON.stringify(items.length));
+        window.dispatchEvent(new Event("storage"));
       }
       return items;
     },
   });
 
   return (
-    <div className="grid grid-cols-4 p-10">
+    <div className="flex flex-wrap justify-start gap-4 p-10">
       {isLoading && <SkeletonCard cards={4} />}
       {data &&
         Array.isArray(data) &&

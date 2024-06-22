@@ -10,16 +10,43 @@ import { BiLockAlt } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import AddAddressModal from "../components/user/AddAddressModal";
+import requestAPI from "../helpers/api";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { IAddress } from "../interfaces/User";
+import EditAddressModal from "../components/user/EditAddressModal";
+import ConfirmModal from "../components/ConfirmModal";
 
 const UserAccount = () => {
   const [activeTab, setActiveTab] = useState<string>("tab1");
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
-  console.log(isOpen);
+  const [editState, setEditState] = useState({ isOpen: false, id: "" });
+  const [isOpenConfirm, setIsOpenConfirm] = useState<boolean>(false);
+  const [deleteID, setDeleteID] = useState<string>("");
+  const { data } = useQuery({
+    queryKey: ["user profile"],
+    queryFn: () => requestAPI(`/user/profile`, {}, "GET"),
+  });
+
+  const userProfile = data?.data.metadata.userProfile;
 
   const closeModal = () => {
     setIsOpen(false);
   };
+  const closeEditModal = () => {
+    setEditState((prev) => ({ ...prev, isOpen: false }));
+  };
+
+  const queryClient = useQueryClient();
+  const { mutate: mutateDelete } = useMutation({
+    mutationFn: () =>
+      requestAPI("/user/address/", { deleteID: deleteID }, "DELETE"),
+    onSuccess: () => {
+      setIsOpenConfirm(false);
+      queryClient.invalidateQueries({ queryKey: ["user profile"] });
+      toast.success("Delete address successfully");
+    },
+  });
 
   const navs = [
     {
@@ -78,8 +105,12 @@ const UserAccount = () => {
       id: "tab5",
       title: (
         <div
-          onClick={() => {
+          onClick={async () => {
+            await requestAPI("/user/logout", {}, "GET");
             localStorage.removeItem("accessToken");
+            localStorage.removeItem("cartCount");
+            localStorage.removeItem("wishlistCount");
+            window.dispatchEvent(new Event("storage"));
             navigate("/login");
             toast.success("Logout successfully");
           }}
@@ -149,13 +180,53 @@ const UserAccount = () => {
       activeTab,
       children: (
         <>
-          <div>
-            <button
-              onClick={() => setIsOpen(true)}
-              className="border border-[#1a1306] px-6 py-2"
-            >
-              Add new address
-            </button>
+          <div className="">
+            <div className="mb-4 flex justify-end">
+              <button
+                onClick={() => setIsOpen(true)}
+                className="rounded-sm border  bg-[#f8b500] px-6 py-2"
+              >
+                + Add new address
+              </button>
+            </div>
+
+            <div>
+              {userProfile?.Addresses.map((item: IAddress) => (
+                <div key={item._id} className="flex justify-between p-4">
+                  <div>
+                    <div className="flex gap-4">
+                      <p className="font-semibold">{item.receiverName}</p> |
+                      <p>{item.receiverPhoneNumber}</p> |
+                      <p>Nation: {item.Nation}</p>
+                    </div>
+                    <p>City/Province: {item.City}</p>
+                    <p>District: {item.District}</p>
+                    <p>Ward/Commune: {item.Ward}</p>
+                    <p>Detail: {item.addressDetail}</p>
+                  </div>
+
+                  <div className="flex flex-col gap-2">
+                    <button
+                      className="border border-[#1a1306] px-6 py-1"
+                      onClick={() =>
+                        setEditState({ isOpen: true, id: item._id || "" })
+                      }
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="border border-[#1a1306] px-6 py-1"
+                      onClick={() => {
+                        setIsOpenConfirm(true);
+                        setDeleteID(item._id || "");
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </>
       ),
@@ -173,7 +244,7 @@ const UserAccount = () => {
       id: "tab5",
       activeTab,
       children: (
-        <div onClick={() => {}}>
+        <div>
           <p>Logout</p>
         </div>
       ),
@@ -184,6 +255,16 @@ const UserAccount = () => {
     <div className="mx-auto flex w-[90%] gap-4 font-inter">
       <TabHR navs={navs} contents={contents} />
       <AddAddressModal modalIsOpen={isOpen} closeModal={closeModal} />
+      <EditAddressModal
+        modalIsOpen={editState.isOpen}
+        closeModal={closeEditModal}
+        addressId={editState.id}
+      />
+      <ConfirmModal
+        modalIsOpen={isOpenConfirm}
+        closeModal={() => setIsOpenConfirm(false)}
+        onOk={mutateDelete}
+      />
     </div>
   );
 };

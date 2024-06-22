@@ -1,15 +1,16 @@
-import { AiOutlineMinus } from "react-icons/ai";
 import { ICartItem } from "../../interfaces/CartItem";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import requestAPI from "../../helpers/api";
 import { useState } from "react";
 import EditCartModal from "./EditCartModal";
+import ConfirmModal from "../ConfirmModal";
 
 const CartItem = ({ item }: { item: ICartItem }) => {
   const queryClient = useQueryClient();
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isOpenConfirm, setIsOpenConfirm] = useState<boolean>(false);
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
@@ -26,6 +27,7 @@ const CartItem = ({ item }: { item: ICartItem }) => {
           },
           "delete",
         );
+        setIsOpenConfirm(false);
         toast.success("Item removed from cart successfully");
       } catch (error) {
         toast.error("Something went wrong");
@@ -35,60 +37,81 @@ const CartItem = ({ item }: { item: ICartItem }) => {
       queryClient.invalidateQueries({
         queryKey: ["cart"],
       });
+      localStorage.setItem(
+        "cartCount",
+        JSON.stringify(
+          JSON.parse(localStorage.getItem("cartCount") || "0") - item.quantity,
+        ),
+      );
+      window.dispatchEvent(new Event("storage"));
     },
   });
 
   return (
-    <div className="mx-auto flex w-[100%] items-center justify-between rounded-md p-2">
-      <EditCartModal
-        item={item}
-        modalIsOpen={isModalOpen}
-        closeModal={handleCloseModal}
-      />
+    <>
+      <div className="mx-auto flex w-[100%] flex-wrap items-center justify-between rounded-md p-2 sm:flex-nowrap">
+        <EditCartModal
+          item={item}
+          modalIsOpen={isModalOpen}
+          closeModal={handleCloseModal}
+        />
 
-      <div className="flex gap-6">
-        <div className="w-[150px] bg-[#f8f8f8] p-4">
-          <img width={150} src={item.productThumbnail} alt="item thumbnail" />
-        </div>
-        <div className="">
-          <p>{item.productBrand}</p>
-          <div className="flex items-center gap-2 text-lg font-medium">
-            <span>{item.productName}</span> <AiOutlineMinus />{" "}
-            <span>{item.productCapacity}</span>
+        <div className="flex gap-6">
+          <div className="flex w-[150px] items-center bg-[#f8f8f8] py-4">
+            <img
+              className="min-h-[150px] w-full min-w-[150px]"
+              src={item.productThumbnail}
+              alt="item thumbnail"
+            />
           </div>
-          <p>Quantity: {item.quantity}</p>
-          <p className="mt-2">
-            Unit price:{" "}
-            {item.unitPrice.toLocaleString("en-US", {
-              style: "currency",
-              currency: "USD",
-            })}
-          </p>
-          <p className="mt-4 text-lg font-medium">
-            Total:{" "}
-            {(item.unitPrice * item.quantity).toLocaleString("en-US", {
-              style: "currency",
-              currency: "USD",
-            })}
-          </p>
+          <div>
+            <div className="flex items-center gap-2 text-lg font-medium">
+              <span className="">{item.productName}</span>
+            </div>
+
+            <div className="mt-2 flex flex-col gap-1">
+              <span>Capacity: {item.productCapacity}</span>
+              <p>Quantity: {item.quantity}</p>
+              <p>
+                Unit price:{" "}
+                {item.unitPrice.toLocaleString("en-US", {
+                  style: "currency",
+                  currency: "USD",
+                })}
+              </p>
+            </div>
+
+            <p className="mt-4 text-lg font-medium">
+              Total:{" "}
+              {(item.unitPrice * item.quantity).toLocaleString("en-US", {
+                style: "currency",
+                currency: "USD",
+              })}
+            </p>
+          </div>
+        </div>
+
+        <div className="mr-4 mt-4 flex w-full justify-end gap-2 sm:w-auto sm:flex-col">
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="rounded-sm border border-[#c1c1c1] px-8 py-1 hover:text-[#ac8f45]"
+          >
+            Edit
+          </button>
+          <button
+            onClick={() => setIsOpenConfirm(true)}
+            className="rounded-sm border border-[#c1c1c1] px-8 py-1 hover:text-[#ac8f45]"
+          >
+            Delete
+          </button>
         </div>
       </div>
-
-      <div className="flex flex-col gap-2">
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="rounded-sm border border-[#c1c1c1] px-8 py-1 hover:text-[#ac8f45]"
-        >
-          Edit
-        </button>
-        <button
-          onClick={() => mutate()}
-          className="rounded-sm border border-[#c1c1c1] px-8 py-1 hover:text-[#ac8f45]"
-        >
-          Delete
-        </button>
-      </div>
-    </div>
+      <ConfirmModal
+        closeModal={() => setIsOpenConfirm(false)}
+        modalIsOpen={isOpenConfirm}
+        onOk={mutate}
+      />
+    </>
   );
 };
 

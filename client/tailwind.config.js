@@ -80,6 +80,14 @@ export default {
           "0%": { transform: "translateX(50px)" },
           "100%": { transform: "translateX(-50px)" },
         },
+        leftIn: {
+          "0%": { transform: "translateX(-300px)" },
+          "100%": { transform: "translateX(0)" },
+        },
+        leftOut: {
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(-300px)" },
+        },
       },
       animation: {
         rightIn: "rightIn .85s ease-out both",

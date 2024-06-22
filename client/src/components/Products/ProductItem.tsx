@@ -11,6 +11,7 @@ import useHover from "../../hooks/useHover";
 import requestAPI from "../../helpers/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+import useAddToCart from "../../hooks/Cart/useAddToCart";
 
 type propsType = {
   product: Product | SimilarProduct | BestsellerProduct;
@@ -45,11 +46,11 @@ const ProductItem = ({ product }: propsType) => {
     pDetailRef.current?.classList.remove("animate-fadeOut");
   }, []);
 
-  // const addToCartMutate = useAddToCart({
-  //   _id: product._id,
-  //   capacity: product.displayPrice,
-  //   quantity: 1,
-  // });
+  const addToCartMutate = useAddToCart({
+    _id: product._id,
+    capacity: product.priceInfo._id,
+    quantity: 1,
+  });
 
   const queryClient = useQueryClient();
   const curList = localStorage.getItem("wishlist_items");
@@ -68,6 +69,11 @@ const ProductItem = ({ product }: propsType) => {
           "wishlist_items",
           JSON.stringify([...listParsed, product]),
         );
+        localStorage.setItem(
+          "wishlistCount",
+          JSON.stringify(listParsed.length + 1),
+        );
+        window.dispatchEvent(new Event("storage"));
       } else localStorage.setItem("wishlist_items", JSON.stringify([product]));
     }
 
@@ -90,6 +96,11 @@ const ProductItem = ({ product }: propsType) => {
             listParsed.filter((item: Product) => item._id !== product._id),
           ),
         );
+        localStorage.setItem(
+          "wishlistCount",
+          JSON.stringify(listParsed.length - 1),
+        );
+        window.dispatchEvent(new Event("storage"));
       }
     }
     return data;
@@ -235,6 +246,7 @@ const ProductItem = ({ product }: propsType) => {
         </div>
 
         <button
+          onClick={() => addToCartMutate()}
           ref={addToCartBtnRef}
           className={`absolute left-0 top-[237px] flex w-full items-center justify-center gap-2 bg-[#000] p-2 font-semibold text-[#fff] transition-all duration-500 hover:bg-[#f50963] sm:top-[312px] ${
             isHovered
@@ -254,7 +266,12 @@ const ProductItem = ({ product }: propsType) => {
         <p className="w-full overflow-hidden text-ellipsis whitespace-nowrap text-center">
           {product.productName}
         </p>
-        <p className="mt-3">${product.displayPrice}</p>
+        <p className="mt-3">
+          {product.displayPrice.toLocaleString("en-su", {
+            style: "currency",
+            currency: "USD",
+          })}
+        </p>
       </div>
     </div>
   );

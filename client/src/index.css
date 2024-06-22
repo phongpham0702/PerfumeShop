@@ -13,6 +13,10 @@
   background-color: aquamarine;
 }
 
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 /* width */
 ::-webkit-scrollbar {
   width: 10px;
@@ -69,4 +73,9 @@ input::-webkit-inner-spin-button {
   to {
     transform: translateX(40%);
   }
+}
+
+.react-responsive-modal-modal {
+  margin: 0 !important;
+  vertical-align: middle !important;
 }

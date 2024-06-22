@@ -5,14 +5,53 @@ import {
   useSearchParams,
 } from "react-router-dom";
 import FilterBar from "../components/Filter/FilterBar";
-import { categories } from "../dummy_data/categoryData";
-import { useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import FilterInfo from "../components/Filter/FilterInfo";
-
+import { categories } from "../dummy_data/categoryData";
+import { FilterCategory } from "../interfaces/Category";
+import OffCanvasMenu from "../components/OffCanvas/OffCanvasMenu";
+import MenuContext from "../contexts/MenuContext";
+interface SelectedFilters {
+  [paramName: string]: string[];
+}
 const Shop = () => {
   const navigate = useNavigate();
+  const menuContext = useContext(MenuContext);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [searchVal, setSearchVal] = useState<string>("");
   const [productNum, setProductNum] = useState<number | 0>(0);
+  const [categoryState, setCategoryState] = useState(
+    JSON.parse(JSON.stringify(categories)),
+  );
+  const handleChange = (productNum: number) => {
+    setProductNum(productNum);
+  };
+  const menuRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    menuRef.current?.classList.remove("animate-[leftOut_.3s_ease-out_both]");
+  }, []);
+
+  useEffect(() => {
+    const selectedFilters: SelectedFilters = {};
+    const searchParamsArray = Array.from(searchParams.entries());
+    for (const [paramName, paramValues] of searchParamsArray) {
+      selectedFilters[paramName] = Array.isArray(paramValues)
+        ? paramValues
+        : [paramValues];
+    }
+    setCategoryState((prevStates: FilterCategory[]) =>
+      prevStates.map((category) => {
+        const matchingFilters = selectedFilters[category.id] || [];
+        return {
+          ...category,
+          items: category.items.map((item) => ({
+            ...item,
+            isChecked: matchingFilters.includes(item.name),
+          })),
+        };
+      }),
+    );
+  }, [searchParams]);
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newSearchParams = new URLSearchParams(searchParams);
@@ -21,16 +60,45 @@ const Shop = () => {
     } else {
       newSearchParams.delete(event.target.name);
     }
+    menuContext.handleClose();
     setSearchParams(newSearchParams);
     navigate(`/shop/1?${newSearchParams.toString()}`);
   };
 
-  const handleChange = (productNum: number) => {
-    setProductNum(productNum);
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newSearchVal = event.target.value.toLowerCase();
+    setSearchVal(newSearchVal);
+
+    const updatedCategories = categories.map((category) => {
+      if (category.id === "brand") {
+        return {
+          ...category,
+          items: newSearchVal
+            ? category.items.filter((item) =>
+                item.name.toLowerCase().includes(newSearchVal),
+              )
+            : category.items.map((item) => ({ ...item, isChecked: false })),
+        };
+      }
+      return category;
+    });
+
+    setCategoryState(updatedCategories);
   };
 
+  const [windowWidth, setWindowWidth] = useState(0);
+  const resizeWindow = () => {
+    setWindowWidth(window.innerWidth);
+  };
+
+  useEffect(() => {
+    resizeWindow();
+    window.addEventListener("resize", resizeWindow);
+    return () => window.removeEventListener("resize", resizeWindow);
+  }, []);
+
   return (
-    <div className="mx-auto max-w-[1440px]">
+    <div className=" mx-auto max-w-[1440px]">
       <h1 className="mb-6 mt-16 text-center font-heading text-4xl">
         Luxe Shop
       </h1>
@@ -45,11 +113,28 @@ const Shop = () => {
         </NavLink>
       </div>
       <FilterInfo productNum={productNum} />
-      <div className="flex justify-between">
-        <FilterBar
-          onFilterChange={handleCheckboxChange}
-          categories={categories}
-        />
+
+      <div className="relative flex justify-between">
+        <div>
+          {windowWidth < 1024 ? (
+            <OffCanvasMenu id="filter">
+              <FilterBar
+                category={categoryState}
+                handleCheckboxChange={handleCheckboxChange}
+                handleInputChange={handleInputChange}
+                searchVal={searchVal}
+              />
+            </OffCanvasMenu>
+          ) : (
+            <FilterBar
+              category={categoryState}
+              handleCheckboxChange={handleCheckboxChange}
+              handleInputChange={handleInputChange}
+              searchVal={searchVal}
+            />
+          )}
+        </div>
+
         <Outlet context={{ handleProductNumChange: handleChange }} />
       </div>
     </div>

@@ -5,6 +5,12 @@ export interface Product {
   productThumbnail: string;
   productBrand: string;
   displayPrice: number;
+  priceInfo: {
+    capacity: string;
+    price: number;
+    _id: string;
+    inStock: number;
+  };
 }
 export interface BestsellerProduct {
   _id: string;
@@ -13,6 +19,12 @@ export interface BestsellerProduct {
   productBrand: string;
   displayPrice: number;
   productGender?: string;
+  priceInfo: {
+    capacity: string;
+    price: number;
+    _id: string;
+    inStock: number;
+  };
 }
 export interface SimilarProduct {
   _id: string;
@@ -21,6 +33,12 @@ export interface SimilarProduct {
   productBrand: string;
   productGender: string;
   displayPrice: number;
+  priceInfo: {
+    capacity: string;
+    price: number;
+    _id: string;
+    inStock: number;
+  };
 }
 
 export interface ProductDetail {
@@ -32,6 +50,7 @@ export interface ProductDetail {
     capacity: string;
     price: number;
     _id: string;
+    inStock: number;
   }[];
   productFeatures: {
     release: string;

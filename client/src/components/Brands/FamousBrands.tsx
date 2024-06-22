@@ -1,13 +1,13 @@
 import BrandItem from "./BrandItem";
-import { brandsLogo } from "../../dummy_data/brandsLogo";
+import { brands } from "../../dummy_data/brands";
 import { useState } from "react";
 
-const BrandList = () => {
+const FamousBrands = () => {
   const [isShowMore, setIsShowMore] = useState<boolean>(false);
 
   return (
-    <section className="mx-auto mb-20 mt-12  w-[90%]  tracking-widest">
-      <h1 className="text-center font-heading text-3xl font-semibold lg:text-4xl">
+    <section className="mx-auto mb-20 mt-12 w-full px-2 lg:w-[90%]">
+      <h1 className="text-center font-heading text-3xl font-semibold tracking-widest lg:text-4xl">
         Famous Brands
       </h1>
 
@@ -16,12 +16,12 @@ const BrandList = () => {
           isShowMore ? "show-less h-fit" : "show-more h-[400px]"
         }`}
       >
-        {brandsLogo.map((logo, index) => (
+        {brands.map((item, index) => (
           <div
             key={index}
-            className="flex h-[200px] w-[200px] justify-center rounded-md border border-[#959191]"
+            className="flex justify-center rounded-md border border-[#959191]"
           >
-            <BrandItem logo={logo} />
+            <BrandItem logo={item.logo} name={item.name} />
           </div>
         ))}
       </div>
@@ -36,4 +36,4 @@ const BrandList = () => {
   );
 };
 
-export default BrandList;
+export default FamousBrands;
