@@ -22,6 +22,8 @@ import Brands from "./pages/Brands";
 import WishList from "./pages/WishList";
 import { SkeletonTheme } from "react-loading-skeleton";
 import CheckOut from "./pages/CheckOut";
+import OrderSuccess from "./pages/OrderSuccess";
+import requestAPI from "./helpers/api";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -35,8 +37,20 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(
     !!localStorage.getItem("accessToken"),
   );
-  const handleLoginSuccess = () => {
+  const handleLoginSuccess = async () => {
     setIsLoggedIn(true);
+    const res = await requestAPI("/user/wishlist", {}, "get");
+    const items = res.data.metadata.wishListData.items;
+
+    localStorage.setItem(
+      "wishlist_items",
+      JSON.stringify(Object.keys(items).length === 0 ? [] : [...items]),
+    );
+    localStorage.setItem(
+      "wishlistCount",
+      JSON.stringify(Object.keys(items).length),
+    );
+    window.dispatchEvent(new Event("storage"));
   };
 
   function ProtectedRoute({ children }: { children: ReactNode }) {
@@ -67,6 +81,7 @@ function App() {
                 <Route path="/shop/:page" element={<ProductList />} />
               </Route>
               <Route path="checkout" element={<CheckOut />} />
+              <Route path="order-success" element={<OrderSuccess />} />
               <Route path="product/detail/:pid" element={<ProductDetail />} />
               <Route path="blog" element={<Blog />} />
               <Route
