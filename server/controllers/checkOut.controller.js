@@ -4,53 +4,9 @@ const { findCartById, getMiniCartById } = require("../models/reposities/cart.rep
 const CheckoutService = require("../services/checkOut.service");
 const { findUserById } = require("../models/reposities/user.repo");
 const { BadRequestError, ServerError } = require("../helpers/error.response");
-const stripeAPI = require('stripe');
-const CartService = require("../services/cart.service");
-const converterHelper = require("../helpers/converter.helper");
-let stripeGateway = stripeAPI(process.env.STRIPE_SECRET_KEY);
+const { createStripeSession } = require("../utils/payment.utils");
 
-const createStripeSession = async (options) => {
-    try {
-        const { items, success_url, cancel_url } = options;
-
-        const lineItems = items.map((item) => {
-            const unitAmount = Math.round(item.price * 100);
-            return {
-                price_data: {
-                    currency: 'usd',
-                    
-                    product_data: {
-                        name: item.name,
-                        images: [item.image || 'https://react.semantic-ui.com/images/wireframe/square-image.png'],
-                    },
-                    unit_amount: unitAmount,
-                },
-                quantity: item.quantity,
-            };
-        });
-
-        // console.log(lineItems);
-
-        const session = await stripeGateway.checkout.sessions.create({
-            payment_method_types: ['card'],
-            mode: 'payment',
-            success_url: success_url,
-            cancel_url: cancel_url,
-            line_items:lineItems,
-            //  Asking address in Stripe
-            billing_address_collection: 'required',
-        });
-
-        // console.log('Stripe Payment Created');
-
-        return session.url;
-    } catch (error) {
-        console.log(error);
-        return undefined;
-    }
-};
-
-
+const SUPPORTED_PAYMENT_METHOD = {"COD":"cod-payment","Online":"online-payment"}
 
 class CheckoutController{
 
@@ -108,29 +64,54 @@ class CheckoutController{
             if(userCart.cartOwner.toString() != userInfo._id.toString()) throw new BadRequestError("This is not your cart")
             if(userCart.cartData.length <= 0 ) throw new BadRequestError("Your cart is empty")
 
-            checkOutOrder = await CheckoutService.CheckOut(userInfo, userCart, orderPayment ,{receiverInfo, voucherCode});
-
-            if(checkOutOrder) await CartService.deleteAllItems(userInfo._id);
+            //checkOutOrder = await CheckoutService.CheckOut(userInfo, userCart, orderPayment ,{receiverInfo, voucherCode});
+            checkOutOrder="abc"
+            //if(checkOutOrder) await CartService.deleteAllItems(userInfo._id);
         }
 
         if(checkOutOrder)
         {   
             let {ownerType,
-                createdAt, 
                 updatedAt, 
                 orderStatus, 
                 __v, 
                 _id, 
                 orderProducts ,
                 ...metaDataBody } = checkOutOrder
-            new responseHelper.CREATED({
-                metadata:{
-                    orderId: _id,
-                    orderProducts: userCart.cartData.map(({inStock, ...rest} )=> rest),
-                    ...metaDataBody,
-                   
-                }
-            }).send(res)
+
+            switch (orderPayment) {
+                case SUPPORTED_PAYMENT_METHOD.COD:
+                    new responseHelper.CREATED({
+                        metadata:{
+                            orderId: _id,
+                            orderProducts: userCart.cartData.map(({inStock, ...rest} )=> rest),
+                            ...metaDataBody,
+                        }
+                    }).send(res)
+                    break;
+                case SUPPORTED_PAYMENT_METHOD.Online:
+                    console.log(userCart);
+                    const stripeSession = await createStripeSession(userCart.cartData)
+                    console.log(stripeSession);
+                    new responseHelper.REDIRECT({
+                        metadata:{
+                           paymentURL: stripeSession
+                        }
+                    }).send(res)
+                    break;
+                default:
+                    new responseHelper.CREATED({
+                        metadata:{
+                            orderId: _id,
+                            orderProducts: userCart.cartData.map(({inStock, ...rest} )=> rest),
+                            ...metaDataBody,
+                        }
+                    }).send(res)
+                    break;
+            }
+
+            
+            
         }
         else
         {

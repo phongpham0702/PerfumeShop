@@ -48,9 +48,20 @@ class CREATED extends SuccessResponse{
 
 }
 
+class REDIRECT extends SuccessResponse{
+    constructor({
+        message,
+        statusCode = HTTP_STATUS_CODE.StatusCodes.TEMPORARY_REDIRECT,
+        reasonStatusCode = HTTP_STATUS_CODE.StatusCodes.TEMPORARY_REDIRECT,
+        metadata = {}
+    }) {
+        super({message,statusCode, reasonStatusCode, metadata})
+    }
+}
 
 module.exports = {
     SuccessResponse,
     CREATED,
-    OK
+    OK,
+    REDIRECT
 }
