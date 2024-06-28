@@ -1,13 +1,12 @@
-const stripeAPI = require('stripe');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
-const stripeGateway = stripeAPI(process.env.STRIPE_SECRET_KEY);
 
-const createStripeSession = async (cart, discount = 0) => {
+const createStripeSession = async (orderId, cart, voucher = null) => {
     try {
         
         const cartData = cart
         const lineItems = cartData.map((item) => {
-            console.log(item);
+            
             return {
                 price_data: {
                     currency: 'usd',
@@ -21,28 +20,26 @@ const createStripeSession = async (cart, discount = 0) => {
             };
         });
 
-        const coupon = await stripeGateway.coupons.create({
-            name:"Voucher the coffee day",
+        const coupon = voucher.discount_value ? await stripe.coupons.create({
+            name: voucher.name ? voucher.name : "Discount voucher",
             currency:"usd",
-            amount_off: 20 * 100,
+            amount_off: voucher.discount_value * 100,
             duration: 'once',
-            "max_redemptions": 1,
-          });
-        console.log(coupon);
-        console.log(lineItems);
-
-        const session = await stripeGateway.checkout.sessions.create({
+            max_redemptions: 1,
+          }) : null ;
+   
+        const session = await stripe.checkout.sessions.create({
 
             payment_method_types: ['card'],
             mode: 'payment',
-            discounts: [{
-                coupon: "JYWn7Y2a"
+            discounts: coupon ? [{
+                coupon: coupon.id
                 
-            }],
-            success_url: process.env.ORDER_SUCCESS,
+            }] : undefined,
+            success_url: `${process.env.ORDER_SUCCESS}/?token=${orderId}&vid=${coupon?coupon.id:""}`,
             cancel_url: process.env.ORDER_FAIL,
             line_items: lineItems,
-
+        
             //  Asking address in Stripe
             billing_address_collection: 'required',
         });
@@ -55,23 +52,5 @@ const createStripeSession = async (cart, discount = 0) => {
         return null;
     }
 };
-
-async function testStripe() {
-    const rate = await exchangeRate('vnd', 'usd');
-    let result = await createStripeSession({
-        items: [
-            {
-                name: 'Product test',
-                price: 215000 * rate,
-                quantity: 2,
-                image: 'https://tressays.files.wordpress.com/2015/09/test-clip-art-cpa-school-test.png',
-            },
-        ],
-        success_url: 'http://localhost:3000/success',
-        cancel_url: 'http://localhost:3000/fail',
-    });
-
-    console.log(result);
-}
 
 module.exports = { createStripeSession };

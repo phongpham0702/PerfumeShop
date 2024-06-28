@@ -64,8 +64,8 @@ class CheckoutController{
             if(userCart.cartOwner.toString() != userInfo._id.toString()) throw new BadRequestError("This is not your cart")
             if(userCart.cartData.length <= 0 ) throw new BadRequestError("Your cart is empty")
 
-            //checkOutOrder = await CheckoutService.CheckOut(userInfo, userCart, orderPayment ,{receiverInfo, voucherCode});
-            checkOutOrder="abc"
+            checkOutOrder = await CheckoutService.CheckOut(userInfo, userCart, orderPayment ,{receiverInfo, voucherCode});
+            
             //if(checkOutOrder) await CartService.deleteAllItems(userInfo._id);
         }
 
@@ -90,9 +90,14 @@ class CheckoutController{
                     }).send(res)
                     break;
                 case SUPPORTED_PAYMENT_METHOD.Online:
-                    console.log(userCart);
-                    const stripeSession = await createStripeSession(userCart.cartData)
-                    console.log(stripeSession);
+                    
+                    const voucher = {
+                        name : checkOutOrder.applyVoucherTitle,
+                        discount_value: checkOutOrder.discount
+                    }
+                    
+                    const stripeSession = await createStripeSession(checkOutOrder._id,userCart.cartData, voucher);
+                    
                     new responseHelper.REDIRECT({
                         metadata:{
                            paymentURL: stripeSession
