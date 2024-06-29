@@ -9,6 +9,9 @@ const checkOutValidator = require("../controllers/validators/checkOut.validator"
 router.route("/success")
 .get(errorHandler(checkOutController.onlinePaymentSuccess))
 
+router.route("/fail")
+.get(errorHandler(checkOutController.onlinePaymentFail))
+
 router.use(errorHandler(isLogin))
 
 router.route("/")
@@ -17,8 +20,7 @@ router.route("/")
 
 
 
-router.route("/fail")
-.get()
+
 
 
 module.exports = router;

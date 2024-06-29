@@ -52,22 +52,22 @@ class CheckoutController{
         }
         else
         {
-            const userInfo = await findUserById(req.userid,{
+            let foundUserId = await findUserById(req.userid,{
                 _id:1,
-                Email: 1
             })
-            if(!userInfo) throw new BadRequestError("Cannot find user information")
+            foundUserId = foundUserId._id
+            
+            if(!foundUserId) throw new BadRequestError("Cannot find user information")
             
             userCart = await getMiniCartById({cartId})
             
             if(!userCart) throw new BadRequestError("Cannot find user cart")
             
-            if(userCart.cartOwner.toString() != userInfo._id.toString()) throw new BadRequestError("This is not your cart")
+            if(userCart.cartOwner.toString() != foundUserId.toString()) throw new BadRequestError("This is not your cart")
             if(userCart.cartData.length <= 0 ) throw new BadRequestError("Your cart is empty")
 
-            checkOutOrder = await CheckoutService.CheckOut(userInfo, userCart, orderPayment ,{receiverInfo, voucherCode});
+            checkOutOrder = await CheckoutService.CheckOut(foundUserId, userCart, orderPayment ,{receiverInfo, voucherCode});
             
-            //if(checkOutOrder) await CartService.deleteAllItems(userInfo._id);
         }
 
         if(checkOutOrder)
@@ -82,6 +82,9 @@ class CheckoutController{
 
             switch (orderPayment) {
                 case SUPPORTED_PAYMENT_METHOD.COD:
+
+                    //if(checkOutOrder) await CartService.deleteAllItems(userInfo._id);
+
                     new responseHelper.CREATED({
                         metadata:{
                             orderId: _id,
@@ -96,7 +99,7 @@ class CheckoutController{
                         name : checkOutOrder.applyVoucherTitle,
                         discount_value: checkOutOrder.discount
                     }
-                    
+
                     const stripeSession = await createStripeSession(checkOutOrder._id,userCart.cartData, voucher);
                     
                     new responseHelper.REDIRECT({
@@ -129,6 +132,14 @@ class CheckoutController{
         const {token,vid} = req.query;
         new responseHelper.OK({
             metadata: await CheckoutService.HandleOnlinePaymentSuccess(token, vid)
+        }).send(res);
+
+    }
+
+    onlinePaymentFail = async(req,res,next) => {
+        const {token,vid} = req.query;
+        new responseHelper.OK({
+            metadata: await CheckoutService.HandleOnlinePaymentFail(token, vid)
         }).send(res);
 
     }

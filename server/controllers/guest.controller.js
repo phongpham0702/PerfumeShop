@@ -2,7 +2,7 @@ const {validationResult} = require('express-validator');
 const { BadRequestError, ServerError } = require('../helpers/error.response');
 const responseHelper = require("../helpers/success.response");
 const GuestService = require('../services/guest.service');
-const {encrypt} = require("../utils/encrypt.util");
+//const {encrypt} = require("../utils/encrypt.util");
 
 const CART_EXIST_TIME = 1;                                                                            
 
@@ -26,7 +26,7 @@ class GuestController {
             const userCart= await GuestService.AddToCart(req.cartHash,productData.productId, productData.modelId, quantity);
                                                                                                                                                                                                                                                                                 
             if(!userCart) throw new ServerError();
-            let newCartHash = encrypt(JSON.stringify(userCart))
+            //let newCartHash = encrypt(JSON.stringify(userCart))
             console.log(userCart);
             res.cookie("cart-hash",newCartHash,{
                 httpOnly:true,

@@ -6,6 +6,7 @@ const OrderService = require("./orders.service");
 const databaseInstance = require("../dbs/init.db");
 const OrderModel = require("../models/order.model");
 const converterHelper = require("../helpers/converter.helper");
+const ProductModel = require("../models/product");
 
 
 class CheckoutService {
@@ -49,7 +50,7 @@ class CheckoutService {
         return order
     }
 
-    static async CheckOut(userInfo, 
+    static async CheckOut(ownerId = "", 
         userCart, 
         paymentMethod,
         additionInfo ={receiverInfo ,voucherCode})
@@ -69,7 +70,7 @@ class CheckoutService {
         //check voucher
         let checkVoucherResult = null
         if(additionInfo.voucherCode !== "" && additionInfo.voucherCode){
-            checkVoucherResult = await VoucherService.checkVoucher(userInfo._id.toString(), cartTotal, additionInfo.voucherCode, true);
+            checkVoucherResult = await VoucherService.checkVoucher(ownerId.toString(), cartTotal, additionInfo.voucherCode, true);
         }
         
         if(checkVoucherResult && !checkVoucherResult.checkResult.isValid){
@@ -86,7 +87,7 @@ class CheckoutService {
            
             //Create order
             const order = await OrderService.CreateOrder({
-                ownerId: userInfo._id,
+                ownerId: ownerId,
                 receiverData: additionInfo.receiverInfo,
                 userCartData: userCart,
                 voucherData: checkVoucherResult,
@@ -154,6 +155,39 @@ class CheckoutService {
             orderProducts: orderBodyData,
             ...metaDataBody
         }
+
+    }
+
+    static async HandleOnlinePaymentFail(orderId ,vid = null){
+        let foundOrder = await OrderModel.findOneAndDelete({
+            _id: converterHelper.toObjectIdMongo(orderId),
+            orderStatus: "pay-pending"
+        })
+
+        if(!foundOrder) throw new BadRequestError("No order found");
+
+        let bulkOps = foundOrder.orderProducts.map((product) => {
+            let productIdMongo = converterHelper.toObjectIdMongo(product.productId)
+            let modelIdMongo = converterHelper.toObjectIdMongo(product.modelId)
+            return{
+                "updateOne":{
+                    filter:{"_id": productIdMongo, "priceScale._id": modelIdMongo },
+                    update:{ "$inc":{
+                            "sold": - product.quantity,
+                            "priceScale.$.inStock": product.quantity
+                        } 
+                    }
+                }
+            }
+        })
+
+        await ProductModel.bulkWrite(bulkOps);
+
+        return {
+            cancelResult: "Your order has been cancelled"
+        }
+
+        
 
     }
 }

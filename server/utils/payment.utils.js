@@ -27,7 +27,7 @@ const createStripeSession = async (orderId, cart, voucher = null) => {
             duration: 'once',
             max_redemptions: 1,
           }) : null ;
-   
+        
         const session = await stripe.checkout.sessions.create({
 
             payment_method_types: ['card'],
@@ -42,6 +42,7 @@ const createStripeSession = async (orderId, cart, voucher = null) => {
         
             //  Asking address in Stripe
             billing_address_collection: 'required',
+            expires_at: new Date(Date.now() + 30* 60000)
         });
 
         return session.url;

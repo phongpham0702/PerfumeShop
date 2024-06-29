@@ -1,5 +1,5 @@
 const { randomBytes } = require("crypto")
-const { decrypt } = require("../utils/encrypt.util")
+//const { decrypt } = require("../utils/encrypt.util")
 const {v4: uuidv4} = require("uuid")
 
 class GuestService{
@@ -28,8 +28,8 @@ class GuestService{
         }
         else
         {
-            let userCart = decrypt(cartHash)
-            console.log(userCart);
+            // let userCart = decrypt(cartHash)
+            // console.log(userCart);
             return "abc";
         }
        
