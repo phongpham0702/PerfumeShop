@@ -16,7 +16,9 @@ const TabNavItem = ({ nav }: propsType) => {
   return (
     <div
       onClick={handleClick}
-      className={`cursor-pointer ${activeTab === id ? "font-bold" : ""}`}
+      className={`w-full cursor-pointer ${
+        activeTab === id ? "bg-[#f8b500]" : ""
+      }`}
     >
       {title}
     </div>

@@ -98,13 +98,15 @@ const CheckOut = () => {
       );
       toast.success("Order completed successfully");
       localStorage.removeItem("cartCount");
-      console.log(data);
+      window.dispatchEvent(new Event("storage"));
 
       navigate("/order-success", { state: { invoice: data?.data?.metadata } });
       setIsOpenConfirm(false);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      toast.error(error?.response?.data.message);
+      error?.response?.data.message === 307
+        ? (window.location.href = error?.response?.data.metadata.paymentURL)
+        : toast.error(error?.response?.data.message);
     }
   };
 

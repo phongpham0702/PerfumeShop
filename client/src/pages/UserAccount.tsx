@@ -3,10 +3,12 @@ import {
   AiOutlineBook,
   AiOutlineInfoCircle,
   AiOutlineLogout,
+  AiOutlineMail,
   AiOutlineUser,
+  AiTwotoneLock,
 } from "react-icons/ai";
 import TabHR from "../ui/Tabs/TabHR";
-import { BiLockAlt } from "react-icons/bi";
+import { BiLockAlt, BiHide, BiShowAlt } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import AddAddressModal from "../components/user/AddAddressModal";
@@ -22,7 +24,13 @@ const UserAccount = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [editState, setEditState] = useState({ isOpen: false, id: "" });
   const [isOpenConfirm, setIsOpenConfirm] = useState<boolean>(false);
+  const [isOpenLogoutConfirm, setIsOpenLogoutConfirm] =
+    useState<boolean>(false);
   const [deleteID, setDeleteID] = useState<string>("");
+  const [curPass, setCurPass] = useState<string>("");
+  const [newPass, setNewPass] = useState<string>("");
+  const [isShowPass, setIsShowPass] = useState<boolean>(false);
+  const [confirmNewPass, setConfirmNewPass] = useState<string>("");
   const { data } = useQuery({
     queryKey: ["user profile"],
     queryFn: () => requestAPI(`/user/profile`, {}, "GET"),
@@ -45,6 +53,47 @@ const UserAccount = () => {
       setIsOpenConfirm(false);
       queryClient.invalidateQueries({ queryKey: ["user profile"] });
       toast.success("Delete address successfully");
+    },
+  });
+  const handleLogout = async () => {
+    await requestAPI("/user/logout", {}, "GET");
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("cartCount");
+    localStorage.removeItem("wishlistCount");
+    window.dispatchEvent(new Event("storage"));
+    navigate("/login");
+    toast.success("Logout successfully");
+  };
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await requestAPI(
+        "/user/change-password",
+        {
+          oldPassword: curPass,
+          newPassword: newPass,
+          rePassword: confirmNewPass,
+        },
+        "POST",
+      );
+      setCurPass("");
+      setNewPass("");
+      setConfirmNewPass("");
+      toast.success("Change password successfully");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      toast.error(error.response.data.message);
+    }
+  };
+
+  const { mutate: mutateDefaultAddress } = useMutation({
+    mutationFn: (id: string) =>
+      requestAPI("/user/address/default", {}, "GET", { default: id }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["user profile"] });
+      toast.success("Set default address successfully");
     },
   });
 
@@ -105,15 +154,7 @@ const UserAccount = () => {
       id: "tab5",
       title: (
         <div
-          onClick={async () => {
-            await requestAPI("/user/logout", {}, "GET");
-            localStorage.removeItem("accessToken");
-            localStorage.removeItem("cartCount");
-            localStorage.removeItem("wishlistCount");
-            window.dispatchEvent(new Event("storage"));
-            navigate("/login");
-            toast.success("Logout successfully");
-          }}
+          onClick={() => setIsOpenLogoutConfirm(true)}
           className="flex items-center gap-2 p-3 text-lg"
         >
           <span className="text-xl">
@@ -132,7 +173,9 @@ const UserAccount = () => {
       activeTab,
       children: (
         <div className="p-4">
-          <p className="mb-10 text-2xl font-bold">Welcome "Username"</p>
+          <p className="mb-10 text-2xl font-bold">
+            {"Welcome " + userProfile?.FullName}
+          </p>
           <div className="flex justify-center gap-6">
             <div className="flex w-[20%] flex-col items-center justify-center border border-[#ccc4c4] px-6 py-4">
               <img src="./images/total-order.png" className="w-[60px]" alt="" />
@@ -194,6 +237,20 @@ const UserAccount = () => {
               {userProfile?.Addresses.map((item: IAddress) => (
                 <div key={item._id} className="flex justify-between p-4">
                   <div>
+                    <p className="text-sm text-[#112dcc]">
+                      {item._id === userProfile.defaultAddress ? (
+                        "Default"
+                      ) : (
+                        <span
+                          className="cursor-pointer text-[#112dcc] hover:underline"
+                          onClick={async () =>
+                            mutateDefaultAddress(item?._id || "")
+                          }
+                        >
+                          Set as Default
+                        </span>
+                      )}
+                    </p>
                     <div className="flex gap-4">
                       <p className="font-semibold">{item.receiverName}</p> |
                       <p>{item.receiverPhoneNumber}</p> |
@@ -236,7 +293,62 @@ const UserAccount = () => {
       activeTab,
       children: (
         <>
-          <p>Change Password</p>
+          <form
+            onSubmit={handleChangePassword}
+            className="mx-auto mt-4 flex w-[96%] flex-col items-center gap-6 rounded-sm p-4 font-space  sm:w-[600px]"
+          >
+            <div className="mx-auto flex w-[98%] items-center gap-2 rounded-sm border border-[#d5cfcf] p-2 px-4 text-sm sm:w-[80%] sm:text-lg">
+              <AiOutlineMail />
+              <input
+                className="w-full p-2 outline-none"
+                placeholder="Enter your old password"
+                type={isShowPass ? "text" : "password"}
+                name="oldPassword"
+                value={curPass}
+                onChange={(e) => setCurPass(e.target.value)}
+                required
+              />
+            </div>
+            <div className="mx-auto flex w-[98%] items-center gap-2 rounded-sm border border-[#d5cfcf] p-2 px-4 text-sm sm:w-[80%] sm:text-lg">
+              <AiTwotoneLock />
+              <input
+                className="w-full p-2 outline-none"
+                type={isShowPass ? "text" : "password"}
+                placeholder="New password"
+                name="newPassword"
+                value={newPass}
+                onChange={(e) => setNewPass(e.target.value)}
+                required
+              />
+            </div>
+            <div className="gap2 mx-auto flex w-[98%] items-center rounded-sm border border-[#d5cfcf] p-2 px-4 text-sm sm:w-[80%] sm:text-lg">
+              <AiTwotoneLock />
+              <input
+                className="w-full p-2 outline-none"
+                type={isShowPass ? "text" : "password"}
+                name="rePassword"
+                placeholder="Confirm password"
+                value={confirmNewPass}
+                onChange={(e) => setConfirmNewPass(e.target.value)}
+                required
+              />
+            </div>
+            <div
+              className="flex cursor-pointer items-center gap-2"
+              onClick={() => setIsShowPass((prev) => !prev)}
+            >
+              <button type="button">
+                {isShowPass ? <BiHide /> : <BiShowAlt />}
+              </button>
+              <span>{isShowPass ? "Hide password" : "Show password"}</span>
+            </div>
+            <button
+              type="submit"
+              className=" mt-2 w-[98%] bg-[#f50963] p-3 text-sm font-bold text-white transition-all duration-300 hover:bg-[#181717] sm:w-[80%] sm:text-lg"
+            >
+              Update
+            </button>
+          </form>
         </>
       ),
     },
@@ -264,6 +376,11 @@ const UserAccount = () => {
         modalIsOpen={isOpenConfirm}
         closeModal={() => setIsOpenConfirm(false)}
         onOk={mutateDelete}
+      />
+      <ConfirmModal
+        modalIsOpen={isOpenLogoutConfirm}
+        closeModal={() => setIsOpenLogoutConfirm(false)}
+        onOk={handleLogout}
       />
     </div>
   );

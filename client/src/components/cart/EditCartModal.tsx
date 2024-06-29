@@ -14,8 +14,8 @@ type ModalProps = {
 };
 
 const EditCartModal = ({ modalIsOpen, item, closeModal }: ModalProps) => {
-  const [quantity, setQuantity] = useState<number>(item?.quantity);
-  const [capacity, setCapacity] = useState<string>(item?.modelId);
+  const [quantity, setQuantity] = useState<number>(item?.quantity || 0);
+  const [capacity, setCapacity] = useState<string>(item?.modelId || "");
 
   const queryClient = useQueryClient();
   const { mutate } = useMutation({
@@ -38,7 +38,7 @@ const EditCartModal = ({ modalIsOpen, item, closeModal }: ModalProps) => {
       localStorage.setItem(
         "cartCount",
         quantity -
-          item.quantity +
+          (item.quantity || 0) +
           JSON.parse(localStorage.getItem("cartCount") || "0"),
       );
       window.dispatchEvent(new Event("storage"));
@@ -64,7 +64,7 @@ const EditCartModal = ({ modalIsOpen, item, closeModal }: ModalProps) => {
         <div className="flex min-w-[50%] select-none flex-col gap-6 sm:pr-10">
           <p className="text-xl font-medium">{item?.productName}</p>
           <div className="flex select-none gap-4">
-            {item?.priceScale.map((priceScale) => (
+            {item?.priceScale?.map((priceScale) => (
               <div
                 key={priceScale._id}
                 onClick={() => setCapacity(priceScale._id)}

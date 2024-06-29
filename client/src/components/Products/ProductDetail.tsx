@@ -40,6 +40,10 @@ const ProductDetail = () => {
   const [capacity, setCapacity] = useState<string>("");
 
   useEffect(() => {
+    setQuantity(1);
+    isFavorite.current = false;
+    setActiveTab("tab1");
+
     setCapacity(product?.priceScale.sort((a, b) => a.price - b.price)[0]._id);
     setInStock(
       product?.priceScale.sort((a, b) => a.price - b.price)[0].inStock,
@@ -53,9 +57,19 @@ const ProductDetail = () => {
   const mutate = useAddToCart({ _id: product?._id, capacity, quantity });
 
   const navs = [
-    { id: "tab1", title: <p>Sent</p>, activeTab, setActiveTab },
-    { id: "tab2", title: <p>Feature</p>, activeTab, setActiveTab },
-    { id: "tab3", title: <p>Suggest</p>, activeTab, setActiveTab },
+    { id: "tab1", title: <p className="p-3">Sent</p>, activeTab, setActiveTab },
+    {
+      id: "tab2",
+      title: <p className="p-3">Feature</p>,
+      activeTab,
+      setActiveTab,
+    },
+    {
+      id: "tab3",
+      title: <p className="p-3">Suggest</p>,
+      activeTab,
+      setActiveTab,
+    },
   ];
 
   const contents = [

@@ -21,16 +21,17 @@ type propsType = {
 
 const TabHR = ({ navs, contents }: propsType) => {
   return (
-    <div className="mt-10 flex w-full justify-between font-inter">
-      <div className="w-[20%] bg-[#ffffff] shadow-xl">
+    <div className="mt-10 flex w-full flex-wrap justify-between font-inter">
+      <div className="mb-2 flex w-full justify-between bg-[#fbfbea]  xl:block xl:w-[22%]">
         {navs.map((nav) => (
           <div key={nav.id}>
             <TabNavItem nav={nav} />
           </div>
         ))}
       </div>
+      <hr className="border-1 border-dashed border-[#333]" />
 
-      <div className="w-[75%] bg-[#ffffff] shadow-xl">
+      <div className="w-full bg-[#ffffff] xl:w-[75%]">
         {contents.map((content) => (
           <div key={content.id}>
             <TabContent key={content.id} content={content} />

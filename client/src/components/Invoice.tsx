@@ -37,24 +37,24 @@ const Invoice = ({ invoice }: InvoiceProps) => {
       <div className="grid grid-cols-10">
         <div className=" col-span-10 mb-8 xl:col-span-5 xl:m-0">
           {invoice?.orderProducts.map((item) => (
-            <div key={item.productId}>
+            <div key={item?.productId}>
               <div className="my-2 flex gap-6">
                 <div className="flex w-[100px] items-center py-4">
                   <img
                     className="max-h-[100px] w-full min-w-[100px]"
-                    src={item.productThumbnail}
+                    src={item?.productThumbnail}
                     alt="item thumbnail"
                   />
                 </div>
                 <div className="flex w-full items-end justify-between pr-4">
                   <div>
                     <div className="flex items-center gap-2 text-lg font-medium">
-                      <span className="">{item.productName}</span>
+                      <span className="">{item?.productName}</span>
                     </div>
 
                     <div className="mt-2 flex flex-col gap-1">
-                      <span>Capacity: {item.productCapacity}</span>
-                      <p>Quantity: {item.quantity}</p>
+                      <span>Capacity: {item?.productCapacity}</span>
+                      <p>Quantity: {item?.quantity}</p>
                       <p>
                         Unit price:{" "}
                         {item?.unitPrice?.toLocaleString("en-US", {
@@ -83,51 +83,51 @@ const Invoice = ({ invoice }: InvoiceProps) => {
 
         <div className="col-span-10 flex flex-col gap-2 bg-[#efefef] p-6 text-lg xl:col-span-5">
           <p>
-            <span className="font-medium">Order ID: </span> {invoice.orderId}
+            <span className="font-medium">Order ID: </span> {invoice?.orderId}
           </p>
           <hr className="border-1 border-dashed border-[#333]" />
 
           <p>
             <span className="font-medium">Receiver: </span>
-            {invoice.receiverName}
+            {invoice?.receiverName}
           </p>
           <p>
             <span className="font-medium">Email: </span>
-            {invoice.receiverEmail}
+            {invoice?.receiverEmail}
           </p>
           <p>
             <span className="font-medium">Phone: </span>
-            {invoice.receiverPhone}
+            {invoice?.receiverPhone}
           </p>
           <p>
             <span className="font-medium">Address: </span>{" "}
-            {invoice.receiverAddress}
+            {invoice?.receiverAddress}
           </p>
           <p>
             <span className="font-medium">Product Count: </span>
-            {invoice.productCount}
+            {invoice?.productCount}
           </p>
-          {invoice.applyVoucherTitle && (
+          {invoice?.applyVoucherTitle && (
             <>
               <p>
                 <span className="font-medium">Apply Voucher Title: </span>
-                {invoice.applyVoucherTitle}
+                {invoice?.applyVoucherTitle}
               </p>
               <p>
                 <span className="font-medium">Discount: </span>
-                {invoice.discount}
+                {invoice?.discount}
               </p>
             </>
           )}
           <p>
             <span className="font-medium">Payment method: </span>{" "}
-            {invoice.orderPayment === "cod-payment"
+            {invoice?.orderPayment === "cod-payment"
               ? "Cash on delivery - COD"
               : "CARD"}
           </p>
           <p>
             <span className="font-medium">Sub Total: </span>{" "}
-            {invoice.subTotal.toLocaleString("en-US", {
+            {invoice?.subTotal.toLocaleString("en-US", {
               style: "currency",
               currency: "USD",
             })}
@@ -135,7 +135,7 @@ const Invoice = ({ invoice }: InvoiceProps) => {
           <hr className="border-1 border-dashed border-[#333]" />
           <p className="text-xl">
             <span className="font-medium">Total: </span>{" "}
-            {invoice.total.toLocaleString("en-US", {
+            {invoice?.total.toLocaleString("en-US", {
               style: "currency",
               currency: "USD",
             })}

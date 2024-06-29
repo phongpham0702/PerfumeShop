@@ -24,6 +24,9 @@ import { SkeletonTheme } from "react-loading-skeleton";
 import CheckOut from "./pages/CheckOut";
 import OrderSuccess from "./pages/OrderSuccess";
 import requestAPI from "./helpers/api";
+import OrderFail from "./pages/OrderFail";
+import AdminLogin from "./pages/AdminLogin";
+import LuxeAdmin from "./pages/LuxeAdmin";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -34,6 +37,7 @@ const queryClient = new QueryClient({
 });
 
 function App() {
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(
     !!localStorage.getItem("accessToken"),
   );
@@ -53,17 +57,33 @@ function App() {
     window.dispatchEvent(new Event("storage"));
   };
 
+  const handleAdminLoginSuccess = async () => {
+    setIsAdminLoggedIn(true);
+  };
+
   function ProtectedRoute({ children }: { children: ReactNode }) {
     useEffect(() => {
       const storeToken = localStorage.getItem("accessToken");
-      setIsLoggedIn(!!storeToken);
+      setIsAdminLoggedIn(!!storeToken);
     }, []);
-    if (!isLoggedIn) {
+    if (!isAdminLoggedIn) {
       return <Navigate to="/login" replace />;
     }
 
     return children;
   }
+  function ProtectedAdminRoute({ children }: { children: ReactNode }) {
+    useEffect(() => {
+      const storeToken = localStorage.getItem("accessToken");
+      setIsLoggedIn(!!storeToken);
+    }, []);
+    if (!isLoggedIn) {
+      return <Navigate to="/luxe-admin-login" replace />;
+    }
+
+    return children;
+  }
+
   return (
     <SkeletonTheme baseColor="#ccc" highlightColor="#aaa">
       <QueryClientProvider client={queryClient}>
@@ -82,6 +102,7 @@ function App() {
               </Route>
               <Route path="checkout" element={<CheckOut />} />
               <Route path="order-success" element={<OrderSuccess />} />
+              <Route path="order-fail" element={<OrderFail />} />
               <Route path="product/detail/:pid" element={<ProductDetail />} />
               <Route path="blog" element={<Blog />} />
               <Route
@@ -92,6 +113,7 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+
               <Route
                 path="cart"
                 element={
@@ -110,12 +132,26 @@ function App() {
                 }
               />
               <Route path="signup" element={<SignUp />} />
+
               <Route
                 path="login"
                 element={<Login onLoginSuccess={handleLoginSuccess} />}
               />
               <Route path="*" element={<NotFound />} />
             </Route>
+            <Route
+              index
+              path="luxe-admin"
+              element={
+                <ProtectedAdminRoute>
+                  <LuxeAdmin />
+                </ProtectedAdminRoute>
+              }
+            />
+            <Route
+              path="luxe-admin-login"
+              element={<AdminLogin onLoginSuccess={handleAdminLoginSuccess} />}
+            />
           </Routes>
         </BrowserRouter>
         <Toaster
