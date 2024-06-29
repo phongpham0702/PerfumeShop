@@ -94,8 +94,8 @@ class CheckoutService {
                 subTotal: cartTotal,
                 payment: paymentMethod
             }, transactionSession) 
-            await transactionSession.abortTransaction(); 
-            //await transactionSession.commitTransaction();
+            //await transactionSession.abortTransaction(); 
+            await transactionSession.commitTransaction();
             console.log(`Order ${order[0]._id.toString()} created successfully`);
 
             return order[0].toObject();
