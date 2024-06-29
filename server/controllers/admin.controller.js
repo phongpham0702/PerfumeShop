@@ -14,7 +14,7 @@ class AdminController {
 
         new responseHelper.OK({
             metadata:{
-                adminToken
+                accessToken: adminToken
             }
         }).send(res);
 
