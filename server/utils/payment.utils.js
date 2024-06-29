@@ -37,14 +37,12 @@ const createStripeSession = async (orderId, cart, voucher = null) => {
                 
             }] : undefined,
             success_url: `${process.env.ORDER_SUCCESS}/?token=${orderId}&vid=${coupon?coupon.id:""}`,
-            cancel_url: process.env.ORDER_FAIL,
+            cancel_url: `${process.env.ORDER_FAIL}/?token=${orderId}&vid=${coupon?coupon.id:""}`,
             line_items: lineItems,
         
             //  Asking address in Stripe
             billing_address_collection: 'required',
         });
-
-        // console.log('Stripe Payment Created');
 
         return session.url;
     } catch (error) {

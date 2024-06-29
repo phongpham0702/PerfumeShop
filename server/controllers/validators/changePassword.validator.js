@@ -11,7 +11,7 @@ const changePasswordValidator = [
         'Please provide your current password'
     ),
 
-    body('Password')
+    body('newPassword')
     .notEmpty().withMessage(
         'Please fill in your password'
     )
@@ -25,7 +25,7 @@ const changePasswordValidator = [
         {
             throw new Error('Please confirm your password');
         }
-        if (value !== req.body.Password) {
+        if (value !== req.body.newPassword) {
             throw new Error('Confirm passwords does not match');
         }
         return true;

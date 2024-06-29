@@ -5,6 +5,7 @@ const CheckoutService = require("../services/checkOut.service");
 const { findUserById } = require("../models/reposities/user.repo");
 const { BadRequestError, ServerError } = require("../helpers/error.response");
 const { createStripeSession } = require("../utils/payment.utils");
+const OrderService = require("../services/orders.service");
 
 const SUPPORTED_PAYMENT_METHOD = {"COD":"cod-payment","Online":"online-payment"}
 
@@ -124,34 +125,12 @@ class CheckoutController{
         }
     }
 
-    test_payment = async()=>{
+    onlinePaymentSuccess = async(req,res,next) => {
+        const {token,vid} = req.query;
+        new responseHelper.OK({
+            metadata: await CheckoutService.HandleOnlinePaymentSuccess(token, vid)
+        }).send(res);
 
-        async function testStripe() {
-            //const rate = await exchangeRate('vnd', 'usd');
-            let result = await createStripeSession({
-                items: [
-                    {
-                        name: 'Ganymede',
-                        price: 215,
-                        quantity: 2,
-                        image: 'https://storage.googleapis.com/luxeperfume/images/product_images/marc-antoine-barrois/ganymede/photo_1.png',
-                    },
-                    {
-                        name: 'Ganymede',
-                        price: 215,
-                        quantity: 2,
-                        image: 'https://storage.googleapis.com/luxeperfume/images/product_images/marc-antoine-barrois/ganymede/photo_1.png',
-                    },
-                ],
-                success_url: 'http://localhost:3000/success',
-                cancel_url: 'http://localhost:3000/fail',
-            });
-        
-            console.log(result);
-        }
-        await testStripe();
-
-        return "Test stripe"
     }
 }
 

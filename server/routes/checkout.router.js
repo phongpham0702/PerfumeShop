@@ -6,13 +6,19 @@ const { errorHandler } = require("../helpers/error_handler");
 const { isLogin } = require("../utils/isLogin.util");
 const checkOutValidator = require("../controllers/validators/checkOut.validator");
 
+router.route("/success")
+.get(errorHandler(checkOutController.onlinePaymentSuccess))
+
 router.use(errorHandler(isLogin))
 
 router.route("/")
 .get(errorHandler(checkOutController.reviewOrder))
 .post(checkOutValidator, errorHandler(checkOutController.checkOut))
 
-router.route("/access-payment")
-.get(errorHandler(checkOutController.test_payment))
+
+
+router.route("/fail")
+.get()
+
 
 module.exports = router;

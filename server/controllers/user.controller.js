@@ -24,8 +24,8 @@ class UserController{
             throw new BadRequestError(checkResult.errors[0].msg)
         }
 
-        let {oldPassword,Password} = req.body
-        const changePasswordResult = await UserService.changePassword(req.userid,oldPassword,Password)
+        let {oldPassword,newPassword} = req.body
+        const changePasswordResult = await UserService.changePassword(req.userid,oldPassword,newPassword)
 
         /* Update new refresh token to key store */
         let userKeyStore = req.keyStore

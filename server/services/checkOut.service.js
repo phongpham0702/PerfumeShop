@@ -4,6 +4,8 @@ const { getUserCheckOutInfo } = require("../models/reposities/user.repo");
 const VoucherService = require("./voucher.service");
 const OrderService = require("./orders.service");
 const databaseInstance = require("../dbs/init.db");
+const OrderModel = require("../models/order.model");
+const converterHelper = require("../helpers/converter.helper");
 
 
 class CheckoutService {
@@ -109,6 +111,51 @@ class CheckoutService {
 
     }
 
+
+    static async HandleOnlinePaymentSuccess(orderId ,vid = null){
+        let foundOrder = await OrderModel.findOne({
+            _id: converterHelper.toObjectIdMongo(orderId)
+        })
+        .populate({
+            path:'orderProducts.productId',
+            select: ["productName","productBrand","productThumbnail","priceScale"]
+        })
+
+        foundOrder.orderStatus = "paid";
+        await foundOrder.save();
+
+        let {ownerType,
+            updatedAt, 
+            orderStatus, 
+            __v, 
+            _id, 
+            orderProducts ,
+            ...metaDataBody } = foundOrder._doc;
+
+        let orderBodyData = orderProducts.map((i) => {
+            let itemModel = i.productId.priceScale.find((m)=> {
+                return m._id.toString() == i.modelId.toString()
+            })
+            return {
+    
+                productId: i.productId._id.toString(),
+                modelId: i.modelId.toString(),
+                productName: i.productId.productName,
+                productBrand: i.productId.productBrand,
+                productThumbnail: i.productId.productThumbnail,
+                productCapacity: itemModel.capacity,
+                unitPrice: itemModel.price,
+                quantity: i.quantity
+            }
+        })
+
+        return {
+            orderId: foundOrder._id.toString(),
+            orderProducts: orderBodyData,
+            ...metaDataBody
+        }
+
+    }
 }
 
 
