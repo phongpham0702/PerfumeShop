@@ -150,6 +150,30 @@ class UserController{
             metadata: await UserService.removeFromWishList(req.userid,new Types.ObjectId(req.body.PID))
         }).send(res)
     }
+
+    getOrderHistory = async(req,res,next) => {
+
+        let {type, page} = req.query
+        page = parseInt(page);
+        
+        if(!type || typeof(type) !== "string") throw new BadRequestError();
+        if(!page || typeof(page) !== "number") throw new BadRequestError();
+
+        const acceptStatus = {
+            all: ["confirm-pending","paid","confirmed","in-delivery","complete"],
+            pending: ["confirm-pending"],
+            paid: ["paid"],
+            confirmed: ["confirmed"],
+            delivery: ["in-delivery"],
+            complete: ["complete"]
+        }
+        
+        const statusQuery = acceptStatus[type] ? acceptStatus[type]: acceptStatus["all"]
+
+        new responseHelper.SuccessResponse({
+            metadata: await UserService.getUserOrders(req.userid,page,statusQuery)
+        }).send(res)
+    }
 }
 
 

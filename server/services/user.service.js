@@ -5,6 +5,7 @@ const useraddressModel = require("../models/useraddress.model")
 const { findUserById } = require("../models/reposities/user.repo")
 const bcrypt = require("bcrypt")
 const { deleteAddressById, updateAddress } = require("../models/reposities/useraddresses.repo")
+const orderModel = require("../models/order.model")
 const addressLimit = 5
 
 class UserService{
@@ -278,6 +279,75 @@ class UserService{
             'message' : `Remove from wishlist success`
         }
 
+    }
+
+    getUserOrders = async(userID, page = 1 ,statusQuery = ["confirm","paid","confirmed","in-delivery","complete"]) => {
+
+        const orderPerPage = 5;
+        
+        const orderAmount = await orderModel.countDocuments({
+            ownerId: userID,
+            orderStatus:{
+                $in:statusQuery
+            }
+        })
+        
+        let allUserOrder = await orderModel.find({
+            ownerId: userID,
+            orderStatus:{
+                $in:statusQuery
+            }
+        },
+        {
+            orderStatus: 1, 
+            total: 1,
+            createdAt: 1,
+            orderPayment: 1,
+            orderProducts: 1})
+        .sort({createdAt : -1})
+        .skip((orderPerPage * page) - orderPerPage)
+        .limit(orderPerPage)    
+        .populate({
+            path:'orderProducts.productId',
+            select:["productName","priceScale"]
+        }).lean()
+
+        if(!allUserOrder){
+            return{
+                orders: []
+            }
+        }
+
+        let result = allUserOrder.map(({orderProducts, ...rest}) => {
+            
+            let orderBodyData = orderProducts.map((i) => {
+                let itemModel = i.productId.priceScale.find((m) => {
+                    return m._id.toString() == i.modelId.toString()
+                })
+
+                return{
+                    productName: i.productId.productName,
+                    productCapacity: itemModel.capacity,
+                    unitPrice: itemModel.price,
+                    quantity: i.quantity
+                }
+
+            })
+
+            return{
+                ...rest,
+                orderProducts: orderBodyData
+            }
+
+        })
+        
+
+        return{
+            orderPerPage,
+            orderAmount,
+            currentPage: page,
+            orders:result
+        }
     }
 
 }

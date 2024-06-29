@@ -29,6 +29,9 @@ router.route('/logout')
 router.route('/profile')
 .get(errorHandler(userController.getUerProfile))
 
+router.route('/profile/order-history/')
+.get(errorHandler(userController.getOrderHistory))
+
 router.route("/change-password")
 .post(changePasswordValidator,errorHandler(userController.changePassword))
 
