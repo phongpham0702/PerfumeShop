@@ -37,7 +37,9 @@ const queryClient = new QueryClient({
 });
 
 function App() {
-  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(
+    !!localStorage.getItem("adminToken"),
+  );
   const [isLoggedIn, setIsLoggedIn] = useState(
     !!localStorage.getItem("accessToken"),
   );
@@ -64,9 +66,9 @@ function App() {
   function ProtectedRoute({ children }: { children: ReactNode }) {
     useEffect(() => {
       const storeToken = localStorage.getItem("accessToken");
-      setIsAdminLoggedIn(!!storeToken);
+      setIsLoggedIn(!!storeToken);
     }, []);
-    if (!isAdminLoggedIn) {
+    if (!isLoggedIn) {
       return <Navigate to="/login" replace />;
     }
 
@@ -74,10 +76,10 @@ function App() {
   }
   function ProtectedAdminRoute({ children }: { children: ReactNode }) {
     useEffect(() => {
-      const storeToken = localStorage.getItem("accessToken");
-      setIsLoggedIn(!!storeToken);
+      const storeToken = localStorage.getItem("adminToken");
+      setIsAdminLoggedIn(!!storeToken);
     }, []);
-    if (!isLoggedIn) {
+    if (!isAdminLoggedIn) {
       return <Navigate to="/luxe-admin-login" replace />;
     }
 
