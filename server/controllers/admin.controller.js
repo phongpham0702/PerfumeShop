@@ -91,6 +91,17 @@ class AdminController {
         }).send(res);
     }
 
+    GetPendingOrders = async(req,res,next) => {
+
+        if(!req.params.page) throw new BadRequestError("Missing page");
+        const page = parseInt(req.params.page)
+
+        if(Number.isNaN(page)) throw new BadRequestError("Page is NaN");
+
+        new responseHelper.OK({
+            metadata: await AdminService.getPendingOrders(page)
+        }).send(res)
+    }
 }
 
 module.exports = new AdminController();

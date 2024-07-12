@@ -4,7 +4,7 @@ const productModel = require("../models/product");
 const converterHelper = require("../helpers/converter.helper");
 const uploadAvatar = require("../utils/upload.util");
 const voucherModel = require("../models/voucher.model");
-
+const orderModel = require("../models/order.model")
 class AdminService{
     
     static AdminLogin = async(username, password) => {
@@ -99,6 +99,41 @@ class AdminService{
             newVoucher: createVoucher
         }
 
+    }
+
+    static getPendingOrders = async(currentPage = 1)=>{
+        const orderPerPage = 10;
+        let pipeLine = [
+            {$match: {orderStatus: {$in:["confirm-pending","paid"]}}},
+            {$skip : (orderPerPage  * currentPage) - orderPerPage },
+            {$limit : orderPerPage},
+            {
+                '$project':
+                {   
+                    _id:1,
+                    receiverPhone:1,
+                    receiverAddress:1,
+                    productCount:1,
+                    total:1,
+                    orderPayment:1,
+                    orderStatus:1,
+                    createdAt:1
+                }
+            },
+
+        ]
+        const pendingOrders = await orderModel.aggregate(pipeLine)
+        
+        return {
+            orderPerPage,
+            currentPage,
+            orderList:pendingOrders.map(({createdAt,...other}) => {
+                return{
+                    ...other,
+                    createdAt: createdAt.toLocaleDateString("vi-VN")
+                }
+            })
+        }
     }
 
 }

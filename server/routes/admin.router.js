@@ -29,6 +29,9 @@ router.route('/vouchers')
 router.route('/create/voucher')
 .post(CreateVoucherValidator ,errorHandler(adminController.CreateVoucher))
 
+router.route('/orders/pending/:page')
+.get(errorHandler(adminController.GetPendingOrders))
+
 router.route('/users')
 .get()
 
