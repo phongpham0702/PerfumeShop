@@ -3,7 +3,7 @@ const JWT = require('jsonwebtoken');
 const productModel = require("../models/product");
 const converterHelper = require("../helpers/converter.helper");
 const uploadAvatar = require("../utils/upload.util");
-
+const voucherModel = require("../models/voucher.model");
 
 class AdminService{
     
@@ -71,6 +71,34 @@ class AdminService{
 
     static createProduct = async() => {
         
+    }
+    
+    static getVoucherList = async() => {
+        const voucherList = await voucherModel.find().lean();
+        return {
+            voucherList
+        }
+    }
+
+    static createVoucher = async(voucherData) =>{
+        
+        let newVoucher = {
+            "voucherCode" : voucherData.voucherCode,
+            "voucherTitle":voucherData.voucherTitle,
+            "voucherType": voucherData.voucherType,
+            "voucherDiscount": voucherData.voucherDiscount,
+            "voucherExp": voucherData.voucherExp,
+            "quantityLimit":voucherData.quantityLimit,
+            "maxDiscountTotal":voucherData.maxDiscountTotal,
+            "usageTarget":voucherData.usageTarget,
+            "minPriceTotal":voucherData.minPriceTotal
+        }
+
+        const createVoucher = await voucherModel.create(newVoucher);
+        return {
+            newVoucher: createVoucher
+        }
+
     }
 
 }

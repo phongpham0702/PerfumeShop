@@ -14,7 +14,7 @@ class AdminController {
 
         new responseHelper.OK({
             metadata:{
-                accessToken: adminToken
+                adminToken: adminToken
             }
         }).send(res);
 
@@ -64,6 +64,31 @@ class AdminController {
 
             }
         }).send(res)
+    }
+
+    GetVoucherList = async(req,res,next) => {
+
+        const voucherList = await AdminService.getVoucherList();
+        new responseHelper.SuccessResponse({
+            metadata:{
+                ...voucherList
+            }
+        }).send(res);
+
+    }
+
+    CreateVoucher = async(req,res,next) => {
+
+        let checkResult = await validationResult(req);
+        if(checkResult.errors.length >= 1)
+        {
+            
+            throw new BadRequestError(checkResult.errors[0].msg)
+        }
+
+        new responseHelper.CREATED({
+            metadata: await AdminService.createVoucher(req.body)
+        }).send(res);
     }
 
 }

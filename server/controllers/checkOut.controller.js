@@ -6,6 +6,7 @@ const { findUserById } = require("../models/reposities/user.repo");
 const { BadRequestError, ServerError } = require("../helpers/error.response");
 const { createStripeSession } = require("../utils/payment.utils");
 const OrderService = require("../services/orders.service");
+const CartService = require("../services/cart.service");
 
 const SUPPORTED_PAYMENT_METHOD = {"COD":"cod-payment","Online":"online-payment"}
 
@@ -83,7 +84,7 @@ class CheckoutController{
             switch (orderPayment) {
                 case SUPPORTED_PAYMENT_METHOD.COD:
 
-                    //if(checkOutOrder) await CartService.deleteAllItems(userInfo._id);
+                    if(checkOutOrder) await CartService.deleteAllItems(req.userid);
 
                     new responseHelper.CREATED({
                         metadata:{

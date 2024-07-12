@@ -6,7 +6,7 @@ const adminController = require('../controllers/admin.controller');
 const uploadUtil = require('../utils/upload.util');
 const multer  = require('multer')
 const upload = multer({ storage: multer.memoryStorage() });
-
+const CreateVoucherValidator = require("../controllers/validators/createVoucher.validator");
 router.get('/', function(req, res, next) {
   return res.status(200).json({"Message":"Nothing here!"})
 });
@@ -22,5 +22,18 @@ router.route('/product/:page')
 
 router.route('/product/detail/:pid')
 .get(errorHandler(adminController.GetProductDetail))
+
+router.route('/vouchers')
+.get(errorHandler(adminController.GetVoucherList))
+
+router.route('/create/voucher')
+.post(CreateVoucherValidator ,errorHandler(adminController.CreateVoucher))
+
+router.route('/users')
+.get()
+
+
+router.route('/users/detail/:uid')
+.get()
 
 module.exports = router;

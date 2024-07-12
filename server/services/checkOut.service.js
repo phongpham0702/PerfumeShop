@@ -7,7 +7,7 @@ const databaseInstance = require("../dbs/init.db");
 const OrderModel = require("../models/order.model");
 const converterHelper = require("../helpers/converter.helper");
 const ProductModel = require("../models/product");
-
+const CartService = require("./cart.service")
 
 class CheckoutService {
 
@@ -149,6 +149,8 @@ class CheckoutService {
                 quantity: i.quantity
             }
         })
+        
+        await CartService.deleteAllItems(foundOrder.ownerId);
 
         return {
             orderId: foundOrder._id.toString(),
