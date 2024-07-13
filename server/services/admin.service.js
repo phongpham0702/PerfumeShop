@@ -34,7 +34,7 @@ class AdminService{
     static getAllProduct = async(pagenum = 1) => {
         const productPerPage = 20 ;
         const currentPage = pagenum ;
-        const totalPage = productModel.countDocuments();
+        const totalPage = await productModel.countDocuments();
         let pipeLine = [
             {$skip : (productPerPage * currentPage) - productPerPage },
             {$limit : productPerPage},
