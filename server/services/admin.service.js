@@ -77,7 +77,7 @@ class AdminService{
             productCount = await productModel.countDocuments();
         }
         let page_num = productCount === 0 ? 1 : Math.ceil(productCount/productPerPage)
-        let productList = await productModel.aggregate(...pipeLine)
+        let productList = await productModel.aggregate(pipeLine)
         if(currentPage > page_num){
             throw new BadRequestError("This page is not exist")
         }
