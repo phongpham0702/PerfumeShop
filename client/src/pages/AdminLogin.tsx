@@ -30,6 +30,7 @@ const AdminLogin = ({ onLoginSuccess }: { onLoginSuccess: () => void }) => {
           setPassword("");
 
           setIsLoading(false);
+          localStorage.setItem("adminToken", data.metadata.adminToken);
           toast.success("Login successful");
 
           navigate("/luxe-admin");
