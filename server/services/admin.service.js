@@ -57,7 +57,7 @@ class AdminService{
         return {
             productPerPage,
             currentPage,
-            totalPage:(productList/productPerPage),
+            totalPage:Math.ceil(productList.length/productPerPage),
             productList
         }
     }
