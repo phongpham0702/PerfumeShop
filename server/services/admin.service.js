@@ -57,6 +57,7 @@ class AdminService{
         return {
             productPerPage,
             currentPage,
+            totalPage:(productList/productPerPage),
             productList
         }
     }
