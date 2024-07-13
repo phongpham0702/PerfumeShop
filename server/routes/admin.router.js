@@ -18,7 +18,7 @@ router.route('/product/create')
 .post(upload.single('productTh'),errorHandler(adminController.CreateNewProduct))
 
 router.route('/product/:page')
-.get(errorHandler(adminController.GetAllProducts))
+.get(errorHandler(adminController.GetProducts))
 
 router.route('/product/detail/:pid')
 .get(errorHandler(adminController.GetProductDetail))
@@ -29,8 +29,8 @@ router.route('/vouchers')
 router.route('/create/voucher')
 .post(CreateVoucherValidator ,errorHandler(adminController.CreateVoucher))
 
-router.route('/orders/pending/:page')
-.get(errorHandler(adminController.GetPendingOrders))
+router.route('/orders/:page')
+.get(errorHandler(adminController.GetOrders))
 
 router.route('/users')
 .get()

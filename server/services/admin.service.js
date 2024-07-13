@@ -31,10 +31,10 @@ class AdminService{
         return adminToken;
     }
 
-    static getAllProduct = async(pagenum = 1) => {
+    static getProduct = async(pagenum = 1, search) => {
         const productPerPage = 20 ;
         const currentPage = pagenum ;
-        const totalPage = await productModel.countDocuments();
+        let productCount = 0;
         let pipeLine = [
             {$skip : (productPerPage * currentPage) - productPerPage },
             {$limit : productPerPage},
@@ -51,14 +51,41 @@ class AdminService{
                 }
             },
         ]
-
-        let productList = await productModel.aggregate(pipeLine)
-
-
+        if(search){
+            let searchValue = search.replace(/[+\-_]/g," ")
+            let searchPipeLine = [{    
+                $addFields:{
+                    'fullName': { $concat: ["$productBrand"," ","$productName"] }
+                }
+            },
+            {
+                $match:{
+                    "fullName": { $regex: searchValue.toString(), $options: "i" }
+                }  
+            },
+            {
+                $project:{
+                    "fullName":0
+                }
+            }]
+            pipeLine.unshift(searchPipeLine)
+            productCount = await  productModel.aggregate([...searchPipeLine].concat([{'$count':'count'}]))
+            productCount = productCount[0] ? productCount[0].count:0
+        }
+        else
+        {
+            productCount = await productModel.countDocuments();
+        }
+        let page_num = productCount === 0 ? 1 : Math.ceil(productCount/productPerPage)
+        let productList = await productModel.aggregate(...pipeLine)
+        if(currentPage > page_num){
+            throw new BadRequestError("This page is not exist")
+        }
         return {
             productPerPage,
             currentPage,
-            totalPage:Math.ceil(totalPage/productPerPage),
+            productCount,
+            totalPage:page_num,
             productList
         }
     }
@@ -103,10 +130,29 @@ class AdminService{
 
     }
 
-    static getPendingOrders = async(currentPage = 1)=>{
+    static getOrders = async(currentPage = 1, status = null)=>{
         const orderPerPage = 10;
+        const matchCondition ={}
+   
+        switch (status) {
+            case "pending":
+                matchCondition.orderStatus = {$in:["confirm-pending","paid"]}
+                break;
+            case "complete":
+                matchCondition.orderStatus = {$in:["complete"]}
+                break;
+            case "confirmed":
+                matchCondition.orderStatus = {$in:["confirmed"]}
+                break;
+            case "in-delivery":
+                matchCondition.orderStatus = {$in:["in-delivery"]}
+                break;
+            default:
+                break;
+        }
+
         let pipeLine = [
-            {$match: {orderStatus: {$in:["confirm-pending","paid"]}}},
+            {$match:matchCondition},
             {$skip : (orderPerPage  * currentPage) - orderPerPage },
             {$limit : orderPerPage},
             {
@@ -125,9 +171,11 @@ class AdminService{
 
         ]
         const pendingOrders = await orderModel.aggregate(pipeLine)
-        
+        const totalOrder = await orderModel.countDocuments(matchCondition)
+
         return {
             orderPerPage,
+            totalPage: Math.ceil(totalOrder/orderPerPage),
             currentPage,
             orderList:pendingOrders.map(({createdAt,...other}) => {
                 return{

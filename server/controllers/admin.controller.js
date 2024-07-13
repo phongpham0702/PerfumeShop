@@ -2,7 +2,7 @@ const {validationResult} = require('express-validator');
 const { BadRequestError, ServerError } = require('../helpers/error.response');
 const responseHelper = require("../helpers/success.response");
 const AdminService = require('../services/admin.service');
-
+const ORDER_STATUS = ["pending","complete","confirmed","in-delivery"]
 class AdminController {
     
     AdminAuthenticate = async(req,res,next) => {
@@ -24,7 +24,7 @@ class AdminController {
 
     }
 
-    GetAllProducts = async(req,res,next) => {
+    GetProducts = async(req,res,next) => {
 
         let page = req.params.page ? parseInt(req.params.page) : 1
        
@@ -32,7 +32,7 @@ class AdminController {
         
         new responseHelper.SuccessResponse({
         metadata:{
-            productList: await AdminService.getAllProduct(page)
+            productList: await AdminService.getProduct(page,req.query.search)
         }
         }).send(res)
         
@@ -91,15 +91,16 @@ class AdminController {
         }).send(res);
     }
 
-    GetPendingOrders = async(req,res,next) => {
-
+    GetOrders = async(req,res,next) => {
         if(!req.params.page) throw new BadRequestError("Missing page");
         const page = parseInt(req.params.page)
 
         if(Number.isNaN(page)) throw new BadRequestError("Page is NaN");
 
+        if(req.query.status && !ORDER_STATUS.includes(req.query.status)) throw new BadRequestError("Invalid status");
+        
         new responseHelper.OK({
-            metadata: await AdminService.getPendingOrders(page)
+            metadata: await AdminService.getOrders(page,req.query.status)
         }).send(res)
     }
 }

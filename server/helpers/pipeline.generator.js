@@ -29,7 +29,7 @@ class PipeLineGenerator {
                 },
         ]
     }
-
+    
     generate_productDetail = ()=> {
         return [
    
