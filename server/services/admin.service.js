@@ -4,7 +4,7 @@ const productModel = require("../models/product");
 const converterHelper = require("../helpers/converter.helper");
 const uploadAvatar = require("../utils/upload.util");
 const voucherModel = require("../models/voucher.model");
-const orderModel = require("../models/order.model")
+const orderModel = require("../models/order.model");
 class AdminService{
     
     static AdminLogin = async(username, password) => {
@@ -32,6 +32,14 @@ class AdminService{
     }
 
     static ordersCount = async()=>{
+        const data = {
+            confirmPending:0,
+            paid:0,
+            confirmed:0,
+            inDelivery:0,
+            cancelled:0,
+            completed:0
+        }
         const pipeLine = [
             {
                 $group:{
@@ -43,7 +51,33 @@ class AdminService{
             }
         ]
         const countList = await orderModel.aggregate(pipeLine);
-        return countList;
+
+        for(let i of countList){
+           switch (i._id) {
+            case 'confirm-pending':
+                data.confirmPending = i.count;
+                break;
+            case 'paid':
+                data.paid = i.count;
+                break;
+            case 'confirmed':
+                data.confirmed = i.count;
+                break;
+            case 'in-delivery':
+                data.inDelivery = i.count;
+                break;
+            case 'complete':
+                data.completed = i.count;
+                break;
+            case 'pay-pending':
+                break;
+            default:
+                data.cancelled = i.count;
+                break;
+           }
+        }
+
+        return data
     } 
 
     static saleData = async(year) => {
