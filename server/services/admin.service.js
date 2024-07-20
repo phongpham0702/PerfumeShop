@@ -31,6 +31,21 @@ class AdminService{
         return adminToken;
     }
 
+    static ordersCount = async()=>{
+        const pipeLine = [
+            {
+                $group:{
+                    _id:"$orderStatus",
+                    count:{
+                        $sum:1
+                    }
+                }
+            }
+        ]
+        const countList = await orderModel.aggregate(pipeLine);
+        return countList
+    } 
+
     static getProduct = async(pagenum = 1, search) => {
         const productPerPage = 20 ;
         const currentPage = pagenum ;
@@ -68,7 +83,7 @@ class AdminService{
                     "fullName":0
                 }
             }]
-            pipeLine.unshift(searchPipeLine)
+            pipeLine.unshift(...searchPipeLine)
             productCount = await  productModel.aggregate([...searchPipeLine].concat([{'$count':'count'}]))
             productCount = productCount[0] ? productCount[0].count:0
             
@@ -77,8 +92,9 @@ class AdminService{
         {
             productCount = await productModel.countDocuments();
         }
+        
         let page_num = productCount === 0 ? 1 : Math.ceil(productCount/productPerPage)
-        let productList = await productModel.aggregate(...pipeLine)
+        let productList = await productModel.aggregate(pipeLine)
         
         if(currentPage > page_num){
             throw new BadRequestError("This page is not exist")
@@ -245,6 +261,8 @@ class AdminService{
         await findOrder.save()
         return findOrder;
     }
+
+    
 
 }
 

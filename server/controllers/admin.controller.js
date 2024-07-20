@@ -20,6 +20,10 @@ class AdminController {
 
     }
 
+    GetOrdersCount = async(req,res,next) => {
+        
+    }
+        
     GetSaleData = async (req,res,next) => {
 
     }
