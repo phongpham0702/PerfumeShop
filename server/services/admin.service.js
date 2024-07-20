@@ -43,8 +43,53 @@ class AdminService{
             }
         ]
         const countList = await orderModel.aggregate(pipeLine);
-        return countList
+        return countList;
     } 
+
+    static saleData = async(year) => {
+        const pipeLine = [
+            {
+                $project:{
+                    year: {$year:"$createdAt"},
+                    createdAt:1,
+                    total:1,
+                    orderStatus:1
+                  }
+            },
+            {
+                $match: {
+                    orderStatus:"complete",
+                    year:{$eq:year}
+                }
+            },
+            {
+                $group:{
+                    _id:{$month:"$createdAt" },
+                    profit:{$sum:"$total"}
+                }
+            },
+            {
+                $project:{
+                    month: "$_id",
+                    _id:0,
+                    profit: 1
+                }
+            }
+        ];
+
+        const profitData = await orderModel.aggregate(pipeLine);
+        const monthSaleData = Array(12).fill(null,0,12)
+        
+        for(let i of profitData){
+            monthSaleData[i.month-1] = i
+        }
+
+        for(let i in monthSaleData){
+            monthSaleData[i] = monthSaleData[i]?monthSaleData[i]: {profit:0, month:parseInt(i)+1}
+        }
+        
+        return monthSaleData;
+    }
 
     static getProduct = async(pagenum = 1, search) => {
         const productPerPage = 20 ;

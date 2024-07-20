@@ -21,11 +21,20 @@ class AdminController {
     }
 
     GetOrdersCount = async(req,res,next) => {
-        
+        new responseHelper.OK({
+            metadata: await AdminService.ordersCount()
+        }).send(res)
     }
         
     GetSaleData = async (req,res,next) => {
 
+        const year = parseInt(req.params.year);
+        if(Number.isNaN(year)) throw new BadRequestError("Invalid year")
+        const monthSale = await AdminService.saleData(year)
+        
+        new responseHelper.OK({
+            metadata:monthSale
+        }).send(res)
     }
 
     GetProducts = async(req,res,next) => {

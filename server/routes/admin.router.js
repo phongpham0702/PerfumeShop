@@ -46,11 +46,11 @@ router.route('/orders/mark/complete')
 
 router.route('/users')//!!!
 .get()
-
+ 
 router.route('/users/detail/:uid')//!!!
 .get()
 
-router.route("/data/order-count")//!!!
-router.route("/data/sale-data")//!!!
+router.get("/data/order-count", adminController.GetOrdersCount)
+router.get("/data/sale-data/:year", adminController.GetSaleData)
 router.route("/data/out-of-stock")//!!!
 module.exports = router;
