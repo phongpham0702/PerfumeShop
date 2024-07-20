@@ -186,6 +186,64 @@ class AdminService{
         }
     }
 
+    static confirmOrder = async(orderId) => {
+        const findOrder = await orderModel.findOne({
+            _id: orderId
+        },{orderStatus:1})
+        
+        if(!findOrder) throw new BadRequestError("Invalid ID");
+
+        if((findOrder.orderStatus !== "confirm-pending")&&
+        (findOrder.orderStatus !== "paid")) throw new BadRequestError("Cannot confirm this order")
+
+        findOrder.orderStatus = "confirmed"
+        await findOrder.save()
+        return findOrder;
+    }
+
+    static rejectOrder = async(orderId) => {
+        const findOrder = await orderModel.findOne({
+            _id: orderId
+        },{orderStatus:1})
+        
+        if(!findOrder) throw new BadRequestError("Invalid ID");
+
+        if((findOrder.orderStatus !== "confirm-pending")&&
+        (findOrder.orderStatus !== "paid")) throw new BadRequestError("Cannot reject this order")
+
+        findOrder.orderStatus = "cancelled"
+        await findOrder.save()
+        return findOrder;
+    }
+
+    static deliveryOrder = async(orderId) => {
+        const findOrder = await orderModel.findOne({
+            _id: orderId
+        },{orderStatus:1})
+        
+        if(!findOrder) throw new BadRequestError("Invalid ID");
+
+        if(findOrder.orderStatus !== "confirmed") throw new BadRequestError("Cannot delivery this order")
+
+        findOrder.orderStatus = "in-delivery"
+        await findOrder.save()
+        return findOrder;
+    }
+    
+    static completeOrder = async(orderId) => {
+        const findOrder = await orderModel.findOne({
+            _id: orderId
+        },{orderStatus:1})
+        
+        if(!findOrder) throw new BadRequestError("Invalid ID");
+
+        if(findOrder.orderStatus !== "in-delivery") throw new BadRequestError("Cannot complete this order. Order must be delivered before completed")
+
+        findOrder.orderStatus = "complete"
+        await findOrder.save()
+        return findOrder;
+    }
+
 }
 
 module.exports = AdminService

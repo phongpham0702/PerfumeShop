@@ -80,7 +80,7 @@ const orderSchema = new Schema({
     orderStatus:{
         type:String,
         required:true,
-        enum:["confirm-pending","pay-pending","paid","confirmed","in-delivery","complete"]
+        enum:["confirm-pending","pay-pending","paid","cancelled","confirmed","in-delivery","complete"]
     },
 
     orderPayment:{

@@ -59,6 +59,8 @@ class AdminController {
 
         console.log(req.body);
         console.log(req.file);
+        const e = req.body.mainScent.toArray()
+        console.log(e);
         new responseHelper.CREATED({
             metadata:{
 
@@ -103,6 +105,64 @@ class AdminController {
             metadata: await AdminService.getOrders(page,req.query.status)
         }).send(res)
     }
+
+    ConfirmOrder = async(req,res,next) => {
+        if(!req.body.orderId) throw new BadRequestError("Please provide order ID")
+
+         const confirmOrder = await AdminService.confirmOrder(req.body.orderId)
+         
+         new responseHelper.OK({
+            metadata:{
+                orderId: confirmOrder._id.toString(),
+                status: confirmOrder.orderStatus
+            }
+            
+         }).send(res)
+
+    }
+
+    RejectOrder = async(req,res,next) => {
+        if(!req.body.orderId) throw new BadRequestError("Please provide order ID")
+
+        const rejectOrder = await AdminService.rejectOrder(req.body.orderId)
+        
+        new responseHelper.OK({
+            metadata:{
+                orderId: rejectOrder._id.toString(),
+                status: rejectOrder.orderStatus
+            }
+            
+        }).send(res)
+    }
+    
+    deliveryOrder = async(req,res,next)=>{
+        if(!req.body.orderId) throw new BadRequestError("Please provide order ID")
+
+        const deliveryOrder = await AdminService.deliveryOrder(req.body.orderId)
+        
+        new responseHelper.OK({
+            metadata:{
+                orderId: deliveryOrder._id.toString(),
+                status: deliveryOrder.orderStatus
+            }
+            
+        }).send(res)
+    }
+
+    completeOrder = async(req,res,next) => {
+        if(!req.body.orderId) throw new BadRequestError("Please provide order ID")
+
+        const completeOrder = await AdminService.completeOrder(req.body.orderId)
+        
+        new responseHelper.OK({
+            metadata:{
+                orderId: completeOrder._id.toString(),
+                status: completeOrder.orderStatus
+            }
+            
+        }).send(res)
+    }
+
 }
 
 module.exports = new AdminController();
