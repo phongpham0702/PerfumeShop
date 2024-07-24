@@ -4,6 +4,7 @@ import ProductItem from "./ProductItem";
 import Carousel from "../../ui/Carousel";
 import { useQuery } from "@tanstack/react-query";
 import CardSkeleton from "../../ui/CardSkeleton";
+import { SwiperSlide } from "swiper/react";
 
 type bestSellerDataType = {
   gender: string;
@@ -86,9 +87,9 @@ const BestsellerList = () => {
       ) : (
         <Carousel>
           {products.map((product) => (
-            <div key={product._id} className="">
+            <SwiperSlide key={product._id} className="mr-0 w-[200px]">
               <ProductItem product={product} />
-            </div>
+            </SwiperSlide>
           ))}
         </Carousel>
       )}

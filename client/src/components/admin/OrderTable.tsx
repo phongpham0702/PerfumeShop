@@ -1,4 +1,3 @@
-import { PencilIcon } from "@heroicons/react/24/solid";
 import {
   ArrowDownTrayIcon,
   MagnifyingGlassIcon,
@@ -10,14 +9,22 @@ import {
   Button,
   CardBody,
   IconButton,
-  Tooltip,
   Input,
   CardFooter,
   Chip,
+  Menu,
+  MenuHandler,
+  MenuList,
+  MenuItem,
 } from "@material-tailwind/react";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import requestAPI from "../../helpers/api";
 import { useMemo } from "react";
+import { RiMore2Fill } from "react-icons/ri";
 
 interface Order {
   _id: string;
@@ -42,6 +49,51 @@ const TABLE_HEAD = [
 ];
 
 export function OrderTable() {
+  const queryClient = useQueryClient();
+  const { mutate: mutateCancel } = useMutation({
+    mutationFn: (orderId: string) =>
+      requestAPI(
+        "/luxe-admin/orders/mark/reject",
+        { orderId: orderId },
+        "POST",
+      ),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+    },
+  });
+  const { mutate: mutateConfirm } = useMutation({
+    mutationFn: (orderId: string) =>
+      requestAPI(
+        "/luxe-admin/orders/mark/confirm",
+        { orderId: orderId },
+        "POST",
+      ),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+    },
+  });
+  const { mutate: mutateDelivery } = useMutation({
+    mutationFn: (orderId: string) =>
+      requestAPI(
+        "/luxe-admin/orders/mark/delivery",
+        { orderId: orderId },
+        "POST",
+      ),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+    },
+  });
+  const { mutate: mutateComplete } = useMutation({
+    mutationFn: (orderId: string) =>
+      requestAPI(
+        "/luxe-admin/orders/mark/complete",
+        { orderId: orderId },
+        "POST",
+      ),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+    },
+  });
   const { data: products, fetchNextPage } = useInfiniteQuery({
     queryKey: ["orders"],
     queryFn: ({ pageParam }) =>
@@ -88,6 +140,7 @@ export function OrderTable() {
           <div className="flex w-full shrink-0 gap-2 md:w-max">
             <div className="w-full md:w-72">
               <Input
+                crossOrigin={"anonymous"}
                 label="Search"
                 icon={<MagnifyingGlassIcon className="h-5 w-5" />}
               />
@@ -119,116 +172,154 @@ export function OrderTable() {
             </tr>
           </thead>
           <tbody>
-            {flattedData?.map(
-              (page) =>
-                page?.results?.map((item: Order, index: number) => {
-                  const isLast = index === page?.results?.length - 1;
-                  const classes = isLast
-                    ? "p-4"
-                    : "p-4 border-b border-blue-gray-50";
+            {flattedData?.map((page) =>
+              page?.results?.map((item: Order, index: number) => {
+                const isLast = index === page?.results?.length - 1;
+                const classes = isLast
+                  ? "p-4"
+                  : "p-4 border-b border-blue-gray-50";
 
-                  return (
-                    <tr key={item._id}>
-                      <td className={classes}>
-                        <div className="flex items-center gap-3">
-                          <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className="font-bold"
-                          >
-                            {item.receiverPhone}
-                          </Typography>
-                        </div>
-                      </td>
-                      <td className={classes}>
+                return (
+                  <tr key={item._id}>
+                    <td className={classes}>
+                      <div className="flex items-center gap-3">
                         <Typography
                           variant="small"
                           color="blue-gray"
-                          className="font-normal"
+                          className="font-bold"
                         >
-                          {item?.receiverAddress}
+                          {item.receiverPhone}
                         </Typography>
-                      </td>
-                      <td className={classes}>
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal"
-                        >
-                          {item?.productCount}
-                        </Typography>
-                      </td>
-                      <td className={classes}>
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal"
-                        >
-                          {item?.total.toLocaleString("en-US", {
-                            style: "currency",
-                            currency: "USD",
-                          })}
-                        </Typography>
-                      </td>
-                      <td className={classes}>
-                        <div className="w-max">
-                          <Chip
-                            size="sm"
-                            variant="ghost"
-                            value={item?.orderStatus}
-                            color={
-                              item?.orderStatus === "complete"
-                                ? "green"
-                                : item?.orderStatus === "confirm-pending" ||
-                                    item?.orderStatus === "paid"
-                                  ? "amber"
-                                  : item?.orderStatus === "confirmed"
-                                    ? "blue"
-                                    : item?.orderStatus === "in-delivery"
-                                      ? "purple"
-                                      : "red"
-                            }
-                          />
-                        </div>
-                      </td>
-                      <td className={classes}>
-                        <div className="w-max">
-                          <Chip
-                            size="sm"
-                            variant="ghost"
-                            value={
-                              item?.orderPayment === "cod-payment"
-                                ? "COD"
-                                : "Online"
-                            }
-                            color={
-                              item?.orderPayment === "cod-payment"
-                                ? "cyan"
-                                : "blue"
-                            }
-                          />
-                        </div>
-                      </td>
-                      <td className={classes}>
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal"
-                        >
-                          {item?.createdAt}
-                        </Typography>
-                      </td>
+                      </div>
+                    </td>
+                    <td className={classes}>
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal"
+                      >
+                        {item?.receiverAddress}
+                      </Typography>
+                    </td>
+                    <td className={classes}>
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal"
+                      >
+                        {item?.productCount}
+                      </Typography>
+                    </td>
+                    <td className={classes}>
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal"
+                      >
+                        {item?.total.toLocaleString("en-US", {
+                          style: "currency",
+                          currency: "USD",
+                        })}
+                      </Typography>
+                    </td>
+                    <td className={classes}>
+                      <div className="w-max">
+                        <Chip
+                          size="sm"
+                          variant="ghost"
+                          value={item?.orderStatus}
+                          color={
+                            item?.orderStatus === "complete"
+                              ? "green"
+                              : item?.orderStatus === "confirm-pending" ||
+                                  item?.orderStatus === "paid"
+                                ? "amber"
+                                : item?.orderStatus === "confirmed"
+                                  ? "blue"
+                                  : item?.orderStatus === "in-delivery"
+                                    ? "purple"
+                                    : "red"
+                          }
+                        />
+                      </div>
+                    </td>
+                    <td className={classes}>
+                      <div className="w-max">
+                        <Chip
+                          size="sm"
+                          variant="ghost"
+                          value={
+                            item?.orderPayment === "cod-payment"
+                              ? "COD"
+                              : "Online"
+                          }
+                          color={
+                            item?.orderPayment === "cod-payment"
+                              ? "cyan"
+                              : "blue"
+                          }
+                        />
+                      </div>
+                    </td>
+                    <td className={classes}>
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal"
+                      >
+                        {item?.createdAt}
+                      </Typography>
+                    </td>
 
-                      <td className={classes}>
-                        <Tooltip content="Edit User">
+                    <td className={classes}>
+                      <Menu>
+                        <MenuHandler>
                           <IconButton variant="text">
-                            <PencilIcon className="h-4 w-4" />
+                            <RiMore2Fill className="h-4 w-4" />
                           </IconButton>
-                        </Tooltip>
-                      </td>
-                    </tr>
-                  );
-                }),
+                        </MenuHandler>
+                        <MenuList>
+                          <MenuItem
+                            onClick={() => mutateCancel(item._id)}
+                            disabled={
+                              !(
+                                item?.orderStatus === "confirm-pending" ||
+                                item.orderStatus === "paid"
+                              )
+                            }
+                          >
+                            Cancel
+                          </MenuItem>
+                          <MenuItem
+                            onClick={() => mutateConfirm(item._id)}
+                            disabled={
+                              !(
+                                item?.orderStatus === "confirm-pending" ||
+                                item.orderStatus === "paid"
+                              )
+                            }
+                          >
+                            Confirm
+                          </MenuItem>
+
+                          <MenuItem
+                            onClick={() => mutateDelivery(item._id)}
+                            disabled={!(item?.orderStatus === "confirmed")}
+                          >
+                            Delivery
+                          </MenuItem>
+                          <MenuItem
+                            onClick={() => mutateComplete(item._id)}
+                            disabled={!(item?.orderStatus === "in-delivery")}
+                          >
+                            Complete
+                          </MenuItem>
+                        </MenuList>
+                      </Menu>
+                    </td>
+                  </tr>
+                );
+              }),
             )}
           </tbody>
         </table>

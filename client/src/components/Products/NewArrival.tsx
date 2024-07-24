@@ -3,6 +3,7 @@ import Carousel from "../../ui/Carousel";
 import { useQuery } from "@tanstack/react-query";
 import { BestsellerProduct } from "../../interfaces/Product";
 import CardSkeleton from "../../ui/CardSkeleton";
+import { SwiperSlide } from "swiper/react";
 
 const NewArrival = () => {
   async function fetchData() {
@@ -35,9 +36,9 @@ const NewArrival = () => {
       ) : (
         <Carousel>
           {products.map((product: BestsellerProduct) => (
-            <div key={product._id}>
+            <SwiperSlide key={product._id} className="mr-0 w-[200px]">
               <ProductItem product={product} />
-            </div>
+            </SwiperSlide>
           ))}
         </Carousel>
       )}

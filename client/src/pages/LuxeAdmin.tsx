@@ -10,7 +10,13 @@ import {
 } from "@material-tailwind/react";
 import { ProductTable } from "../components/admin/ProductTable";
 import { OrderTable } from "../components/admin/OrderTable";
+import Dashboard from "../components/admin/Dashboard";
 const data = [
+  {
+    label: "Dashboard",
+    value: "dashboard",
+    desc: <Dashboard />,
+  },
   {
     label: "Products",
     value: "products",
@@ -24,8 +30,14 @@ const data = [
   {
     label: "Vouchers",
     value: "Vouchers",
-    desc: `Because it's about motivating the doers. Because I'm here
-    to follow my dreams and inspire other people to follow their dreams, too.`,
+    desc: (
+      <>
+        <p>
+          `Because it's about motivating the doers. Because I'm here to follow
+          my dreams and inspire other people to follow their dreams, too.`
+        </p>
+      </>
+    ),
   },
 ];
 const LuxeAdmin = () => {
@@ -56,12 +68,12 @@ const LuxeAdmin = () => {
           </div>
         </div>
       </header>
-
       {/* body */}
       <Tabs
-        value="products"
+        key={data.length}
+        value="dashboard"
         orientation="vertical"
-        className="h-[100vh] overflow-y-scroll bg-[#ecfaec]"
+        className="absolute left-0 right-0 h-[100vh] overflow-y-scroll bg-[#ecfaec]"
       >
         <TabsHeader className="h-[100vh] w-[200px] gap-2 rounded-none">
           {data.map(({ label, value }) => (

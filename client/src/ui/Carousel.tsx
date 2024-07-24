@@ -1,8 +1,16 @@
 import Slider from "react-slick";
 import { FaAngleRight, FaAngleLeft } from "react-icons/fa";
 import React from "react";
+// import { Swiper } from "swiper/react";
+// import { Pagination } from "swiper/modules";
+// import Swiper styles
+// import "swiper/css";
+// import "swiper/css/pagination";
+// import "swiper/css/navigation";
+// import { Navigation } from "swiper/modules";
 type propsType = {
-  children: React.ReactNode;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  children: any;
 };
 
 const Carousel = ({ children }: propsType) => {
@@ -80,6 +88,33 @@ const Carousel = ({ children }: propsType) => {
     );
   }
   return (
+    // <Swiper
+    //   slidesPerView={6}
+    //   spaceBetween={2}
+    //   loop={true}
+    //   pagination={{
+    //     clickable: true,
+    //   }}
+    //   navigation={true}
+    //   breakpoints={{
+    //     640: {
+    //       slidesPerView: 2,
+    //       spaceBetween: 20,
+    //     },
+    //     768: {
+    //       slidesPerView: 4,
+    //       spaceBetween: 40,
+    //     },
+    //     1024: {
+    //       slidesPerView: 5,
+    //       spaceBetween: 50,
+    //     },
+    //   }}
+    //   modules={[Pagination, Navigation]}
+    //   className="mySwiper"
+    // >
+    //   {children}
+    // </Swiper>
     <Slider
       ref={slider}
       className="mx-auto h-[400px] w-[100%] overflow-hidden px-[15px] sm:h-[500px]"

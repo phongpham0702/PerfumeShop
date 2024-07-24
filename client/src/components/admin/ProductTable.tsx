@@ -1,8 +1,5 @@
 import { PencilIcon } from "@heroicons/react/24/solid";
-import {
-  ArrowDownTrayIcon,
-  MagnifyingGlassIcon,
-} from "@heroicons/react/24/outline";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import {
   Card,
   CardHeader,
@@ -19,8 +16,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import requestAPI from "../../helpers/api";
 import moment from "moment";
 import { useMemo } from "react";
-// import { useEffect, useMemo } from "react";
-// import { useInView } from "react-intersection-observer";
+import { BiPlus } from "react-icons/bi";
 
 interface Product {
   createdAt: string;
@@ -67,7 +63,6 @@ export function ProductTable() {
         };
       });
   }, [products?.pages]);
-  console.log({ flattedData });
 
   return (
     <Card className="h-full w-full">
@@ -84,12 +79,13 @@ export function ProductTable() {
           <div className="flex w-full shrink-0 gap-2 md:w-max">
             <div className="w-full md:w-72">
               <Input
+                crossOrigin={"anonymous"}
                 label="Search"
                 icon={<MagnifyingGlassIcon className="h-5 w-5" />}
               />
             </div>
             <Button className="flex items-center gap-3" size="sm">
-              <ArrowDownTrayIcon strokeWidth={2} className="h-4 w-4" /> Export
+              <BiPlus strokeWidth={2} className="h-4 w-4" /> Add Products
             </Button>
           </div>
         </div>
@@ -115,83 +111,82 @@ export function ProductTable() {
             </tr>
           </thead>
           <tbody>
-            {flattedData?.map(
-              (page) =>
-                page?.results?.map((item: Product, index: number) => {
-                  const isLast = index === page?.results?.length - 1;
-                  const classes = isLast
-                    ? "p-4"
-                    : "p-4 border-b border-blue-gray-50";
+            {flattedData?.map((page) =>
+              page?.results?.map((item: Product, index: number) => {
+                const isLast = index === page?.results?.length - 1;
+                const classes = isLast
+                  ? "p-4"
+                  : "p-4 border-b border-blue-gray-50";
 
-                  return (
-                    <tr key={item._id}>
-                      <td className={classes}>
-                        <div className="flex items-center gap-3">
-                          <Avatar
-                            src={item.productThumbnail}
-                            alt={item.productName}
-                            size="md"
-                            className="border border-blue-gray-50 bg-blue-gray-50/50 object-contain p-1"
-                          />
-                          <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className="font-bold"
-                          >
-                            {item.productName}
-                          </Typography>
-                        </div>
-                      </td>
-                      <td className={classes}>
+                return (
+                  <tr key={item._id}>
+                    <td className={classes}>
+                      <div className="flex items-center gap-3">
+                        <Avatar
+                          src={item.productThumbnail}
+                          alt={item.productName}
+                          size="md"
+                          className="border border-blue-gray-50 bg-blue-gray-50/50 object-contain p-1"
+                        />
                         <Typography
                           variant="small"
                           color="blue-gray"
-                          className="font-normal"
+                          className="font-bold"
                         >
-                          {item?.productBrand}
+                          {item.productName}
                         </Typography>
-                      </td>
-                      <td className={classes}>
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal"
-                        >
-                          {item?.sold}
-                        </Typography>
-                      </td>
-                      <td className={classes}>
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal"
-                        >
-                          {moment(item?.createdAt).format(
-                            "DD/MM/YYYY, h:mm:ss a",
-                          )}
-                        </Typography>
-                      </td>
-                      <td className={classes}>
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal"
-                        >
-                          {moment(item?.updatedAt).format(
-                            "DD/MM/YYYY, h:mm:ss a",
-                          )}
-                        </Typography>
-                      </td>
-                      <td className={classes}>
-                        <Tooltip content="Edit User">
-                          <IconButton variant="text">
-                            <PencilIcon className="h-4 w-4" />
-                          </IconButton>
-                        </Tooltip>
-                      </td>
-                    </tr>
-                  );
-                }),
+                      </div>
+                    </td>
+                    <td className={classes}>
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal"
+                      >
+                        {item?.productBrand}
+                      </Typography>
+                    </td>
+                    <td className={classes}>
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal"
+                      >
+                        {item?.sold}
+                      </Typography>
+                    </td>
+                    <td className={classes}>
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal"
+                      >
+                        {moment(item?.createdAt).format(
+                          "DD/MM/YYYY, h:mm:ss a",
+                        )}
+                      </Typography>
+                    </td>
+                    <td className={classes}>
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal"
+                      >
+                        {moment(item?.updatedAt).format(
+                          "DD/MM/YYYY, h:mm:ss a",
+                        )}
+                      </Typography>
+                    </td>
+                    <td className={classes}>
+                      <Tooltip content="Edit User">
+                        <IconButton variant="text">
+                          <PencilIcon className="h-4 w-4" />
+                        </IconButton>
+                      </Tooltip>
+                    </td>
+                  </tr>
+                );
+              }),
             )}
           </tbody>
         </table>
