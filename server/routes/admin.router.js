@@ -32,6 +32,9 @@ router.route('/create/voucher')
 router.route('/orders/:page')
 .get(errorHandler(adminController.GetOrders))
 
+router.route('/orders/detail/:orderId')
+.get(errorHandler(adminController.GetOrderDetail))
+
 router.route('/orders/mark/confirm')
 .post(errorHandler(adminController.ConfirmOrder))
 

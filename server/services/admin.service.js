@@ -245,6 +245,7 @@ class AdminService{
                 matchCondition.orderStatus = {$in:["in-delivery"]}
                 break;
             default:
+                matchCondition.orderStatus = {$nin:["pay-pending"]}
                 break;
         }
 
@@ -281,6 +282,14 @@ class AdminService{
                 }
             })
         }
+    }
+
+    static oderDetail = async(orderId)=>{
+        const order = await orderModel.findOne({
+            _id: orderId
+        },{__v:0}).lean()
+        
+        return order
     }
 
     static confirmOrder = async(orderId) => {

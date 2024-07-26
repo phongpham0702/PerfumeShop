@@ -119,6 +119,19 @@ class AdminController {
         }).send(res)
     }
 
+    GetOrderDetail = async(req,res,next) => {
+
+        const orderDetail = await AdminService.oderDetail(req.params.orderId)
+
+        if(!orderDetail) throw new BadRequestError("Invalid order id")
+
+        new responseHelper.OK({
+            metadata:{
+                detail: orderDetail
+            }
+        }).send(res)
+    }
+
     ConfirmOrder = async(req,res,next) => {
         if(!req.body.orderId) throw new BadRequestError("Please provide order ID")
 
