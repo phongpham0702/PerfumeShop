@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities{
+  .transform-style-preserve3d{
+    transform-style:preserve-3d ;
+  }
+
+}
+
 .slick-dots {
   position: relative;
   /* bottom: -25px; */

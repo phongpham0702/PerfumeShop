@@ -90,6 +90,11 @@ const config = {
           "0%": { transform: "translateX(0)" },
           "100%": { transform: "translateX(-300px)" },
         },
+        galleryRotate:{
+          "0%":{ transform: "perspective(1200px) rotateY(0deg)"},
+          "100%":{ transform: "perspective(1200px) rotateY(360deg)"}
+        }
+
       },
       animation: {
         rightIn: "rightIn .85s ease-out both",
@@ -103,6 +108,7 @@ const config = {
         rightOutL: "rightOut .35s ease-out .17s both",
         fadeIn: "fadeIn 0.35s ease-out both",
         fadeOut: "fadeOut 0.35s ease-out both",
+        galleryRotate:"galleryRotate 25s linear infinite"
       },
     },
   },
