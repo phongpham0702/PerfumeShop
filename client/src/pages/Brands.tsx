@@ -36,7 +36,8 @@ const Brands = () => {
         {data?.metadata?.brandList?.map(
           (item: { productNum: number; brand: string }) => (
             <Link
-              className="flex items-center justify-between rounded-sm border border-[#333] px-3 py-2 xl:px-6"
+              className="flex items-center justify-between border border-[#333] px-3 py-2 xl:px-6 rounded-md hover:bg-[#f8b500] hover:scale-110 
+              font-semibold transition duration-300"
               to={`/shop/1?brand=${item.brand}`}
             >
               <span>{item.brand} : </span>
