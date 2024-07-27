@@ -29,7 +29,7 @@ interface OrderDetail {
 }
 
 const OrderDetail = ({ oid }: { oid: string }) => {
-  const { data: orderDetail }: { orderDetail: OrderDetail } = useQuery({
+  const { data: orderDetail } = useQuery({
     queryKey: ["orderDetail", oid],
     queryFn: () => requestAPI(`/luxe-admin/orders/detail/${oid}`, {}, "GET"),
   });

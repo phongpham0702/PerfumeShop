@@ -18,7 +18,7 @@ import requestAPI from "../../helpers/api";
 import { ScaleLoader } from "react-spinners";
 import Overlay from "../../ui/Overlay";
 
-const ProductDetail = ({ id, similar }: { id?: string; similar: boolean }) => {
+const ProductDetail = ({ id, similar }: { id?: string; similar?: boolean }) => {
   const [isShowMore, setIsShowMore] = useState<boolean>(false);
 
   const [priceByCapacity, setPriceByCapacity] = useState<number | null>(null);
@@ -33,7 +33,7 @@ const ProductDetail = ({ id, similar }: { id?: string; similar: boolean }) => {
 
   const { data, isLoading } = useGetPDetail({
     pid: pid ?? (id as string),
-    similar: similar,
+    similar: similar ?? true,
   });
 
   const {
