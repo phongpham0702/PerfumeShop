@@ -32,6 +32,9 @@ router.route('/profile')
 router.route('/profile/order-history/')
 .get(errorHandler(userController.getOrderHistory))
 
+router.route('/profile/order-count/')
+.get(errorHandler(userController.GetOrderCount))
+
 router.route("/change-password")
 .post(changePasswordValidator,errorHandler(userController.changePassword))
 

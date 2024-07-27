@@ -178,6 +178,12 @@ class UserController{
             metadata: await UserService.getUserOrders(req.userid,page,statusQuery, sortOrder)
         }).send(res)
     }
+
+    GetOrderCount = async(req,res,next) => {
+        new responseHelper.SuccessResponse({
+            metadata: await UserService.getOrderCount(req.userid)
+        }).send(res)
+    }
 }
 
 

@@ -369,8 +369,10 @@ class AdminService{
                 $project:{
                     _id:1,
                     productName:1,
+                    productBrand:1,
                     productThumbnail:1,
-                    priceScale:1
+                    priceInfo:"$priceScale",
+                    displayPrice:"$priceScale.price"
                 }
             }
         ]

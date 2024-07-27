@@ -331,7 +331,7 @@ class UserService{
                 let itemModel = i.productId.priceScale.find((m) => {
                     return m._id.toString() == i.modelId.toString()
                 })
-                console.log(i);
+                
                 return{
                     productName: i.productId.productName,
                     productCapacity: itemModel.capacity,
@@ -356,6 +356,61 @@ class UserService{
             currentPage: page,
             orders:result
         }
+    }
+
+    getOrderCount = async(userID) => {
+        const data = {
+            confirmPending:0,
+            paid:0,
+            confirmed:0,
+            inDelivery:0,
+            cancelled:0,
+            completed:0
+        }
+        const pipeLine = [
+            {
+                $match:{
+                    ownerId: userID
+                }
+            },
+            {   
+                $group:{
+                    _id:"$orderStatus",
+                    count:{
+                        $sum:1
+                    }
+                }
+            }
+        ]
+
+        const countList = await orderModel.aggregate(pipeLine);
+
+        for(let i of countList){
+           switch (i._id) {
+            case 'confirm-pending':
+                data.confirmPending = i.count;
+                break;
+            case 'paid':
+                data.paid = i.count;
+                break;
+            case 'confirmed':
+                data.confirmed = i.count;
+                break;
+            case 'in-delivery':
+                data.inDelivery = i.count;
+                break;
+            case 'complete':
+                data.completed = i.count;
+                break;
+            case 'pay-pending':
+                break;
+            default:
+                data.cancelled = i.count;
+                break;
+           }
+        }
+
+        return data
     }
 
 }
