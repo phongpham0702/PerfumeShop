@@ -5,19 +5,28 @@ import {
   AiOutlineHeart,
   AiOutlineMenuFold,
 } from "react-icons/ai";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import OffCanvasMenu from "../OffCanvas/OffCanvasMenu";
-import { FormEvent, useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import MenuContext from "../../contexts/MenuContext";
 import OffCanvasMenuItem from "../OffCanvas/OffCanvasMenuItem";
+import ImageClassifier from "../ImageClassifier";
 
 const Header = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  // const navigate = useNavigate();
 
+  const [isOpen, setIsOpen] = useState(false);
   const handleToggle = () => setIsOpen((prev) => !prev);
   const handleClose = () => setIsOpen(false);
-
-  const [searchVal, setSearchVal] = useState("");
+  // const [searchVal, setSearchVal] = useState("");
+  // const handleSearchVal = (val: string) => setSearchVal(val);
+  // const handleSubmitSearch = (e: FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
+  //   navigate(`/shop/1?search=${searchVal}`);
+  //   handleClose();
+  // };
+  const formRef = useRef<HTMLFormElement>(null);
+  // --------------------------------------------------------------
   const [wishlistCount, setWishlistCount] = useState(
     localStorage.getItem("wishlistCount"),
   );
@@ -26,18 +35,10 @@ const Header = () => {
     setWishlistCount(localStorage.getItem("wishlistCount"));
     setCartCount(localStorage.getItem("cartCount"));
   });
-  const handleSearchVal = (val: string) => setSearchVal(val);
 
   const menuContext = useContext(MenuContext);
-  const token = localStorage?.getItem("accessToken");
-  const navigate = useNavigate();
-  const handleSubmitSearch = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    navigate(`/shop/1?search=${searchVal}`);
-    handleClose();
-  };
 
-  const formRef = useRef<HTMLFormElement>(null);
+  const token = localStorage?.getItem("accessToken");
 
   useEffect(() => {
     const handleClickOutSide = (event: MouseEvent) => {
@@ -114,26 +115,28 @@ const Header = () => {
         <div className="w-[50%] lg:w-[40%]">
           <ul className="flex items-center justify-end gap-4 sm:gap-8">
             {isOpen && (
-              <form
-                ref={formRef}
-                onSubmit={handleSubmitSearch}
-                className="absolute left-[50%] top-[80px] mx-auto flex w-[80%] translate-x-[-50%] items-center gap-2 rounded-sm border border-[#d5cfcf] px-4 py-1 text-lg shadow-lg transition-all duration-1000"
-              >
-                <input
-                  className="w-full p-1 outline-none"
-                  type="text"
-                  placeholder="Search..."
-                  name="searchVal"
-                  onChange={(e) => handleSearchVal(e.target.value)}
-                  required
-                />
-                <button
-                  type="submit"
-                  className="cursor-pointer text-2xl sm:block"
-                >
-                  <AiOutlineSearch />
-                </button>
-              </form>
+              <ImageClassifier handleClose={handleClose} />
+
+              // <form
+              //   ref={formRef}
+              //   onSubmit={handleSubmitSearch}
+              //   className="absolute left-[50%] top-[80px] mx-auto flex w-[80%] translate-x-[-50%] items-center gap-2 rounded-sm border border-[#d5cfcf] bg-white px-4 py-1 text-lg shadow-lg transition-all duration-1000"
+              // >
+              //   <input
+              //     className="w-full p-1 outline-none"
+              //     type="text"
+              //     placeholder="Search..."
+              //     name="searchVal"
+              //     onChange={(e) => handleSearchVal(e.target.value)}
+              //     required
+              //   />
+              //   <button
+              //     type="submit"
+              //     className="cursor-pointer text-2xl sm:block"
+              //   >
+              //     <AiOutlineSearch />
+              //   </button>
+              // </form>
             )}
             <li
               onClick={() => handleToggle()}
