@@ -21,7 +21,7 @@ router.route('/product/:page')
 router.route('/product/detail/:pid')
 .get(errorHandler(adminController.GetProductDetail))
 
-router.route('/product/fill-stock') //!!!
+router.post('/product/fill-stock', errorHandler(adminController.PostFillStock)) //!!!
 
 router.route('/vouchers')
 .get(errorHandler(adminController.GetVoucherList))
@@ -53,7 +53,7 @@ router.route('/users')//!!!
 router.route('/users/detail/:uid')//!!!
 .get()
 
-router.get("/data/order-count", adminController.GetOrdersCount)
-router.get("/data/sale-data/:year", adminController.GetSaleData)
-router.get("/data/out-of-stock", adminController.GetOutOfStockProduct)//!!!
+router.get("/data/order-count", errorHandler(adminController.GetOrdersCount))
+router.get("/data/sale-data/:year", errorHandler(adminController.GetSaleData))
+router.get("/data/out-of-stock", errorHandler(adminController.GetOutOfStockProduct))
 module.exports = router;

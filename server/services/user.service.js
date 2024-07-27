@@ -299,6 +299,9 @@ class UserService{
             }
         },
         {
+            receiverPhone:1,
+            receiverAddress:1,
+            productCount:1,
             orderStatus: 1, 
             total: 1,
             createdAt: 1,
@@ -309,7 +312,7 @@ class UserService{
         .limit(orderPerPage)    
         .populate({
             path:'orderProducts.productId',
-            select:["productName","priceScale"]
+            select:["productName","priceScale","productThumbnail"]
         }).lean()
 
         if(!userOrder){
@@ -324,12 +327,13 @@ class UserService{
                 let itemModel = i.productId.priceScale.find((m) => {
                     return m._id.toString() == i.modelId.toString()
                 })
-
+                console.log(i);
                 return{
                     productName: i.productId.productName,
                     productCapacity: itemModel.capacity,
                     unitPrice: itemModel.price,
-                    quantity: i.quantity
+                    quantity: i.quantity,
+                    productThumbnail: i.productId.productThumbnail
                 }
 
             })

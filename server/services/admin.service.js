@@ -382,6 +382,21 @@ class AdminService{
 
     static fillStock = async(productId, modelId, amount) => {
         
+        let product = await productModel.findOne({
+            _id:productId,
+            "priceScale._id": modelId
+        },
+        {
+            _id:1 , "priceScale.$":1
+        })
+
+        if(!product) throw new BadRequestError("Cannot find product or product model");
+        
+        product.priceScale[0].inStock += amount; 
+
+        await product.save()
+
+        return ""
     }
 }
 

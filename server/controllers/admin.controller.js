@@ -201,6 +201,16 @@ class AdminController {
             
         }).send(res)
     }
+
+    PostFillStock = async(req,res,next) => {
+        await AdminService.fillStock("6627c7c25dd40c42e31ac15d","6627c7c25dd40c42e31ac15f",10)
+        new responseHelper.OK({
+            metadata:{
+                outOfStockProducts: ""
+            }
+            
+        }).send(res)
+    }
 }
 
 module.exports = new AdminController();
