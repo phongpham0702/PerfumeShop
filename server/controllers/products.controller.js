@@ -15,8 +15,10 @@ class ProductController
 
     getProductDetail = async(req,res,next) => {
         
+        let getSimilarProducts = req.query.similar==="false"? false:true
+
         new responseHelper.OK({
-            metadata: await ProductService.getProductDetail(new Types.ObjectId(req.params.pid))
+            metadata: await ProductService.getProductDetail(new Types.ObjectId(req.params.pid),getSimilarProducts)
         }).send(res)
 
     }

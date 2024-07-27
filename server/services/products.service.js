@@ -94,26 +94,21 @@ class ProductService
         
     }
 
-    static getProductDetail = async(productId) =>{
+    static getProductDetail = async(productId, getSimilarProduct = false) =>{
 
         let productDetail = await productModel.findOne({
             '_id' : converterHelper.toObjectIdMongo(productId)
-        },{
-            sold: 0,
-            createdAt: 0,
-            updatedAt: 0,
-            productQuantity:0
         }).lean()
 
         if(!productDetail) throw new BadRequestError("No product found.")
    
-
-        let similarProducts = await findSimilarProducts(productDetail)
-
+        let similarProducts = getSimilarProduct===true?await findSimilarProducts(productDetail):[]
+  
         return {
             productDetail: productDetail,
             similarProducts : similarProducts
         }
+        
     }
 
     static getAllBrand = async () => {
