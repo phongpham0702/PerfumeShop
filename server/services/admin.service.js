@@ -244,6 +244,9 @@ class AdminService{
             case "in-delivery":
                 matchCondition.orderStatus = {$in:["in-delivery"]}
                 break;
+            case "cancel":
+                matchCondition.orderStatus = {$in:["cancelled"]}
+                break;
             default:
                 matchCondition.orderStatus = {$nin:["pay-pending"]}
                 break;

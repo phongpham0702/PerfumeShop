@@ -2,7 +2,7 @@ const {validationResult} = require('express-validator');
 const { BadRequestError, ServerError } = require('../helpers/error.response');
 const responseHelper = require("../helpers/success.response");
 const AdminService = require('../services/admin.service');
-const ORDER_STATUS = ["pending","complete","confirmed","in-delivery"]
+const ORDER_STATUS = ["pending","complete","confirmed","in-delivery","cancel"]
 class AdminController {
     
     AdminAuthenticate = async(req,res,next) => {
