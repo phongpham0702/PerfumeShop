@@ -291,9 +291,38 @@ class AdminService{
     static oderDetail = async(orderId)=>{
         const order = await orderModel.findOne({
             _id: orderId
-        },{__v:0}).lean()
+        },{__v:0})
+        .populate({
+            path:'orderProducts.productId',
+            select:["productName","priceScale","productThumbnail"]
+        })
+        .lean()
+
+        if(!order) throw new BadRequestError(`Cannot order with id ${orderId}`)
+
+        let {orderProducts,...rest} = order;
+       
+        let orderBodyData = orderProducts.map((i) => {
+            let itemModel = i.productId.priceScale.find((m) => {
+                return m._id.toString() == i.modelId.toString()
+            })
+            
+            return{
+                productId:i.productId._id,
+                modelId: i.modelId,
+                productName: i.productId.productName,
+                productCapacity: itemModel.capacity,
+                unitPrice: itemModel.price,
+                quantity: i.quantity,
+                productThumbnail: i.productId.productThumbnail
+            }
+
+        })
         
-        return order
+        return {
+            ...rest,
+            orderProducts: orderBodyData
+        }
     }
 
     static confirmOrder = async(orderId) => {
