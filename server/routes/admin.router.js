@@ -55,5 +55,5 @@ router.route('/users/detail/:uid')//!!!
 
 router.get("/data/order-count", adminController.GetOrdersCount)
 router.get("/data/sale-data/:year", adminController.GetSaleData)
-router.route("/data/out-of-stock")//!!!
+router.get("/data/out-of-stock", adminController.GetOutOfStockProduct)//!!!
 module.exports = router;

@@ -281,7 +281,7 @@ class UserService{
 
     }
 
-    getUserOrders = async(userID, page = 1 ,statusQuery = ["confirm","paid","confirmed","in-delivery","complete"]) => {
+    getUserOrders = async(userID, page = 1 ,statusQuery = ["confirm","paid","confirmed","in-delivery","complete"],sortOrder = -1) => {
 
         const orderPerPage = 5;
         
@@ -292,7 +292,7 @@ class UserService{
             }
         })
         
-        let allUserOrder = await orderModel.find({
+        let userOrder = await orderModel.find({
             ownerId: userID,
             orderStatus:{
                 $in:statusQuery
@@ -304,7 +304,7 @@ class UserService{
             createdAt: 1,
             orderPayment: 1,
             orderProducts: 1})
-        .sort({createdAt : -1})
+        .sort({createdAt : sortOrder})
         .skip((orderPerPage * page) - orderPerPage)
         .limit(orderPerPage)    
         .populate({
@@ -312,13 +312,13 @@ class UserService{
             select:["productName","priceScale"]
         }).lean()
 
-        if(!allUserOrder){
+        if(!userOrder){
             return{
                 orders: []
             }
         }
 
-        let result = allUserOrder.map(({orderProducts, ...rest}) => {
+        let result = userOrder.map(({orderProducts, ...rest}) => {
             
             let orderBodyData = orderProducts.map((i) => {
                 let itemModel = i.productId.priceScale.find((m) => {

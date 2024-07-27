@@ -114,8 +114,12 @@ class AdminController {
 
         if(req.query.status && !ORDER_STATUS.includes(req.query.status)) throw new BadRequestError("Invalid status");
         
+        let sortOrder = 1;
+
+        if(req.query.sort === "recent") sortOrder = -1
+
         new responseHelper.OK({
-            metadata: await AdminService.getOrders(page,req.query.status)
+            metadata: await AdminService.getOrders(page,req.query.status, sortOrder)
         }).send(res)
     }
 
@@ -189,6 +193,14 @@ class AdminController {
         }).send(res)
     }
 
+    GetOutOfStockProduct = async(req,res,next) => {
+        new responseHelper.OK({
+            metadata:{
+                outOfStockProducts: await AdminService.outOfStock()
+            }
+            
+        }).send(res)
+    }
 }
 
 module.exports = new AdminController();

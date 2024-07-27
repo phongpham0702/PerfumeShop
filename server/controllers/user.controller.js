@@ -170,8 +170,12 @@ class UserController{
         
         const statusQuery = acceptStatus[type] ? acceptStatus[type]: acceptStatus["all"]
 
+        let sortOrder = -1;
+
+        if(req.query.sort === "latest") sortOrder = 1
+
         new responseHelper.SuccessResponse({
-            metadata: await UserService.getUserOrders(req.userid,page,statusQuery)
+            metadata: await UserService.getUserOrders(req.userid,page,statusQuery, sortOrder)
         }).send(res)
     }
 }

@@ -227,7 +227,7 @@ class AdminService{
 
     }
 
-    static getOrders = async(currentPage = 1, status = null)=>{
+    static getOrders = async(currentPage = 1, status = null, sortOrder = 1)=>{
         const orderPerPage = 10;
         const matchCondition ={}
    
@@ -250,6 +250,7 @@ class AdminService{
         }
 
         let pipeLine = [
+            {$sort: {createdAt: sortOrder}},
             {$match:matchCondition},
             {$skip : (orderPerPage  * currentPage) - orderPerPage },
             {$limit : orderPerPage},
@@ -350,8 +351,38 @@ class AdminService{
         return findOrder;
     }
 
-    
+    static outOfStock = async() => {
+        const pipeLine = [
+            {
+                $unwind:{
+                    path: "$priceScale",
+                    includeArrayIndex: 'modelIdx',
+                    preserveNullAndEmptyArrays: false
+                }
+            },
+            {
+                $match:{
+                    "priceScale.inStock":0
+                }
+            },
+            {
+                $project:{
+                    _id:1,
+                    productName:1,
+                    priceScale:1
+                }
+            }
+        ]
 
+        const outOfStockProducts = await productModel.aggregate(pipeLine)
+
+        return outOfStockProducts;
+
+    }
+
+    static fillStock = async(productId, modelId, amount) => {
+        
+    }
 }
 
 module.exports = AdminService
