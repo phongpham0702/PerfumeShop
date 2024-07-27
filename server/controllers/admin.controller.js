@@ -203,10 +203,14 @@ class AdminController {
     }
 
     PostFillStock = async(req,res,next) => {
-        await AdminService.fillStock("6627c7c25dd40c42e31ac15d","6627c7c25dd40c42e31ac15f",10)
+
+        const {productId, modelId, amount} = req.body
+
+        if(!productId || !modelId || !amount || !Number.isInteger(amount)) throw new BadRequestError("Invalid request")
+
         new responseHelper.OK({
             metadata:{
-                outOfStockProducts: ""
+                message: await AdminService.fillStock(productId, modelId, amount)
             }
             
         }).send(res)

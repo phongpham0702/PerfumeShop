@@ -369,6 +369,7 @@ class AdminService{
                 $project:{
                     _id:1,
                     productName:1,
+                    productThumbnail:1,
                     priceScale:1
                 }
             }
@@ -382,21 +383,25 @@ class AdminService{
 
     static fillStock = async(productId, modelId, amount) => {
         
-        let product = await productModel.findOne({
-            _id:productId,
-            "priceScale._id": modelId
-        },
-        {
-            _id:1 , "priceScale.$":1
-        })
+        try {
+            const updateStock = await productModel.updateOne({
+                _id:productId,
+                "priceScale._id": modelId
+            },
+            {
+                $inc:{
+                    "priceScale.$.inStock": amount
+                }
+                
+            })
 
-        if(!product) throw new BadRequestError("Cannot find product or product model");
-        
-        product.priceScale[0].inStock += amount; 
+            if(updateStock.modifiedCount < 1) throw new Error();
 
-        await product.save()
-
-        return ""
+            return `The quantity of product ${productId} - modelId ${modelId} has been increased by ${amount}.`
+        } 
+        catch (error) {
+            return `Increasing the quantity of product id ${productId} - model id ${modelId} failed. Please check again!`
+        }
     }
 }
 

@@ -299,10 +299,14 @@ class UserService{
             }
         },
         {
+            _id:1,
+            receiverName:1,
             receiverPhone:1,
             receiverAddress:1,
             productCount:1,
-            orderStatus: 1, 
+            orderStatus: 1,
+            discount:1, 
+            subTotal:1,
             total: 1,
             createdAt: 1,
             orderPayment: 1,
