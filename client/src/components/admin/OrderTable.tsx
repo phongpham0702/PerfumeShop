@@ -23,8 +23,10 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import requestAPI from "../../helpers/api";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { RiMore2Fill } from "react-icons/ri";
+import { IoIosArrowRoundDown, IoIosArrowRoundUp } from "react-icons/io";
+import { MdOutlineFilterList } from "react-icons/md";
 
 interface Order {
   _id: string;
@@ -49,6 +51,8 @@ const TABLE_HEAD = [
 ];
 
 export function OrderTable() {
+  const [status, setStatus] = useState<string>("");
+  const [sort, setSort] = useState<string>("recent");
   const queryClient = useQueryClient();
   const { mutate: mutateCancel } = useMutation({
     mutationFn: (orderId: string) =>
@@ -94,10 +98,15 @@ export function OrderTable() {
       queryClient.invalidateQueries({ queryKey: ["orders"] });
     },
   });
+
   const { data: products, fetchNextPage } = useInfiniteQuery({
-    queryKey: ["orders"],
+    queryKey: ["orders", { status, sort }],
     queryFn: ({ pageParam }) =>
-      requestAPI(`/luxe-admin/orders/${pageParam}`, {}, "GET"),
+      requestAPI(
+        `/luxe-admin/orders/${pageParam}?status=${status}&sort=${sort}`,
+        {},
+        "GET",
+      ),
     initialPageParam: 1,
     getNextPageParam: (lastPage) => {
       if (
@@ -124,6 +133,19 @@ export function OrderTable() {
         };
       });
   }, [products?.pages]);
+
+  const statusList = [
+    { value: "", label: "All" },
+    { value: "complete", label: "Complete" },
+    { value: "cancel", label: "Cancel" },
+    { value: "in-delivery", label: "In Delivery" },
+    { value: "confirmed", label: "Confirmed" },
+    { value: "pending", label: "Pending" },
+  ];
+  const sortList = [
+    { value: "recent", label: "Latest" },
+    { value: "oldest", label: "Oldest" },
+  ];
 
   return (
     <Card className="h-full w-full">
@@ -160,13 +182,56 @@ export function OrderTable() {
                   key={head}
                   className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4"
                 >
-                  <Typography
-                    variant="small"
-                    color="blue-gray"
-                    className="font-normal leading-none opacity-70"
-                  >
-                    {head}
-                  </Typography>
+                  {head === "Status" ? (
+                    <Menu>
+                      <MenuHandler>
+                        <Typography className="flex cursor-pointer items-center gap-1">
+                          {head} <MdOutlineFilterList />
+                        </Typography>
+                      </MenuHandler>
+                      <MenuList>
+                        {statusList.map((item) => (
+                          <MenuItem
+                            key={item.value}
+                            onClick={() => setStatus(item.value)}
+                          >
+                            {item.label}
+                          </MenuItem>
+                        ))}
+                      </MenuList>
+                    </Menu>
+                  ) : head === "CreatedAt" ? (
+                    <Menu>
+                      <MenuHandler>
+                        <Typography className="flex cursor-pointer items-center gap-1">
+                          {head}{" "}
+                          {sort === "latest" ? (
+                            <IoIosArrowRoundDown />
+                          ) : (
+                            <IoIosArrowRoundUp />
+                          )}
+                        </Typography>
+                      </MenuHandler>
+                      <MenuList>
+                        {sortList.map((item) => (
+                          <MenuItem
+                            key={item.value}
+                            onClick={() => setSort(item.value)}
+                          >
+                            {item.label}
+                          </MenuItem>
+                        ))}
+                      </MenuList>
+                    </Menu>
+                  ) : (
+                    <Typography
+                      variant="small"
+                      color="blue-gray"
+                      className="font-normal leading-none opacity-70"
+                    >
+                      {head}
+                    </Typography>
+                  )}
                 </th>
               ))}
             </tr>

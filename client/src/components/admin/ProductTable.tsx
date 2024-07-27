@@ -15,8 +15,10 @@ import {
 import { useInfiniteQuery } from "@tanstack/react-query";
 import requestAPI from "../../helpers/api";
 import moment from "moment";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { BiPlus } from "react-icons/bi";
+import Modal from "react-responsive-modal";
+import ProductDetail from "../Products/ProductDetail";
 
 interface Product {
   createdAt: string;
@@ -31,6 +33,8 @@ interface Product {
 const TABLE_HEAD = ["Name", "Brand", "Sold", "CreatedAt", "UpdatedAt", ""];
 
 export function ProductTable() {
+  const [open, setOpen] = useState(false);
+  const [id, setId] = useState("");
   const { data: products, fetchNextPage } = useInfiniteQuery({
     queryKey: ["products"],
     queryFn: ({ pageParam }) =>
@@ -119,7 +123,13 @@ export function ProductTable() {
                   : "p-4 border-b border-blue-gray-50";
 
                 return (
-                  <tr key={item._id}>
+                  <tr
+                    key={item._id}
+                    onClick={() => {
+                      setOpen(true);
+                      setId(item._id);
+                    }}
+                  >
                     <td className={classes}>
                       <div className="flex items-center gap-3">
                         <Avatar
@@ -196,6 +206,14 @@ export function ProductTable() {
           Load More
         </Button>
       </CardFooter>
+      <Modal
+        open={open}
+        onClose={() => {
+          setOpen(false);
+        }}
+      >
+        <ProductDetail id={id} similar={false} />
+      </Modal>
     </Card>
   );
 }

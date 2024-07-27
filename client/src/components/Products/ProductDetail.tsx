@@ -18,7 +18,7 @@ import requestAPI from "../../helpers/api";
 import { ScaleLoader } from "react-spinners";
 import Overlay from "../../ui/Overlay";
 
-const ProductDetail = () => {
+const ProductDetail = ({ id, similar }: { id?: string; similar: boolean }) => {
   const [isShowMore, setIsShowMore] = useState<boolean>(false);
 
   const [priceByCapacity, setPriceByCapacity] = useState<number | null>(null);
@@ -27,9 +27,14 @@ const ProductDetail = () => {
 
   const [activeTab, setActiveTab] = useState<string>("tab1");
   const { pid } = useParams();
-  const descriptionRef = useRef<HTMLParagraphElement>(null);
 
-  const { data, isLoading } = useGetPDetail(pid || "");
+  const descriptionRef = useRef<HTMLParagraphElement>(null);
+  console.log("id", id);
+
+  const { data, isLoading } = useGetPDetail({
+    pid: pid ?? (id as string),
+    similar: similar,
+  });
 
   const {
     productDetail: product,
@@ -419,7 +424,7 @@ const ProductDetail = () => {
             />
           </div>
 
-          <div className="w-full sm:w-[50%]">
+          <div className={`w-full sm:w-[50%] ${id ? "mt-8" : ""}`}>
             <p className="mb-4">{product?.productBrand}</p>
             <p className="mb-4 text-3xl text-[#000]">{product?.productName}</p>
             <p className="mb-4">{displayGender}</p>
@@ -445,7 +450,9 @@ const ProductDetail = () => {
             </p>
             <div className="flex gap-4">
               <p className="mb-2 w-[50%] sm:w-[200px]">Capacity</p>
-              <p className="w-[50%] sm:w-[200px]">Quantity</p>
+              <p className={`w-[50%] sm:w-[200px] ${id ? "hidden" : ""}`}>
+                Quantity
+              </p>
             </div>
 
             <div className="flex gap-4">
@@ -462,7 +469,9 @@ const ProductDetail = () => {
                   ))}
               </select>
 
-              <div className="flex h-[36px] items-center justify-center text-xl">
+              <div
+                className={`flex h-[36px] items-center justify-center text-xl ${id ? "hidden" : ""}`}
+              >
                 <button
                   disabled={quantity <= 1}
                   onClick={() => setQuantity((prev) => prev - 1)}
@@ -483,7 +492,7 @@ const ProductDetail = () => {
               </div>
             </div>
 
-            <div className="flex gap-4">
+            <div className={`flex gap-4 ${id ? "hidden" : ""}`}>
               <button
                 disabled={inStock === 0}
                 onClick={() => mutate()}
@@ -570,7 +579,7 @@ const ProductDetail = () => {
 
       <hr />
 
-      <div className="mt-14">
+      <div className={`mt-14 ${id ? "hidden" : ""}`}>
         <h1 className="mb-10 text-center font-heading text-4xl font-normal">
           Related Products
         </h1>
